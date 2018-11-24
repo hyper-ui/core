@@ -1,0 +1,9 @@
+export const _document = document,
+    _Object = Object,
+    _String = String,
+    _Symbol = Symbol,
+    _Boolean = Boolean,
+    _Map = Map,
+    { assign: _assign, is: _is, keys: _keys } = _Object,
+    { isArray: _isArray, prototype: _ArrProto } = Array,
+    _undefined = undefined;
