@@ -8,30 +8,41 @@
 </head>
 
 <body>
+    <!-- Load the lib -->
     <script src="../dist/hyper-ui.umd.js"></script>
+    <!-- Create the app -->
     <script type="text/javascript">
+        // Define the editor component
         HUI.define('Editor', {
             render: function (props, store, context) {
+                // Renders a form with an input and a button
                 return HUI('form', {
+                    // Handles the submit event
                     onsubmit: function (e) {
                         e.preventDefault();
+                        // Get the input element and its value
                         var input = store.get('input'),
                             content = input.value;
                         if (content) {
+                            // Add this item
                             context.set(
                                 'items',
                                 context.get('items').concat(content)
                             );
+                            // Clear the input
                             input.value = '';
                         } else {
+                            // Hint the user to input something
                             store.get('input').focus();
                         }
                     }
                 }, [
+                    // content input
                     HUI('input', {
                         ref: store.setter('input'),
                         placeholder: 'content'
                     }),
+                    // submit button
                     HUI('input', {
                         attributes: {
                             type: 'submit',
@@ -41,17 +52,23 @@
                 ]);
             }
         });
-
+        // Defines the list component
         HUI.define('List', {
+            // Subscribe to changes of the context value `items`
             context: ['items'],
             render: function (props, store, context) {
+                // Renders an unordered list
                 return HUI('ul', null, context.get('items').map(function (item, i) {
+                    // list item
                     return HUI('li', null, [
+                        // content
                         HUI('span', {
                             style: 'margin-right: 1em;'
                         }, item),
+                        // delete link
                         HUI('a', {
                             href: 'javascript:;',
+                            // Handles the click event and delete this item
                             onclick: function () {
                                 var items = context.get('items');
                                 items.splice(i, 1);
@@ -62,16 +79,19 @@
                 }));
             }
         });
-
+        // Renders the app
         HUI.render(
+            // Set the initial context value
             HUI(HUI.Context, {
                 key: 'items',
                 value: []
-            }, [
-                HUI('h1', null, 'TODO'),
-                HUI('Editor'),
-                HUI('List')
-            ])
+            }),
+            // Renders a heading
+            HUI('h1', null, 'TODO'),
+            // Renders the editor
+            HUI('Editor'),
+            // and the list
+            HUI('List')
         );
     </script>
 </body>

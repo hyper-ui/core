@@ -35,7 +35,7 @@ You can just easily include it and start writing the code of you app because it 
     npm i hyper-ui
     ```
 
-2. Import it:
+2. Import the default export from the lib:
 
     ```js
     import HUI from "hyper-ui";
@@ -68,6 +68,7 @@ You can just easily include it and start writing the code of you app because it 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
     <title>hyper-ui example</title>
     <style type="text/css">
+        /* Set the style of the heading which will be added later */
         #heading {
             text-align: center;
         }
@@ -75,8 +76,10 @@ You can just easily include it and start writing the code of you app because it 
 </head>
 
 <body>
+    <!-- Import the lib -->
     <script type="text/javascript" crossorigin="anonymous"
         src="https://cdn.jsdelivr.net/npm/hyper-ui@latest/dist/hyper-ui.umd.min.js"></script>
+    <!-- and your code -->
     <script type="text/javascript" src="./index.js"></script>
 </body>
 
@@ -85,8 +88,11 @@ You can just easily include it and start writing the code of you app because it 
 
 ```js
 /* index.js */
+// Define a component called `Greeting`
 HUI.define('Greeting', {
+    // Define the `render` method
     render: function (props) {
+        // Renders a simple heading: h1#heading
         return HUI('h1', { id: 'heading' }, [
             'Hello,',
             props.target,
@@ -94,7 +100,9 @@ HUI.define('Greeting', {
         ]);
     }
 });
+// Render the app
 HUI.render(
+    // Create a greeting
     HUI('Greeting', { target: 'world' })
 );
 ```
@@ -104,18 +112,18 @@ HUI.render(
 ### HUI
 
 ```ts
-HUI(type: string | symbol, properties?: object, ...children: any[]): HNode;
+function HUI(type: string | symbol, properties?: object, ...children: any[]): HNode;
 ```
 
 This is the default export of the lib, and the only global exported by the lib if you include the UMD module in your HTML file. You can call this to create virtual nodes (named `HNode` in this lib).
 
 #### type
 
-The first argument is either a string or a symbol telling the type of the virtual node (quite like element tags in HTML). If the type has been [`define`](#define)d as a custom component, then what the [`render`](#desc-render) method of the description returns will be rendered. Otherwise, it is used to specify the tag of the element which will be rendered.
+The first argument is either a string or a symbol telling the type of the virtual node (quite like element tags in HTML). If the type has been [`define`](#define)d as a custom component, then what the [`render`](#descrender) method of the description returns will be rendered. Otherwise, it is used to specify the tag of the element which will be rendered.
 
 #### properties
 
-The second argument is an optional object representing the properties of the node (like element attributes). If the node is a custom component, then it will receive the props. Or, the props will be treated as the attributes of the element. For the latter, each prop will be set as is unless a corresponding handler is in [`propHandlers`](#hui-prophandlers) or its name starts with `on`:
+The second argument is an optional object representing the properties of the node (like element attributes). If the node is a custom component, then it will receive the props. Or, the props will be treated as the attributes of the element. For the latter, each prop will be set as is unless a corresponding handler is in [`propHandlers`](#huiprophandlers) or its name starts with `on`:
 
 Any prop whose name starts with `on` will be considered as an event listener. A valid event listener prop name is: `on`+`event`(+`option`), where `option` can be one or some of `Captrue`, `Nonpassive` and `Once` which stand for the listening options. For instance, `onclick` means a simple `click` event listener, and `ontouchstartOnceNonpassive` means a one-off and nonpassive `touchstart` one.
 
@@ -126,7 +134,7 @@ Other arguments will be rendered as the children of the element or passed to the
 ### HUI.render
 
 ```ts
-HUI.render(src: any, parent?: Node, clr?: boolean, global?: Store): void;
+function render(src: any, parent?: Node, clr?: boolean, global?: Store): void;
 ```
 
 This method renders `src` on `parent` and usually will be called only once.
@@ -145,7 +153,7 @@ This is an optional boolean telling whether to clear the parent node before rend
 
 #### global
 
-This is an optional parameter which can be a store object representing the initial context. (You may not need this parameter in most cases because you can use [`HUI.Context`](#hui-context) instead. If you do want to pass an initial context store, use [`HUI.createStore`](#hui-createstore) to create one.)
+This is an optional parameter which can be a store object representing the initial context. (You may not need this parameter in most cases because you can use [`HUI.Context`](#huicontext) instead. If you do want to pass an initial context store, use [`HUI.createStore`](#huicreatestore) to create one.)
 
 #### rendering rules
 
@@ -159,7 +167,7 @@ It is true that you can render anything, but there are still some rendering rule
 ### HUI.define
 
 ```ts
-HUI.define(name: string | symbol, desc: object): void;
+function define(name: string | symbol, desc: object): void;
 ```
 
 This method lets you define a custom component.
@@ -183,7 +191,7 @@ This is an array which contains some keys of the context. When any context value
 ##### desc.init
 
 ```ts
-desc.init: (this: void, props: object, store: Store, ctx: Store) => void;
+function init(this: void, props: object, store: Store, ctx: Store): void;
 ```
 
 This property is an optional function. It will be called before the first paint of the component to initialize the component (e.g. store some initial values or fetch some data for the component).
@@ -191,7 +199,7 @@ This property is an optional function. It will be called before the first paint 
 ##### desc.render
 
 ```ts
-desc.render: (this: void, props: object, store: Store, ctx: Store) => any;
+function render(this: void, props: object, store: Store, ctx: Store): any;
 ```
 
 This property is required and returns what to be rendered.
@@ -199,7 +207,7 @@ This property is required and returns what to be rendered.
 ##### desc.clear
 
 ```ts
-desc.clear: (this: void, props: object, store: Store, ctx: Store) => void;
+function clear(this: void, props: object, store: Store, ctx: Store): void;
 ```
 
 This property is an optional function. It will be called when the component will be destroyed to do some clear things (e.g. clear the timers set in `init` or cancel unfinished data fetching started in `init`).
@@ -207,7 +215,7 @@ This property is an optional function. It will be called when the component will
 ##### desc.catch
 
 ```ts
-desc.catch: (this: void, err: any, props: object, store: Store, ctx: Store) => any;
+function catch(this: void, err: any, props: object, store: Store, ctx: Store): any;
 ```
 
 This property is an optional function. It will be called when something goes wrong with the component. The first argument will be the error. In addition, what it returns will be rendered so that you can show some error messages. (Errors in `clear` will be printed in console but not be passed to this method.)
@@ -220,17 +228,13 @@ This stands for received props. (There will always be a prop called `children` r
 
 ###### store
 
-This is a [store object](#hui-createstore) and each component instance will have one. You can use it to save some values (e.g. states). If a value changes and its key is in the [`state`](#desc-state) array, then the component will be updated.
+This is a [store object](#huicreatestore) and each component instance will have one. You can use it to save some values (e.g. states). If a value changes and its key is in the [`state`](#descstate) array, then the component will be updated.
 
 ###### ctx
 
-This is also a store object but each component instance under the same `HUI.render` call will have a linked context. That is, this is like a global store.
+This is also a store object but each component instance under the same [`HUI.render`](#huirender) call will have a linked context. That is, this is like a global store.
 
 ### HUI.propHandlers
-
-```ts
-HUI.propHandlers: Map<string, PropHandler>;
-```
 
 This is a map which stores custom node prop handlers. There are some built-in handlers as well:
 
@@ -248,11 +252,14 @@ With this handler, you can specify some attributes that will be set by calling t
 
 #### ref
 
-This is a very special prop which you can use to get the real DOM object. You need to pass a `RefCallback` as the value of this prop, which receives the node. For example:
+This is a very special prop which you can use to get the real DOM object. You need to pass a callback as the value of this prop which receives the node. For example:
 
 ```js
+// Create an input element and get it
 HUI('input', {
+    // The reference callback
     ref: function (inputEle) {
+        // Here is the input element
         console.log(inputEle);
     }
 });
@@ -264,12 +271,12 @@ This method creates a new store and returns it. You don't need to know this meth
 
 #### Store
 
-Each store object stores some value pairs. The `store` argument and the `context` argument you receive in [`description`](desc) methods are all store objects. A store object has the following methods for you to manage the values stored in it:
+Each store object stores some value pairs. The `store` argument and the `context` argument you receive in [`description`](#desc) methods are all store objects. A store object has the following methods for you to manage the values stored in it:
 
 #### store.get
 
 ```ts
-store.get(key: any): any;
+function get(key: any): any;
 ```
 
 This method lets you get the value matching the given key.
@@ -277,7 +284,7 @@ This method lets you get the value matching the given key.
 #### store.set
 
 ```ts
-store.set(key: any, value: any, force?: boolean): this;
+function set(key: any, value: any, force?: boolean): this;
 ```
 
 This method lets you set the value matching the given key. You can also pass a boolean as the third argument to tell the method that this is a new value anyway.
@@ -285,7 +292,7 @@ This method lets you set the value matching the given key. You can also pass a b
 #### store.setter
 
 ```ts
-store.setter(key: any, force?: boolean): (value: any) => void;
+function setter(key: any, force?: boolean): (value: any) => void;
 ```
 
 This method returns a setter for the given key. You can pass a force update flag to it as well, which will later be passed to the `set` method. One use case is passing a store setter as a `ref` prop.
@@ -293,7 +300,7 @@ This method returns a setter for the given key. You can pass a force update flag
 ### HUI.defer
 
 ```ts
-HUI.defer<A extends any[] = any[]>(callback: (...args: A) => void, ...args: A): void;
+function defer(callback: (...args: any[]) => void, ...args: any[]): void;
 ```
 
 This method accepts a callback and some optional arguments for it. The `callback` function will be invoked with those arguments later. More specifically speaking, the `callback`s will be invoked at the end of each tick.
@@ -301,12 +308,15 @@ This method accepts a callback and some optional arguments for it. The `callback
 One use case is doing DOM manipulations after the DOM objects are completely ready:
 
 ```js
+// Define a component which renders an auto-focused input
 HUI.define('AutofocusedInput', {
     render: function (props, store) {
+        // Defer the DOM manipulations
         HUI.defer(function () {
             // The input element is in the document now.
             store.get('input').focus();
         });
+        // Render an input and stores its reference in the store
         return HUI('input', { ref: store.setter('input') });
     }
 });
@@ -317,13 +327,18 @@ HUI.define('AutofocusedInput', {
 This is a symbol standing for `portal`s. `Portal`s let you render something elsewhere. For example:
 
 ```js
+// Define a dialog window component
 HUI.define('DialogWindow', {
+    // Declare `on` as a state
     state: ['on'],
+    // Initializing callback
     init: function (props, store) {
+        // Set the default state
         store.set('on', false);
     },
     render: function (props, store) {
         return [
+            // A toggle button
             HUI('button', {
                 onclick: function () {
                     store.set('on', !store.get('on'));
@@ -331,6 +346,7 @@ HUI.define('DialogWindow', {
             }, [
                 'Toggle dialog'
             ]),
+            // a paragraph somewhere else if the state `on` is true
             store.get('on') && HUI(HUI.Portal, null, [
                 HUI('p', { attr: { style: 'color: blue;' } }, '[Dialog window]')
             ])
@@ -348,16 +364,17 @@ By default, the children of the portal will be appended to `document.body`, but 
 This is a symbol standing for `context`s. `Context`s enable you to easily set context values out of components. A `context` component accepts a `key` prop and a `value` prop. For example,
 
 ```js
+// Set the context value `foo` to 'bar'
 HUI(HUI.Context, {
-    key: 'some-context',
-    value: 'some-value'
+    key: 'foo',
+    value: 'bar'
 });
 ```
 
 ### HUI.tick
 
 ```ts
-HUI.tick(callback: () => void): void;
+function tick(callback: () => void): void;
 ```
 
 This is the ticking method which is used internally. It accepts a callback and let it be called later. The built-in one uses `requestAnimationFrame` to do this. You can use your own ticking method to override this to meet your needs.
@@ -368,7 +385,7 @@ This is a number representing the frame time limit in milliseconds. Updates will
 
 ## Example
 
-There is a TODO app example:
+Here is a TODO app example:
 
 ```html
 <!DOCTYPE html>
@@ -381,42 +398,58 @@ There is a TODO app example:
 </head>
 
 <body>
+    <!-- Load the lib -->
     <script type="text/javascript" crossorigin="anonymous"
         src="https://cdn.jsdelivr.net/npm/hyper-ui@latest/dist/hyper-ui.umd.min.js"></script>
+    <!-- Create the app -->
     <script type="text/javascript">
-
+        // Define the editor component
         HUI.define('Editor', {
             render: function (props, store, context) {
+                // Render a form with an input and a button
                 return HUI('form', {
+                    // Handle the submit event
                     onsubmit: function (e) {
                         e.preventDefault();
+                        // Get the input element and its value
                         var input = store.get('input'),
                             content = input.value;
                         if (content) {
+                            // Add this item
                             context.set(
                                 'items',
                                 context.get('items').concat(content)
                             );
+                            // Clear the input
                             input.value = '';
                         } else {
+                            // Hint the user to input something
                             store.get('input').focus();
                         }
                     }
                 }, [
+                    // content input
                     HUI('input', { ref: store.setter('input'), placeholder: 'content' }),
+                    // submit button
                     HUI('input', { attributes: { type: 'submit', value: 'Add' } })
                 ]);
             }
         });
-
+        // Define the list component
         HUI.define('List', {
+            // Subscribe to changes of the context value `items`
             context: ['items'],
             render: function (props, store, context) {
+                // Render an unordered list
                 return HUI('ul', null, context.get('items').map(function (item, i) {
+                    // list item
                     return HUI('li', null, [
+                        // content
                         HUI('span', { style: 'margin-right: 1em;' }, item),
+                        // delete link
                         HUI('a', {
                             href: 'javascript:;',
+                            // Handle the click event and delete this item
                             onclick: function () {
                                 var items = context.get('items');
                                 items.splice(i, 1);
@@ -427,15 +460,17 @@ There is a TODO app example:
                 }));
             }
         });
-
+        // Render the app
         HUI.render(
-            HUI(HUI.Context, { key: 'items', value: [] }, [
-                HUI('h1', null, 'TODO'),
-                HUI('Editor'),
-                HUI('List')
-            ])
+            // Set the initial context value
+            HUI(HUI.Context, { key: 'items', value: [] }),
+            // Render a heading
+            HUI('h1', null, 'TODO'),
+            // Render the editor
+            HUI('Editor'),
+            // and the list
+            HUI('List')
         );
-
     </script>
 </body>
 
