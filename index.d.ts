@@ -1,8 +1,10 @@
-import HUI from "./typings/index";
+import _HUI from "./typings/index";
 
-export as namespace HUI;
+export default _HUI;
 
-export = HUI;
+declare global {
+    const HUI: typeof _HUI;
+}
 
 /* types */
 

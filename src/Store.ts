@@ -2,11 +2,20 @@ import { _Map, _is } from "./refCache";
 import { HNode } from "./HNode";
 import { update } from "./ticker";
 
+type AssertArray<T> = T extends any[] ? T : never;
+
 export interface Store<T extends object = any> {
     get<K extends keyof T>(key: K): T[K];
     set<K extends keyof T>(key: K, value: T[K], force?: boolean): this;
     setter<K extends keyof T>(key: K, force?: boolean): (value: T[K]) => void;
     forward(binding?: HNode, subscriptions?: Array<keyof T>): Store<T>;
+    toggle(key: keyof T): this;
+    inc(key: keyof T, addition?: any): this;
+    push<K extends keyof T>(key: K, ...items: AssertArray<T[K]>): this;
+    unshift<K extends keyof T>(key: K, ...items: AssertArray<T[K]>): this;
+    slice(key: keyof T, start: number, end: number): this;
+    splice<K extends keyof T>(key: K, start: number, deleteCount?: number): this;
+    splice<K extends keyof T>(key: K, start: number, deleteCount: number, ...items: AssertArray<T[K]>): this;
 }
 
 export const createStore = function <T extends object = any>(
@@ -42,7 +51,7 @@ export const createStore = function <T extends object = any>(
 
             }
 
-            return this;
+            return store;
 
         },
 
@@ -56,10 +65,36 @@ export const createStore = function <T extends object = any>(
             const newStore = createStore(newBinding, newSubscriptions, store);
             copies.push(newStore);
             return newStore;
+        },
+
+        toggle(key) {
+            return store.set(key, !store.get(key) as any);
+        },
+
+        inc(key, addition = 1) {
+            return store.set(key, (store.get(key) as unknown as number) + addition);
+        },
+
+        push(key, ...items) {
+            return store.set(key, (store.get(key) as unknown as any[]).concat(items) as any);
+        },
+
+        unshift(key, ...items) {
+            return store.set(key, items.concat(store.get(key) as unknown as any[]) as any);
+        },
+
+        slice(key, start, end) {
+            return store.set(key, (store.get(key) as unknown as any[]).slice(start, end) as any);
+        },
+
+        splice(key: keyof T, start: number, deleteCount: number, ...items: any[]) {
+            const arr = (store.get(key) as unknown as any[]).slice();
+            arr.splice(start, deleteCount, ...items);
+            return store.set(key, arr as any);
         }
 
     };
 
     return store;
 
-}
+};

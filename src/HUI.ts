@@ -43,7 +43,7 @@ HUI.propHandlers = propHandlers;
 
 HUI.render = render;
 
-HUI.tick = function tick(callback: () => void) { requestAnimationFrame(callback); };
+HUI.tick = function (callback: () => void) { requestAnimationFrame(callback); };
 HUI.frameLimit = 15;
 HUI.defer = defer;
 

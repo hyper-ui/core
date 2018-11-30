@@ -8,6 +8,7 @@
 - [Usage](#usage)
 - [Hello World](#hello-world)
 - [API Reference](#api-reference)
+- [Environment Requirements](#environment-requirements)
 - [TODO Example](#example)
 - [Changelog](#changelog)
 
@@ -137,7 +138,7 @@ Other arguments will be rendered as the children of the element or passed to the
 function render(src: any, parent?: Node, clr?: boolean, global?: Store): void;
 ```
 
-This method renders `src` on `parent` and usually will be called only once.
+This method renders `src` into real DOM node(s) in `parent`.
 
 #### src
 
@@ -252,7 +253,7 @@ With this handler, you can specify some attributes that will be set by calling t
 
 #### ref
 
-This is a very special prop which you can use to get the real DOM object. You need to pass a callback as the value of this prop which receives the node. For example:
+This is a very special prop which you can use to get the real DOM node. You need to pass a callback as the value of this prop to receive the node. For example:
 
 ```js
 // Create an input element and get it
@@ -297,13 +298,62 @@ function setter(key: any, force?: boolean): (value: any) => void;
 
 This method returns a setter for the given key. You can pass a force update flag to it as well, which will later be passed to the `set` method. One use case is passing a store setter as a `ref` prop.
 
+#### store.toggle
+
+```ts
+function toggle (key: any): this;
+```
+
+This method toggles the value matching the given key.
+
+#### store.inc
+
+```ts
+function inc (key: any, addition?: any): this;
+```
+
+This method adds the given addition to the matching value. (Default addition: 1)
+
+#### store.push
+
+```ts
+function push (key: any, ...items: any[]): this;
+```
+
+This method adds the given items to the end of the matching array.
+
+#### store.unshift
+
+```ts
+function unshift (key: any, ...items: any[]): this;
+```
+
+This method adds the given items to the start of the matching array.
+
+#### store.slice
+
+```ts
+function slice (key: any, start: number, end: number): this;
+```
+
+This method slices the matching array from `start` to `end`.
+
+#### store.splice
+
+```ts
+function splice (key: any, start: number, deleteCount?: number): this;
+function splice (key: any, start: number, deleteCount: number, ...items: any[]): this;
+```
+
+This method deletes some elements of the matching array and if necessary, adds some new items to it. (If there are only two arguments provided, then all the elements since `start` will be deleted.)
+
 ### HUI.defer
 
 ```ts
 function defer(callback: (...args: any[]) => void, ...args: any[]): void;
 ```
 
-This method accepts a callback and some optional arguments for it. The `callback` function will be invoked with those arguments later. More specifically speaking, the `callback`s will be invoked at the end of each tick.
+This method accepts a callback and some optional arguments for it. The `callback` function will be invoked with those arguments later. More specifically speaking, the `callback`s will be invoked after all the components are updated.
 
 One use case is doing DOM manipulations after the DOM objects are completely ready:
 
@@ -383,6 +433,17 @@ This is the ticking method which is used internally. It accepts a callback and l
 
 This is a number representing the frame time limit in milliseconds. Updates will be sliced according to this. You can set your own value to modify this behaviour. (Default: 15)
 
+## Environment Requirements
+
+This lib depends on some features such as `Map`, `Symbol`, `requestAnimationFrame` and so on. So, if you want to use it in some old browsers, consider including some polyfills. For instance, include [`hpolyfill`](https://github.com/huang2002/hpolyfill/) in your HTML:
+
+```html
+<!-- via jsdelivr -->
+<script type="text/javascript" crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/hpolyfill@latest/dist/index.js"></script>
+<!-- via unpkg -->
+<script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/hpolyfill@latest/dist/index.js"></script>
+```
+
 ## Example
 
 Here is a TODO app example:
@@ -416,10 +477,7 @@ Here is a TODO app example:
                             content = input.value;
                         if (content) {
                             // Add this item
-                            context.set(
-                                'items',
-                                context.get('items').concat(content)
-                            );
+                            context.push('items', content);
                             // Clear the input
                             input.value = '';
                         } else {
@@ -446,14 +504,13 @@ Here is a TODO app example:
                     return HUI('li', null, [
                         // content
                         HUI('span', { style: 'margin-right: 1em;' }, item),
-                        // delete link
+                        // deleting link
                         HUI('a', {
                             href: 'javascript:;',
-                            // Handle the click event and delete this item
+                            // Handle the click event
                             onclick: function () {
-                                var items = context.get('items');
-                                items.splice(i, 1);
-                                context.set('items', items, true);
+                                // Delete the item
+                                context.splice('items', i, 1);
                             }
                         }, 'Del')
                     ]);
@@ -461,7 +518,7 @@ Here is a TODO app example:
             }
         });
         // Render the app
-        HUI.render(
+        HUI.render([
             // Set the initial context value
             HUI(HUI.Context, { key: 'items', value: [] }),
             // Render a heading
@@ -470,7 +527,7 @@ Here is a TODO app example:
             HUI('Editor'),
             // and the list
             HUI('List')
-        );
+        ]);
     </script>
 </body>
 

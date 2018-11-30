@@ -1,7 +1,7 @@
 {
     "name": "hyper-ui",
     "description": "A lightweight front-end UI lib.",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "main": "dist/hyper-ui.umd.min.js",
     "module": "dist/hyper-ui.min.js",
     "types": "index.d.ts",
@@ -18,7 +18,7 @@
     },
     "homepage": "https://github.com/huang2002/hyper-ui#readme",
     "keywords": [
-        "HUI",
+        "hui",
         "front-end",
         "virtual-dom",
         "vdom",
@@ -30,6 +30,8 @@
         "easy",
         "UI",
         "lib",
+        "typescript",
+        "javascript",
         "3h"
     ],
     "files": [

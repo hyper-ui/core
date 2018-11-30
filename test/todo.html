@@ -15,9 +15,9 @@
         // Define the editor component
         HUI.define('Editor', {
             render: function (props, store, context) {
-                // Renders a form with an input and a button
+                // Render a form with an input and a button
                 return HUI('form', {
-                    // Handles the submit event
+                    // Handle the submit event
                     onsubmit: function (e) {
                         e.preventDefault();
                         // Get the input element and its value
@@ -25,10 +25,7 @@
                             content = input.value;
                         if (content) {
                             // Add this item
-                            context.set(
-                                'items',
-                                context.get('items').concat(content)
-                            );
+                            context.push('items', content);
                             // Clear the input
                             input.value = '';
                         } else {
@@ -52,12 +49,12 @@
                 ]);
             }
         });
-        // Defines the list component
+        // Define the list component
         HUI.define('List', {
             // Subscribe to changes of the context value `items`
             context: ['items'],
             render: function (props, store, context) {
-                // Renders an unordered list
+                // Render an unordered list
                 return HUI('ul', null, context.get('items').map(function (item, i) {
                     // list item
                     return HUI('li', null, [
@@ -65,34 +62,33 @@
                         HUI('span', {
                             style: 'margin-right: 1em;'
                         }, item),
-                        // delete link
+                        // deleting link
                         HUI('a', {
                             href: 'javascript:;',
-                            // Handles the click event and delete this item
+                            // Handle the click event
                             onclick: function () {
-                                var items = context.get('items');
-                                items.splice(i, 1);
-                                context.set('items', items, true);
+                                // Delete the item
+                                context.splice('items', i, 1);
                             }
                         }, 'Del')
                     ]);
                 }));
             }
         });
-        // Renders the app
-        HUI.render(
+        // Render the app
+        HUI.render([
             // Set the initial context value
             HUI(HUI.Context, {
                 key: 'items',
                 value: []
             }),
-            // Renders a heading
+            // Render a heading
             HUI('h1', null, 'TODO'),
-            // Renders the editor
+            // Render the editor
             HUI('Editor'),
             // and the list
             HUI('List')
-        );
+        ]);
     </script>
 </body>
 
