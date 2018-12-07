@@ -5,7 +5,7 @@ HUI.define('Timer', {
     init(props, store) {
         store.set('time', props.start || 0);
         store.set('timer', setInterval(() => {
-            store.set('time', store.get('time') + 1);
+            store.inc('time');
         }, 1000));
     },
     render(props, store) {
@@ -40,23 +40,21 @@ HUI.define('RefTest', {
 });
 
 HUI.define('Greeting', {
-    state: ['target'],
+    context: ['target'],
     init(props, store, context) {
-        store.set('target', props.children);
         context.set('target', props.children);
     },
     render(props, store, context) {
         return [
             HUI('h1', {}, [
                 'Hello,',
-                HUI('span', { style: `color: ${context.get('greeting-color')};` }, [store.get('target')]),
+                HUI('span', { style: `color: ${context.get('greeting-color')};` }, [context.get('target')]),
                 '!'
             ]),
             HUI('button', {
                 onclick() {
                     const newTarget = prompt('New target:', store.get('target'));
                     if (newTarget) {
-                        store.set('target', newTarget);
                         context.set('target', newTarget);
                     }
                 }
@@ -130,7 +128,7 @@ HUI.define('Dialog', {
     },
     render(props, store) {
         return [
-            HUI('button', { onclick() { store.set('on', !store.get('on')); } }, ['Toggle dialog']),
+            HUI('button', { onclick() { store.toggle('on'); } }, ['Toggle dialog']),
             store.get('on') && HUI(HUI.Portal, {}, [
                 HUI('p', { attributes: { style: 'color: blue;' } }, '[Dialog window]')
             ])

@@ -1,11 +1,11 @@
 import { HNode, toNode, HDesc, isHNode, clear } from "./HNode";
-import { _isArray, _document, _ArrProto } from "./refCache";
+import { _isArray, _document, _undefined, _splice } from "./refCache";
 import { HUI } from "./HUI";
 import { Store } from "./Store";
 
 export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
 
-const expired = new Array<HNode>(),
+const expired = new Array<HNode | undefined>(),
     deferCallbacks = new Array<DeferCallback>();
 
 export const preDeferCallbacks = new Array<DeferCallback<[]>>();
@@ -19,17 +19,15 @@ const ticker = function () {
     const deadline = Date.now() + HUI.frameLimit;
 
     let i = 0,
-        cur: HNode,
+        cur: HNode | undefined,
         desc: HDesc,
         output: any,
-        nodes: Node | Node[],
+        nodes: Node[],
         parentNode: Node,
         parent: HNode | undefined,
         parentNodes: Node | Node[],
         newNodes: Node | Node[],
         newNode: Node,
-        parentNodesIsArray: boolean,
-        nodesIsArray: boolean,
         newNodesIsArray: boolean,
         index: number,
         nodesLength: number,
@@ -38,6 +36,11 @@ const ticker = function () {
     for (; i < expired.length; i++) {
 
         cur = expired[i];
+
+        if (!cur) {
+            continue;
+        }
+
         desc = cur.desc!;
         output = cur.output;
         nodes = cur.nodes!;
@@ -45,10 +48,12 @@ const ticker = function () {
         parent = cur.parent;
         context = cur.context!;
 
+        expired[i] = _undefined;
+
         try {
             cur.active = false;
             newNodes = toNode(
-                cur.output = desc.render(cur.props, cur.store!, context),
+                cur.output = ([] as any[]).concat(desc.render(cur.props, cur.store!, context)),
                 context,
                 parentNode,
                 cur
@@ -56,7 +61,7 @@ const ticker = function () {
         } catch (err) {
             if (desc.catch) {
                 newNodes = toNode(
-                    cur.output = desc.catch(err, cur.props, cur.store!, context),
+                    cur.output = ([] as any[]).concat(desc.catch(err, cur.props, cur.store!, context)),
                     context,
                     parentNode,
                     cur
@@ -80,53 +85,39 @@ const ticker = function () {
             newNode = newNodes as Node;
         }
 
-        nodesIsArray = _isArray(nodes);
-
-        if (nodesIsArray) {
-            (nodes as Node[]).forEach((node, i) => {
-                if (i > 0) {
-                    parentNode.removeChild(node);
-                } else {
-                    parentNode.replaceChild(newNode, node);
-                }
-            });
-            (output as any[]).forEach(child => {
-                if (isHNode(child)) {
-                    clear(child);
-                }
-            });
-        } else {
-            parentNode.replaceChild(newNode, nodes as Node);
-            if (isHNode(output)) {
-                clear(output);
+        (nodes as Node[]).forEach((node, i) => {
+            if (i > 0) {
+                parentNode.removeChild(node);
+            } else {
+                parentNode.replaceChild(newNode, node);
             }
-        }
+        });
+
+        (output as any[]).forEach(child => {
+            if (isHNode(child)) {
+                clear(child);
+            }
+        });
 
         if (parent) {
 
             parentNodes = parent.nodes!;
-            parentNodesIsArray = _isArray(parentNodes);
-            nodesLength = (nodes as Node[]).length;
+            nodesLength = nodes.length;
 
-            if (parentNodesIsArray) {
-                index = (parentNodes as Node[]).indexOf(
-                    nodesIsArray ? (nodes as Node[])[0] : nodes as Node
+            index = parentNodes.indexOf(nodes[0]);
+
+            if (newNodesIsArray) {
+                _splice.apply(
+                    parentNodes,
+                    ([index, nodesLength] as any[]).concat(newNodes) as [number, number, ...any[]]
                 );
-                if (newNodesIsArray) {
-                    _ArrProto.splice.apply(
-                        parentNodes as Node[],
-                        ([index, nodesLength] as any[]).concat(newNodes as Node[])
-                    );
-                } else {
-                    (parentNodes as Node[]).splice(index, nodesLength, newNodes as Node);
-                }
             } else {
-                parent.nodes = newNodes;
+                parentNodes.splice(index, nodesLength, newNodes as Node);
             }
 
         }
 
-        cur.nodes = newNodes;
+        cur.nodes = ([] as any[]).concat(newNodes);
 
         if (Date.now() >= deadline) {
             expired.splice(0, i);

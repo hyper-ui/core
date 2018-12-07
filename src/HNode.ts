@@ -1,4 +1,3 @@
-import { HType } from "./HUI";
 import { Store } from "./Store";
 import { _document, _isArray, _undefined, _keys } from "./refCache";
 import { propHandlers, RefCallback, NodeProps } from "./propHandlers";
@@ -12,22 +11,22 @@ export interface HDesc<P extends object = NodeProps, S extends object = any, C e
     state?: Array<keyof S>;
     context?: Array<keyof C>;
     init?: (this: void, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
-    render: (this: void, props: HProps<P>, store: Store<S>, context: Store<C>) => any;
+    render: (this: void, props: HProps<P>, store: Store<S>, context: Store<C>) => unknown;
     clear?: (this: void, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
-    catch?: (this: void, err: any, props: HProps<P>, store: Store<S>, context: Store<C>) => any;
+    catch?: (this: void, err: any, props: HProps<P>, store: Store<S>, context: Store<C>) => unknown;
 }
 
 export interface HNode<P extends object = NodeProps, S extends object = any, C extends object = any> {
     isHNode: true;
-    type: HType;
+    type: unknown;
     desc?: HDesc<P, S, C>;
     props: HProps<P>;
     store?: Store<S>;
     context?: Store<C>;
     parent?: HNode;
     parentNode?: Node;
-    output?: any;
-    nodes?: Node | Node[];
+    output?: unknown[];
+    nodes?: Node[];
     active: boolean;
 }
 
@@ -35,7 +34,7 @@ export const isHNode = (value: any): value is HNode => value && typeof value ===
 
 export const clear = function (hNode: HNode) {
 
-    const { desc } = hNode;
+    const { desc, output } = hNode;
 
     if (desc) {
         if (desc.clear) {
@@ -52,11 +51,13 @@ export const clear = function (hNode: HNode) {
         }
     }
 
-    [].concat(hNode.output).forEach((child: any) => {
-        if (isHNode(child) && child.desc) {
-            clear(child);
-        }
-    });
+    if (output) {
+        output.forEach((child: any) => {
+            if (isHNode(child) && child.desc) {
+                clear(child);
+            }
+        });
+    }
 
 };
 
@@ -115,7 +116,7 @@ export const toNode = function (
 
                 });
 
-                return (src as HNode).nodes = node;
+                return (src as HNode).nodes = ([] as any[]).concat(node);
 
             }
 
@@ -131,31 +132,31 @@ export const toNode = function (
                     desc.init(props, store!, ctx);
                 }
 
-                (src as HNode).output = desc.render(props, store!, ctx);
+                (src as HNode).output = ([] as any[]).concat(desc.render(props, store!, ctx));
 
                 (src as HNode).active = true;
 
-                return (src as HNode).nodes = toNode(
+                return (src as HNode).nodes = ([] as any[]).concat(toNode(
                     (src as HNode).output,
                     ctx,
                     parentNode,
                     src as HNode
-                );
+                ));
 
             } catch (err) {
 
                 if (desc.catch) {
 
-                    (src as HNode).output = desc.catch(err, props, store!, ctx);
+                    (src as HNode).output = ([] as any[]).concat(desc.catch(err, props, store!, ctx));
 
                     (src as HNode).active = true;
 
-                    return (src as HNode).nodes = toNode(
+                    return (src as HNode).nodes = ([] as any[]).concat(toNode(
                         (src as HNode).output,
                         ctx,
                         parentNode,
                         src as HNode
-                    );
+                    ));
 
                 } else {
 

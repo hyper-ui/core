@@ -5,5 +5,5 @@ export const _document = document,
     _Boolean = Boolean,
     _Map = Map,
     { assign: _assign, is: _is, keys: _keys } = _Object,
-    { isArray: _isArray, prototype: _ArrProto } = Array,
+    { isArray: _isArray, prototype: { splice: _splice } } = Array,
     _undefined = undefined;

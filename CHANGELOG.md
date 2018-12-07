@@ -1,3 +1,8 @@
+## 0.3.0 - 2018-12-07
+
+- Improve some internals
+- Fix some bugs
+
 ## 0.2.0 - 2018-11-30
 
 - Add convenient store methods

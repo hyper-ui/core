@@ -38,13 +38,9 @@ registry.set(portalSymbol, {
 
                 const { nodes } = child;
 
-                if (_isArray(nodes)) {
-                    nodes.forEach(node => {
-                        parent.removeChild(node);
-                    });
-                } else {
-                    parent.removeChild(nodes!);
-                }
+                nodes!.forEach(node => {
+                    parent.removeChild(node);
+                });
 
             }
 

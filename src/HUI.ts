@@ -8,10 +8,8 @@ import { portalSymbol } from "./Portal";
 import { contextSymbol } from "./Context";
 import { defer } from "./ticker";
 
-export type HType = string | symbol;
-
 export const HUI = <P extends object = NodeProps, S extends object = any, C extends object = any>(
-    type: HType, props?: P, ...children: unknown[]
+    type: unknown, props?: P, ...children: unknown[]
 ): HNode<P, S, C> => {
 
     const desc: HDesc<P, S, C> | undefined = registry.get(type);

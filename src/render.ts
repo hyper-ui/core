@@ -18,15 +18,11 @@ export const render = function (src: any, parent: Node = _document.body, clear?:
     }
 
     if (clear) {
-        parent.childNodes.forEach((childNode, i) => {
-            if (i > 0) {
-                parent.removeChild(childNode);
-            } else {
-                parent.replaceChild(newNode, childNode);
-            }
+        parent.childNodes.forEach((childNode) => {
+            parent.removeChild(childNode);
         });
-    } else {
-        parent.appendChild(newNode);
     }
+
+    parent.appendChild(newNode);
 
 };

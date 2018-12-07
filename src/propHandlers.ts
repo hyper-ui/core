@@ -1,6 +1,6 @@
-import { toNode } from "./HNode";
 import { _isArray, _keys, _assign, _Boolean, _Map } from "./refCache";
 import { Store } from "./Store";
+import { render } from "./render";
 
 export type PropHandler = (node: Node, value: any, context: Store) => void;
 
@@ -21,22 +21,8 @@ export interface NodeProps {
 
 export const propHandlers = new _Map<string, PropHandler>([
 
-    ['children', function (node, children: any[], context) {
-
-        children.forEach(child => {
-
-            const childNodes = toNode(child, context, node);
-
-            if (_isArray(childNodes)) {
-                childNodes.forEach(childNode => {
-                    node.appendChild(childNode);
-                });
-            } else {
-                node.appendChild(childNodes);
-            }
-
-        });
-
+    ['children', function (node, children, context) {
+        render(children, node, true, context);
     }],
 
     ['style', function (node, style) {
@@ -46,7 +32,7 @@ export const propHandlers = new _Map<string, PropHandler>([
             try {
                 // @ts-ignore
                 (node as HTMLElement).style = style;
-            } catch  {
+            } catch {
                 (node as Element).setAttribute('style', style);
             }
         }
