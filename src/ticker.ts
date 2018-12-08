@@ -1,12 +1,11 @@
-import { HNode, toNode, HDesc, isHNode, clear } from "./HNode";
+import { HNode } from "./HNode";
 import { _isArray, _document, _undefined, _splice } from "./refCache";
 import { HUI } from "./HUI";
-import { Store } from "./Store";
-import { toArr, toFrag } from "./utils";
+import { patch } from "./patch";
 
 export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
 
-const expired = new Array<HNode | undefined>(),
+const expired = new Array<HNode<any> | undefined>(),
     deferCallbacks = new Array<DeferCallback>();
 
 export const preDeferCallbacks = new Array<DeferCallback<[]>>();
@@ -20,18 +19,7 @@ const ticker = function () {
     const deadline = Date.now() + HUI.frameLimit;
 
     let i = 0,
-        cur: HNode | undefined,
-        desc: HDesc,
-        output: any,
-        nodes: Node[],
-        parentNode: Node,
-        parent: HNode | undefined,
-        parentNodes: Node | Node[],
-        newNodes: Node | Node[],
-        newNodesIsArray: boolean,
-        index: number,
-        nodesLength: number,
-        context: Store;
+        cur: HNode<any> | undefined;
 
     for (; i < expired.length; i++) {
 
@@ -41,80 +29,17 @@ const ticker = function () {
             continue;
         }
 
-        desc = cur.desc!;
-        output = cur.output;
-        nodes = cur.nodes!;
-        parentNode = cur.parentNode!;
-        parent = cur.parent;
-        context = cur.context!;
-
         expired[i] = _undefined;
 
         try {
-            cur.active = false;
-            newNodes = toNode(
-                cur.output = toArr(desc.render(cur.props, cur.store!, context)),
-                context,
-                parentNode,
-                cur
-            );
+            patch(cur);
         } catch (err) {
-            if (desc.catch) {
-                newNodes = toNode(
-                    cur.output = toArr(desc.catch(err, cur.props, cur.store!, context)),
-                    context,
-                    parentNode,
-                    cur
-                );
-            } else {
-                expired.splice(0, i + 1);
-                throw err;
-            }
-        } finally {
-            cur.active = true;
+            expired.splice(0, i + 1);
+            throw err;
         }
-
-        newNodesIsArray = _isArray(newNodes);
-
-        (nodes as Node[]).forEach((node, i) => {
-            if (i > 0) {
-                parentNode.removeChild(node);
-            } else {
-                parentNode.replaceChild(
-                    newNodesIsArray ? toFrag(newNodes as Node[]) : newNodes as Node,
-                    node
-                );
-            }
-        });
-
-        (output as any[]).forEach(child => {
-            if (isHNode(child)) {
-                clear(child);
-            }
-        });
-
-        if (parent) {
-
-            parentNodes = parent.nodes!;
-            nodesLength = nodes.length;
-
-            index = parentNodes.indexOf(nodes[0]);
-
-            if (newNodesIsArray) {
-                _splice.apply(
-                    parentNodes,
-                    ([index, nodesLength] as any[]).concat(newNodes) as [number, number, ...any[]]
-                );
-            } else {
-                parentNodes.splice(index, nodesLength, newNodes as Node);
-            }
-
-        }
-
-        cur.nodes = toArr(newNodes);
 
         if (Date.now() >= deadline) {
-            expired.splice(0, i);
+            expired.splice(0, i + 1);
             return tick();
         }
 
@@ -127,7 +52,7 @@ const ticker = function () {
         preDeferCallbacks[i]();
 
         if (Date.now() >= deadline) {
-            preDeferCallbacks.splice(0, i);
+            preDeferCallbacks.splice(0, i + 1);
             return tick();
         }
 
@@ -140,7 +65,7 @@ const ticker = function () {
         deferCallbacks[i]();
 
         if (Date.now() >= deadline) {
-            deferCallbacks.splice(0, i);
+            deferCallbacks.splice(0, i + 1);
             return tick();
         }
 

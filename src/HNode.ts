@@ -1,6 +1,6 @@
 import { Store } from "./Store";
 import { _document, _isArray, _undefined, _keys } from "./refCache";
-import { RefCallback, NodeProps } from "./propHandlers";
+import { NodeProps } from "./propHandlers";
 import { toArr } from "./utils";
 import { handleProp } from "./handleProp";
 
@@ -24,46 +24,15 @@ export interface HNode<P extends object = NodeProps, S extends object = any, C e
     props: HProps<P>;
     store?: Store<S>;
     context?: Store<C>;
-    parent?: HNode;
-    parentNode?: Node;
+    owner?: HNode;
+    ownerNode?: Node;
     output?: unknown[];
     nodes?: Node[];
     active: boolean;
 }
 
-export const isHNode = (value: any): value is HNode => value && typeof value === 'object' && value.isHNode;
-
-export const clear = function (hNode: HNode) {
-
-    const { desc, output } = hNode;
-
-    if (desc) {
-        if (desc.clear) {
-            try {
-                desc.clear(hNode.props, hNode.store!, hNode.context!);
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    } else {
-        const { ref } = hNode.props;
-        if (ref) {
-            (ref as RefCallback)();
-        }
-    }
-
-    if (output) {
-        output.forEach((child: any) => {
-            if (isHNode(child) && child.desc) {
-                clear(child);
-            }
-        });
-    }
-
-};
-
 export const toNode = function (
-    src: unknown, context: Store, parentNode: Node, parent?: HNode
+    src: unknown, context: Store, ownerNode: Node, owner?: HNode
 ): Node | Node[] {
 
     const srcType = typeof src;
@@ -78,14 +47,14 @@ export const toNode = function (
 
         if (_isArray(src) && src.length) {
 
-            return src.flatMap(s => toNode(s, context, parentNode, parent));
+            return src.flatMap(s => toNode(s, context, ownerNode, owner));
 
         } else if ((src as any).isHNode) {
 
             const { type, desc, props, store } = src as HNode;
 
-            (src as HNode).parentNode = parentNode;
-            (src as HNode).parent = parent;
+            (src as HNode).ownerNode = ownerNode;
+            (src as HNode).owner = owner;
 
             if (!desc) {
 
@@ -120,7 +89,7 @@ export const toNode = function (
                 return (src as HNode).nodes = toArr(toNode(
                     (src as HNode).output,
                     ctx,
-                    parentNode,
+                    ownerNode,
                     src as HNode
                 ));
 
@@ -135,7 +104,7 @@ export const toNode = function (
                     return (src as HNode).nodes = toArr(toNode(
                         (src as HNode).output,
                         ctx,
-                        parentNode,
+                        ownerNode,
                         src as HNode
                     ));
 

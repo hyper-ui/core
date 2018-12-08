@@ -1,4 +1,4 @@
-import { _Map, _is } from "./refCache";
+import { _Map, _is, _splice } from "./refCache";
 import { HNode } from "./HNode";
 import { update } from "./ticker";
 
@@ -72,7 +72,7 @@ export const createStore = function <T extends object = any>(
         },
 
         inc(key, addition = 1) {
-            return store.set(key, (store.get(key) as unknown as number) + addition);
+            return store.set(key, store.get(key) + addition);
         },
 
         push(key, ...items) {
@@ -80,7 +80,7 @@ export const createStore = function <T extends object = any>(
         },
 
         unshift(key, ...items) {
-            return store.set(key, items.concat(store.get(key) as unknown as any[]) as any);
+            return store.set(key, items.concat(store.get(key)) as any);
         },
 
         slice(key, start, end) {
@@ -89,7 +89,7 @@ export const createStore = function <T extends object = any>(
 
         splice(key: keyof T, start: number, deleteCount: number, ...items: any[]) {
             const arr = (store.get(key) as unknown as any[]).slice();
-            arr.splice(start, deleteCount, ...items);
+            _splice.apply(arr, [start, deleteCount].concat(items) as [number, number, ...any[]]);
             return store.set(key, arr as any);
         }
 

@@ -1,8 +1,9 @@
 import { render } from "./render";
 import { registry } from "./registry";
-import { HDesc, isHNode, clear } from "./HNode";
+import { HDesc } from "./HNode";
 import { _document, _Symbol, _isArray } from "./refCache";
 import { preDeferCallbacks } from "./ticker";
+import { isHNode, clear } from "./utils";
 
 export interface PortalProps {
     parent?: Node;
