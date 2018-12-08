@@ -2,6 +2,7 @@ import { HNode, toNode, HDesc, isHNode, clear } from "./HNode";
 import { _isArray, _document, _undefined, _splice } from "./refCache";
 import { HUI } from "./HUI";
 import { Store } from "./Store";
+import { toArr, toFrag } from "./utils";
 
 export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
 
@@ -27,7 +28,6 @@ const ticker = function () {
         parent: HNode | undefined,
         parentNodes: Node | Node[],
         newNodes: Node | Node[],
-        newNode: Node,
         newNodesIsArray: boolean,
         index: number,
         nodesLength: number,
@@ -53,7 +53,7 @@ const ticker = function () {
         try {
             cur.active = false;
             newNodes = toNode(
-                cur.output = ([] as any[]).concat(desc.render(cur.props, cur.store!, context)),
+                cur.output = toArr(desc.render(cur.props, cur.store!, context)),
                 context,
                 parentNode,
                 cur
@@ -61,7 +61,7 @@ const ticker = function () {
         } catch (err) {
             if (desc.catch) {
                 newNodes = toNode(
-                    cur.output = ([] as any[]).concat(desc.catch(err, cur.props, cur.store!, context)),
+                    cur.output = toArr(desc.catch(err, cur.props, cur.store!, context)),
                     context,
                     parentNode,
                     cur
@@ -76,20 +76,14 @@ const ticker = function () {
 
         newNodesIsArray = _isArray(newNodes);
 
-        if (newNodesIsArray) {
-            newNode = _document.createDocumentFragment();
-            (newNodes as Node[]).forEach(node => {
-                newNode.appendChild(node);
-            });
-        } else {
-            newNode = newNodes as Node;
-        }
-
         (nodes as Node[]).forEach((node, i) => {
             if (i > 0) {
                 parentNode.removeChild(node);
             } else {
-                parentNode.replaceChild(newNode, node);
+                parentNode.replaceChild(
+                    newNodesIsArray ? toFrag(newNodes as Node[]) : newNodes as Node,
+                    node
+                );
             }
         });
 
@@ -117,7 +111,7 @@ const ticker = function () {
 
         }
 
-        cur.nodes = ([] as any[]).concat(newNodes);
+        cur.nodes = toArr(newNodes);
 
         if (Date.now() >= deadline) {
             expired.splice(0, i);

@@ -1,7 +1,8 @@
 import { Store } from "./Store";
 import { _document, _isArray, _undefined, _keys } from "./refCache";
-import { propHandlers, RefCallback, NodeProps } from "./propHandlers";
-import { listen } from "./listen";
+import { RefCallback, NodeProps } from "./propHandlers";
+import { toArr } from "./utils";
+import { handleProp } from "./handleProp";
 
 export type HProps<P extends object = NodeProps> = P & {
     children: HNode[];
@@ -75,7 +76,7 @@ export const toNode = function (
 
     if (src && srcType === 'object') {
 
-        if (_isArray(src)) {
+        if (_isArray(src) && src.length) {
 
             return src.flatMap(s => toNode(s, context, parentNode, parent));
 
@@ -93,30 +94,10 @@ export const toNode = function (
                     _document.createElement(type as string);
 
                 _keys(props).forEach(key => {
-
-                    const handler = propHandlers.get(key),
-                        value = props[key];
-
-                    if (handler) {
-                        handler(node, value, context);
-                    } else {
-                        if (key.startsWith('on')) {
-                            listen(node, key.slice(2), value as EventListener);
-                        } else if (key in node) {
-                            try {
-                                // @ts-ignore
-                                node[key] = value;
-                            } catch {
-                                node.setAttribute(key, value as string);
-                            }
-                        } else {
-                            node.setAttribute(key, value as string);
-                        }
-                    }
-
+                    handleProp(node, key, props[key], context);
                 });
 
-                return (src as HNode).nodes = ([] as any[]).concat(node);
+                return (src as HNode).nodes = toArr(node);
 
             }
 
@@ -132,11 +113,11 @@ export const toNode = function (
                     desc.init(props, store!, ctx);
                 }
 
-                (src as HNode).output = ([] as any[]).concat(desc.render(props, store!, ctx));
+                (src as HNode).output = toArr(desc.render(props, store!, ctx));
 
                 (src as HNode).active = true;
 
-                return (src as HNode).nodes = ([] as any[]).concat(toNode(
+                return (src as HNode).nodes = toArr(toNode(
                     (src as HNode).output,
                     ctx,
                     parentNode,
@@ -147,11 +128,11 @@ export const toNode = function (
 
                 if (desc.catch) {
 
-                    (src as HNode).output = ([] as any[]).concat(desc.catch(err, props, store!, ctx));
+                    (src as HNode).output = toArr(desc.catch(err, props, store!, ctx));
 
                     (src as HNode).active = true;
 
-                    return (src as HNode).nodes = ([] as any[]).concat(toNode(
+                    return (src as HNode).nodes = toArr(toNode(
                         (src as HNode).output,
                         ctx,
                         parentNode,
