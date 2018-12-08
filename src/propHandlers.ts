@@ -1,22 +1,14 @@
 import { _isArray, _keys, _assign, _Boolean, _Map } from "./refCache";
 import { Store } from "./Store";
 import { render } from "./render";
+import { EventMap } from "./HNode";
 
-export type PropHandler = (node: Node, value: any, context: Store) => void;
+export type PropHandler = (node: Node, value: any, context: Store, events: EventMap) => void;
 
 export type RefCallback = (node?: Node) => void;
 
 export interface AttributeMap {
     [key: string]: string;
-}
-
-export interface NodeProps {
-    xmlns?: string;
-    style?: string | { [key: string]: string };
-    class?: string | any[];
-    ref?: RefCallback;
-    attr?: AttributeMap;
-    [key: string]: unknown;
 }
 
 export const propHandlers = new _Map<string, PropHandler>([

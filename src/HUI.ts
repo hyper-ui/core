@@ -1,9 +1,9 @@
-import { HNode, HProps, HDesc } from "./HNode";
+import { HNode, HProps, HDesc, NodeProps } from "./HNode";
 import { registry, define } from "./registry";
 import { _String, _assign } from "./refCache";
 import { createStore } from "./Store";
 import { render } from "./render";
-import { propHandlers, NodeProps } from "./propHandlers";
+import { propHandlers } from "./propHandlers";
 import { portalSymbol } from "./Portal";
 import { contextSymbol } from "./Context";
 import { defer } from "./ticker";
@@ -18,7 +18,7 @@ export const HUI = <P extends object = NodeProps, S extends object = any, C exte
         isHNode: true,
         type,
         desc,
-        props: _assign({ children: children || [] }, props) as HProps<P>,
+        props: _assign({ children }, props) as HProps<P>,
         active: true
     };
 

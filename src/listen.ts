@@ -1,8 +1,10 @@
+import { EventRecord } from "./HNode";
+
 const CAPTURE = 'Captrue',
     NONPASSIVE = 'Nonpassive',
     ONCE = 'Once';
 
-export const listen = function (node: Node, event: string, listener: EventListener) {
+export const listen = function (node: Node, event: string, listener: EventListener): EventRecord {
 
     let capture = false,
         passive = true,
@@ -21,6 +23,10 @@ export const listen = function (node: Node, event: string, listener: EventListen
         }
     }
 
-    node.addEventListener(event, listener, (capture || !passive || once) && { capture, passive, once });
+    const options = (capture || !passive || once) && { capture, passive, once };
+
+    node.addEventListener(event, listener, options);
+
+    return [event, listener, options];
 
 };

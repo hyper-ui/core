@@ -1,6 +1,5 @@
-import { HDesc } from "./HNode";
+import { HDesc, NodeProps } from "./HNode";
 import { _String, _Map } from "./refCache";
-import { NodeProps } from "./propHandlers";
 
 export const registry = new _Map<any, HDesc<any>>();
 

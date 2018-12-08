@@ -1,5 +1,13 @@
 /// <reference path="../index.d.ts" />
 
+let root;
+
+HUI.define('Inspector', {
+    render(props) {
+        return root = props.children;
+    }
+});
+
 HUI.define('Timer', {
     state: ['time'],
     init(props, store) {
@@ -138,42 +146,41 @@ HUI.define('Dialog', {
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-HUI.render(
-    HUI(HUI.Context, { key: 'greeting-color', value: 'blue' }, [
-        HUI('Greeting', {}, 'world'),
-        HUI('hr'),
-        'Global Timer:',
-        HUI('br'),
-        HUI('Timer', { start: 100 }),
-        HUI('hr'),
-        HUI(Symbol.for('ShowTarget')),
-        HUI('hr'),
-        HUI('ThrowTest'),
-        HUI('CatchTest'),
-        HUI('hr'),
-        HUI('svg', { xmlns: SVG_NS, width: 100, height: 100, style: { 'box-shadow': '0 0 10px #999' } }, [
-            HUI('path', {
-                xmlns: SVG_NS,
-                d: 'M 10 40 C 20 80 80 80 90 40',
-                stroke: '#f00',
-                'stroke-width': 2,
-                fill: 'none'
-            })
-        ]),
-        HUI('hr'),
-        HUI('AutofocusedInput'),
-        HUI('hr'),
-        HUI('p', { class: ['p', false, 'red'] }, ['I should be red!']),
-        HUI('hr'),
-        HUI(HUI.Portal, null, [
-            'Portal Timer 0:',
-            HUI('Timer')
-        ]),
-        HUI(HUI.Portal, { node: document.getElementById('portal') }, [
-            'Portal Timer 1:',
-            HUI('Timer')
-        ]),
-        HUI('Dialog'),
-        HUI('hr'),
-    ])
-);
+HUI.render(HUI('Inspector', {}, [
+    HUI(HUI.Context, { key: 'greeting-color', value: 'blue' }),
+    HUI('Greeting', {}, 'world'),
+    HUI('hr'),
+    'Global Timer:',
+    HUI('br'),
+    HUI('Timer', { start: 100 }),
+    HUI('hr'),
+    HUI(Symbol.for('ShowTarget')),
+    HUI('hr'),
+    HUI('ThrowTest'),
+    HUI('CatchTest'),
+    HUI('hr'),
+    HUI('svg', { xmlns: SVG_NS, width: 100, height: 100, style: { 'box-shadow': '0 0 10px #999' } }, [
+        HUI('path', {
+            xmlns: SVG_NS,
+            d: 'M 10 40 C 20 80 80 80 90 40',
+            stroke: '#f00',
+            'stroke-width': 2,
+            fill: 'none'
+        })
+    ]),
+    HUI('hr'),
+    HUI('AutofocusedInput'),
+    HUI('hr'),
+    HUI('p', { class: ['p', false, 'red'] }, ['I should be red!']),
+    HUI('hr'),
+    HUI(HUI.Portal, null, [
+        'Portal Timer 0:',
+        HUI('Timer')
+    ]),
+    HUI(HUI.Portal, { node: document.getElementById('portal') }, [
+        'Portal Timer 1:',
+        HUI('Timer')
+    ]),
+    HUI('Dialog'),
+    HUI('hr')
+]));
