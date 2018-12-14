@@ -1,18 +1,22 @@
 import { toNode } from "./HNode";
 import { _isArray, _document } from "./refCache";
 import { Store, createStore } from "./Store";
-import { toFrag } from "./utils";
+import { toFrag, toArr } from "./utils";
 
 export const render = function (src: any, parent: Node = _document.body, clear?: boolean, global?: Store) {
 
-    const nodes = toNode(src, global || createStore(), parent);
-
     if (clear) {
-        parent.childNodes.forEach((childNode) => {
+        parent.childNodes.forEach(childNode => {
             parent.removeChild(childNode);
         });
     }
 
-    parent.appendChild(_isArray(nodes) ? toFrag(nodes) : nodes);
+    parent.appendChild(
+        toFrag(
+            toArr(
+                toNode(src, global || createStore(), parent)
+            )
+        )
+    );
 
 };

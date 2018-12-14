@@ -1,6 +1,6 @@
 import { HNode, HProps, HDesc, NodeProps } from "./HNode";
 import { registry, define } from "./registry";
-import { _String, _assign } from "./refCache";
+import { _String, _assign, _Map } from "./refCache";
 import { createStore } from "./Store";
 import { render } from "./render";
 import { propHandlers } from "./propHandlers";
@@ -24,6 +24,8 @@ export const HUI = <P extends object = NodeProps, S extends object = any, C exte
 
     if (desc) {
         hNode.store = createStore<S>(hNode, desc && desc.state);
+    } else {
+        hNode.events = new _Map();
     }
 
     return hNode;

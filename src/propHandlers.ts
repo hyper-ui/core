@@ -22,8 +22,7 @@ export const propHandlers = new _Map<string, PropHandler>([
             _assign((node as HTMLElement).style, style);
         } else {
             try {
-                // @ts-ignore
-                (node as HTMLElement).style = style;
+                ((node as HTMLElement).style as any) = style;
             } catch {
                 (node as Element).setAttribute('style', style);
             }

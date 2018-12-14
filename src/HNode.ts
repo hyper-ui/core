@@ -1,5 +1,5 @@
 import { Store } from "./Store";
-import { _document, _isArray, _undefined, _keys, _Map } from "./refCache";
+import { _document, _isArray, _keys, _Infinity } from "./refCache";
 import { RefCallback, AttributeMap } from "./propHandlers";
 import { toArr, isHNode } from "./utils";
 import { handleProp } from "./handleProp";
@@ -66,38 +66,38 @@ export const toNode = function (
 
             const { type, desc, props, store } = src as HNode;
 
-            (src as HNode).ownerNode = ownerNode;
-            (src as HNode).owner = owner;
+            src.ownerNode = ownerNode;
+            src.owner = owner;
 
             if (!desc) {
 
                 const node = props.xmlns ?
                     _document.createElementNS(props.xmlns, type as string) :
                     _document.createElement(type as string),
-                    events = src.events = new _Map();
+                    { events } = src;
 
                 _keys(props).forEach(key => {
-                    handleProp(node, key, props[key], context, events);
+                    handleProp(node, key, props[key], context, events!);
                 });
 
-                return (src as HNode).nodes = toArr(node);
+                return src.nodes = toArr(node);
 
             }
 
             const ctx = context.forward(src as HNode, desc.context);
 
-            (src as HNode).context = ctx;
+            src.context = ctx;
 
             try {
 
-                (src as HNode).active = false;
+                src.active = false;
 
                 if (desc.init) {
                     desc.init(props, store!, ctx);
                 }
 
-                return (src as HNode).nodes = toArr(toNode(
-                    (src as HNode).output = toArr(desc.render(props, store!, ctx)),
+                return src.nodes = toArr(toNode(
+                    src.output = toArr(desc.render(props, store!, ctx)).flat(_Infinity),
                     ctx,
                     ownerNode,
                     src as HNode
@@ -106,8 +106,8 @@ export const toNode = function (
             } catch (err) {
 
                 if (desc.catch) {
-                    return (src as HNode).nodes = toArr(toNode(
-                        (src as HNode).output = toArr(desc.catch(err, props, store!, ctx)),
+                    return src.nodes = toArr(toNode(
+                        src.output = toArr(desc.catch(err, props, store!, ctx)).flat(_Infinity),
                         ctx,
                         ownerNode,
                         src as HNode
@@ -118,7 +118,7 @@ export const toNode = function (
 
             } finally {
 
-                (src as HNode).active = true;
+                src.active = true;
 
             }
 
