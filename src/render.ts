@@ -6,7 +6,7 @@ import { toFrag, toArr } from "./utils";
 export const render = function (src: any, parent: Node = _document.body, clear?: boolean, global?: Store) {
 
     if (clear) {
-        parent.childNodes.forEach(childNode => {
+        Array.from(parent.childNodes).forEach(childNode => {
             parent.removeChild(childNode);
         });
     }
