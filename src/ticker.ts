@@ -1,5 +1,5 @@
 import { HNode } from "./HNode";
-import { _isArray, _document, _undefined, _splice } from "./refCache";
+import { _undefined, _splice } from "./refCache";
 import { HUI } from "./HUI";
 import { patch } from "./patch";
 

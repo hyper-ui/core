@@ -1,10 +1,11 @@
 export const _document = document,
     _Object = Object,
+    _Array = Array,
     _String = String,
     _Symbol = Symbol,
     _Boolean = Boolean,
     _Map = Map,
     { assign: _assign, is: _is, keys: _keys } = _Object,
-    { isArray: _isArray, prototype: { splice: _splice } } = Array,
+    { isArray: _isArray, prototype: { splice: _splice } } = _Array,
     _undefined = undefined,
     _Infinity = Infinity;

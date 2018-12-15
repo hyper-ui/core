@@ -433,6 +433,14 @@ This is the ticking method which is used internally. It accepts a callback and l
 
 This is a number representing the frame time limit in milliseconds. Updates will be sliced according to this. You can set your own value to modify this behaviour. (Default: 15)
 
+### HUI.cmp
+
+```ts
+function cmp (a: unknown, b: unknown): boolean;
+```
+
+This is a comparing method used internally to compare stored values or some other things. A default one is provided which compares the two value deeply and you can override it with yours.
+
 ## Env Requirements
 
 This lib depends on some features such as `Map`, `Symbol`, `requestAnimationFrame` and so on. So, if you want to use it in some old browsers, consider including some polyfills. For instance, include [`hpolyfill`](https://github.com/huang2002/hpolyfill/) in your HTML:

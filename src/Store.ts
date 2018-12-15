@@ -1,6 +1,7 @@
-import { _Map, _is, _splice } from "./refCache";
+import { _Map, _splice } from "./refCache";
 import { HNode } from "./HNode";
 import { update } from "./ticker";
+import { HUI } from "./HUI";
 
 type AssertArray<T> = T extends any[] ? T : never;
 
@@ -33,7 +34,7 @@ export const createStore = function <T extends object = any>(
 
         set(key, value, force) {
 
-            if (force || !_is(value, store.get(key))) {
+            if (force || !HUI.cmp(value, store.get(key))) {
 
                 if (origin) {
                     origin.set(key, value);

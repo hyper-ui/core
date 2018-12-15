@@ -1,6 +1,6 @@
 import { HNode, toNode } from "./HNode";
 import { toArr, toFrag, isHNode, clear } from "./utils";
-import { _isArray, _splice } from "./refCache";
+import { _splice } from "./refCache";
 
 export const patch = function (hNode: HNode<any>) {
 

@@ -7,6 +7,7 @@ import { propHandlers } from "./propHandlers";
 import { portalSymbol } from "./Portal";
 import { contextSymbol } from "./Context";
 import { defer } from "./ticker";
+import { cmp } from "./utils";
 
 export const HUI = <P extends object = NodeProps, S extends object = any, C extends object = any>(
     type: unknown, props?: P, ...children: unknown[]
@@ -49,3 +50,5 @@ HUI.defer = defer;
 
 HUI.Portal = portalSymbol;
 HUI.Context = contextSymbol;
+
+HUI.cmp = cmp;

@@ -1,5 +1,5 @@
 import { toNode } from "./HNode";
-import { _isArray, _document } from "./refCache";
+import { _document } from "./refCache";
 import { Store, createStore } from "./Store";
 import { toFrag, toArr } from "./utils";
 
