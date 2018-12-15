@@ -18,9 +18,9 @@
 
 This lib is rather lightweight. The size of the file which you need to include is less than 10KB!
 
-### Reusable
+### Declarative
 
-As your app is splitted into simple and reusable components, you can use any part you want anywhere.
+To create interactive UIs, just define simple components for each state in your app, and this lib will find out the changes as well as update them efficiently.
 
 ### Simple
 

@@ -1,3 +1,9 @@
+## 0.4.0 - 2018-12-15
+
+- Add DOM diff
+- Add `HUI.cmp()`
+- Improve some internals
+
 ## 0.3.0 - 2018-12-07
 
 - Improve some internals
