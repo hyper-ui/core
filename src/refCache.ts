@@ -6,6 +6,6 @@ export const _document = document,
     _Boolean = Boolean,
     _Map = Map,
     { assign: _assign, is: _is, keys: _keys } = _Object,
-    { isArray: _isArray, prototype: { splice: _splice } } = _Array,
+    { isArray: _isArray, prototype: { splice: _splice, push: _push, indexOf: _indexOf } } = _Array,
     _undefined = undefined,
     _Infinity = Infinity;

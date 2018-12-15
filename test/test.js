@@ -2,11 +2,11 @@
 
 let root;
 
-const summarize = o =>
-    o && typeof o === 'object' &&
-    (Array.isArray(o) ?
-        o.map(summarize) :
-        { type: o.type, props: o.props, children: o.props.children, nodes: o.nodes, output: o.output });
+const pick = (obj, keys) => keys.reduce((o, k) => ({ ...o, [k]: obj[k] }), {});
+
+const summarize = obj =>
+    obj && typeof obj === 'object' &&
+    (Array.isArray(obj) ? obj.map(summarize) : pick(obj, ['type', 'props', 'nodes', 'output']));
 
 HUI.define('Inspector', {
     render(props) {
@@ -50,12 +50,16 @@ HUI.define(Symbol.for('ShowTarget'), {
 });
 
 HUI.define('RefTest', {
+    state: ['msg'],
+    init(props, store) {
+        store.set('msg', 'Fail to set the content!');
+    },
     render(props, store) {
         HUI.defer(function (s) {
-            s.get('ref').innerHTML = 'Reference test passed.';
+            s.set('msg', 'Reference test passed.');
         }, store);
         return HUI('p', { ref: store.setter('ref') },
-            HUI('span', {}, '(Fail to set the content!)')
+            HUI('span', {}, store.get('msg'))
         );
     }
 });
@@ -69,7 +73,7 @@ HUI.define('Greeting', {
         return [
             HUI('h1', {}, [
                 'Hello,',
-                HUI('span', { style: `color: ${context.get('greeting-color')};` }, [context.get('target')]),
+                HUI('span', { style: `color: ${context.get('greeting-color')}; ` }, [context.get('target')]),
                 '!'
             ]),
             HUI('button', {
