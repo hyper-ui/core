@@ -64,7 +64,7 @@ export const toNode = function (
 
         } else if (isHNode(src)) {
 
-            const { type, desc, props, store } = src as HNode;
+            const { type, desc, props, store } = src;
 
             src.ownerNode = ownerNode;
             src.owner = owner;
@@ -80,11 +80,14 @@ export const toNode = function (
                     handleProp(node, key, props[key], context, events!);
                 });
 
-                return src.nodes = toArr(node);
+                src.output = [];
+                src.nodes = [node];
+
+                return node;
 
             }
 
-            const ctx = context.forward(src as HNode, desc.context);
+            const ctx = context.forward(src, desc.context);
 
             src.context = ctx;
 
@@ -100,7 +103,7 @@ export const toNode = function (
                     src.output = toArr(desc.render(props, store!, ctx)).flat(_Infinity),
                     ctx,
                     ownerNode,
-                    src as HNode
+                    src
                 ));
 
             } catch (err) {
@@ -110,7 +113,7 @@ export const toNode = function (
                         src.output = toArr(desc.catch(err, props, store!, ctx)).flat(_Infinity),
                         ctx,
                         ownerNode,
-                        src as HNode
+                        src
                     ));
                 } else {
                     throw err;

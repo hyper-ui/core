@@ -1,6 +1,7 @@
 import { _isArray, _document, _is, _keys } from "./refCache";
 import { HNode } from "./HNode";
 import { RefCallback } from "./propHandlers";
+import { expired } from "./ticker";
 
 export const toArr = <T>(a: T): T extends any[] ? T : [T] =>
     (_isArray(a) ? a : [a]) as T extends any[] ? T : [T];
@@ -10,12 +11,14 @@ export const toFrag = (nodes: Node[]) => nodes.reduce(
     _document.createDocumentFragment()
 );
 
-export const isHNode = (value: any): value is HNode =>
+export const isHNode = (value: any): value is HNode<any> =>
     value && typeof value === 'object' && value.isHNode;
 
 export const clear = function (hNode: HNode) {
 
     const { desc, output } = hNode;
+
+    hNode.active = false;
 
     if (desc) {
         if (desc.clear) {
@@ -32,9 +35,14 @@ export const clear = function (hNode: HNode) {
         }
     }
 
+    const index = expired.indexOf(hNode);
+    if (~index) {
+        expired.splice(index, 1);
+    }
+
     if (output) {
         output.forEach((child: any) => {
-            if (isHNode(child) && child.desc) {
+            if (isHNode(child)) {
                 clear(child);
             }
         });

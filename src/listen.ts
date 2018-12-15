@@ -1,5 +1,7 @@
 import { EventRecord } from "./HNode";
 
+export const listenerPrefix = 'on';
+
 const CAPTURE = 'Captrue',
     NONPASSIVE = 'Nonpassive',
     ONCE = 'Once';

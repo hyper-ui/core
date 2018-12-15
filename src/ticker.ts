@@ -5,8 +5,9 @@ import { patch } from "./patch";
 
 export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
 
-const expired = new Array<HNode<any> | undefined>(),
-    deferCallbacks = new Array<DeferCallback>();
+export const expired = new Array<HNode<any> | undefined>();
+
+const deferCallbacks = new Array<DeferCallback>();
 
 export const preDeferCallbacks = new Array<DeferCallback<[]>>();
 

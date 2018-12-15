@@ -1,6 +1,6 @@
 import { Store } from "./Store";
 import { propHandlers } from "./propHandlers";
-import { listen } from "./listen";
+import { listen, listenerPrefix } from "./listen";
 import { EventMap } from "./HNode";
 
 export const handleProp = function (
@@ -15,7 +15,7 @@ export const handleProp = function (
 
     } else {
 
-        if (key.startsWith('on')) {
+        if (key.startsWith(listenerPrefix)) {
 
             events.set(key, listen(node, key.slice(2), value as EventListener));
 
