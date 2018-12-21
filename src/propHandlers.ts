@@ -40,7 +40,7 @@ export const propHandlers = new _Map<string, PropHandler>([
         ref(node);
     }],
 
-    ['attributes', function (node, attributes: AttributeMap) {
+    ['attr', function (node, attributes: AttributeMap) {
         _keys(attributes).forEach(key => {
             (node as Element).setAttribute(key, attributes[key]);
         });
