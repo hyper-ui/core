@@ -1,6 +1,5 @@
-import { _isArray, _document, _is, _keys } from "./refCache";
+import { _isArray, _document, _is, _keys, _Node, _console } from "./refCache";
 import { HNode } from "./HNode";
-import { RefCallback } from "./propHandlers";
 import { expired } from "./ticker";
 
 export const toArr = <T>(a: T): T extends any[] ? T : [T] =>
@@ -11,8 +10,8 @@ export const toFrag = (nodes: Node[]) => nodes.reduce(
     _document.createDocumentFragment()
 );
 
-export const isHNode = (value: any): value is HNode<any> =>
-    value && typeof value === 'object' && value.isHNode;
+export const isHNode = (value: unknown): value is HNode<any> =>
+    value && typeof value === 'object' && (value as any).isHNode;
 
 export const clear = function (hNode: HNode) {
 
@@ -25,13 +24,13 @@ export const clear = function (hNode: HNode) {
             try {
                 desc.clear(hNode.props, hNode.store!, hNode.context!);
             } catch (err) {
-                console.error(err);
+                _console.error(err);
             }
         }
     } else {
         const { ref } = hNode.props;
         if (ref) {
-            (ref as RefCallback)();
+            ref();
         }
     }
 
@@ -41,7 +40,7 @@ export const clear = function (hNode: HNode) {
     }
 
     if (output) {
-        output.forEach((child: any) => {
+        output.forEach((child: unknown) => {
             if (isHNode(child)) {
                 clear(child);
             }
@@ -63,10 +62,16 @@ export const cmp = function (a: unknown, b: unknown): boolean {
     }
 
     if (a && b && typeof a === 'object' && typeof b === 'object') {
-        const keysA = _keys(a!),
-            keysB = _keys(b!);
-        return keysA.length === keysB.length &&
-            keysA.every(k => keysB.includes(k) && cmp((a as any)[k], (b as any)[k]));
+        if ((a as any).isHNode) {
+            return (b as any).isHNode &&
+                (a as HNode).type === (b as HNode).type &&
+                cmp((a as HNode).props, (b as HNode).props);
+        } else if (!(a instanceof _Node || b instanceof _Node)) {
+            const keysA = _keys(a!),
+                keysB = _keys(b!);
+            return keysA.length === keysB.length &&
+                keysA.every(k => keysB.includes(k) && cmp((a as any)[k], (b as any)[k]));
+        }
     }
 
     return false;

@@ -142,7 +142,7 @@ HUI.define('AutofocusedInput', {
         HUI.defer(() => {
             store.get('input').focus();
         });
-        return HUI('input', { ref: store.setter('input'), attributes: { value: 'An auto-focused input.' } });
+        return HUI('input', { ref: store.setter('input'), attr: { value: 'An auto-focused input.' } });
     }
 });
 
@@ -155,7 +155,7 @@ HUI.define('Dialog', {
         return [
             HUI('button', { onclick() { store.toggle('on'); } }, ['Toggle dialog']),
             store.get('on') && HUI(HUI.Portal, {}, [
-                HUI('p', { attributes: { style: 'color: blue;' } }, '[Dialog window]')
+                HUI('p', { attr: { style: 'color: blue;' } }, '[Dialog window]')
             ])
         ];
     }
