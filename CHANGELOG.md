@@ -1,3 +1,10 @@
+## 0.5.0 - 2018-12-29
+
+- Add `RenderOptions`
+- Refactor docs
+- Improve some internals
+- Fix some bugs
+
 ## 0.4.0 - 2018-12-15
 
 - Add DOM diff
