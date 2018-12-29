@@ -14,7 +14,11 @@ export interface AttributeMap {
 export const propHandlers = new _Map<string, PropHandler>([
 
     ['children', function (node, children, context) {
-        render(children, node, true, context);
+        render(children, {
+            parent: node,
+            clear: true,
+            context
+        });
     }],
 
     ['style', function (node, style) {

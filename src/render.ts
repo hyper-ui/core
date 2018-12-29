@@ -1,12 +1,20 @@
 import { toNode } from "./HNode";
-import { _document } from "./refCache";
+import { _document, _from } from "./refCache";
 import { Store, createStore } from "./Store";
 import { toFrag, toArr } from "./utils";
 
-export const render = function (src: any, parent: Node = _document.body, clear?: boolean, global?: Store) {
+export interface RenderOptions {
+    clear?: boolean;
+    context?: Store;
+    parent?: Node;
+}
 
-    if (clear) {
-        Array.from(parent.childNodes).forEach(childNode => {
+export const render = function (src: any, options: RenderOptions = {}) {
+
+    const { parent = _document.body } = options;
+
+    if (options.clear) {
+        _from(parent.childNodes).forEach(childNode => {
             parent.removeChild(childNode);
         });
     }
@@ -14,7 +22,7 @@ export const render = function (src: any, parent: Node = _document.body, clear?:
     parent.appendChild(
         toFrag(
             toArr(
-                toNode(src, global || createStore(), parent)
+                toNode(src, options.context || createStore(), parent)
             )
         )
     );

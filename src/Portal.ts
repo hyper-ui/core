@@ -23,7 +23,10 @@ registry.set(portalSymbol, {
 
     render(props, store, context) {
         preDeferCallbacks.push(() => {
-            render(props.children, store.get('parent'), false, context);
+            render(props.children, {
+                parent: store.get('parent'),
+                context
+            });
         });
     },
 

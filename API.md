@@ -25,7 +25,7 @@ Other arguments will be rendered as the children of the element or passed to the
 ## HUI.render
 
 ```ts
-function render(src: any, parent?: Node, clr?: boolean, global?: Store): void;
+function render(src: any,renderOptions?: RenderOptions): void;
 ```
 
 This method renders `src` into real DOM node(s) in `parent`.
@@ -34,17 +34,17 @@ This method renders `src` into real DOM node(s) in `parent`.
 
 This argument tells what to be rendered. (See [rendering rules](#rendering-rules) for more information.)
 
-### parent
+### renderOptions.parent
 
-The second argument indicates the parent node and is optional. (Default: `document.body`)
+This option indicates the parent node and is optional. (Default: `document.body`)
 
-### clr
+### renderOptions.clear
 
 This is an optional boolean telling whether to clear the parent node before rendering. (Default: false)
 
-### global
+### renderOptions.context
 
-This is an optional parameter which can be a store object representing the initial context. (You may not need this parameter in most cases because you can use [`HUI.Context`](#huicontext) instead. If you do want to pass an initial context store, use [`HUI.createStore`](#huicreatestore) to create one.)
+This is an optional option which can be a store object representing the initial context. (You may not need this parameter in most cases because you can use [`HUI.Context`](#huicontext) instead. If you do want to pass an initial context store, use [`HUI.createStore`](#huicreatestore) to create one.)
 
 ### rendering rules
 
@@ -82,7 +82,7 @@ This is an array which contains some keys of the context. When any context value
 #### desc.init
 
 ```ts
-function init(this: void, props: object, store: Store, ctx: Store): void;
+function init(this: void, props: object, store: Store, context: Store): void;
 ```
 
 This property is an optional function. It will be called before the first paint of the component to initialize the component (e.g. store some initial values or fetch some data for the component).
@@ -90,7 +90,7 @@ This property is an optional function. It will be called before the first paint 
 #### desc.render
 
 ```ts
-function render(this: void, props: object, store: Store, ctx: Store): any;
+function render(this: void, props: object, store: Store, context: Store): any;
 ```
 
 This property is required and returns what to be rendered.
@@ -98,7 +98,7 @@ This property is required and returns what to be rendered.
 #### desc.clear
 
 ```ts
-function clear(this: void, props: object, store: Store, ctx: Store): void;
+function clear(this: void, props: object, store: Store, context: Store): void;
 ```
 
 This property is an optional function. It will be called when the component will be destroyed to do some clear things (e.g. clear the timers set in `init` or cancel unfinished data fetching started in `init`).
@@ -106,7 +106,7 @@ This property is an optional function. It will be called when the component will
 #### desc.catch
 
 ```ts
-function catch(this: void, err: any, props: object, store: Store, ctx: Store): any;
+function catch(this: void, err: any, props: object, store: Store, context: Store): any;
 ```
 
 This property is an optional function. It will be called when something goes wrong with the component. The first argument will be the error. In addition, what it returns will be rendered so that you can show some error messages. (Errors in `clear` will be printed in console but not be passed to this method.)
@@ -121,7 +121,7 @@ This stands for received props. (There will always be a prop called `children` r
 
 This is a [store object](#huicreatestore) and each component instance will have one. You can use it to save some values (e.g. states). If a value changes and its key is in the [`state`](#descstate) array, then the component will be updated.
 
-##### ctx
+##### context
 
 This is also a store object but each component instance under the same [`HUI.render`](#huirender) call will have a linked context. That is, this is like a global store.
 
@@ -137,7 +137,7 @@ The style handler handles style for you so that you can use either strings or ob
 
 This handler deals with class names and enables you to pass either a simple string or an array as the class list.
 
-### attributes
+### attr
 
 With this handler, you can specify some attributes that will be set by calling the `setAttribute` method on the node.
 
