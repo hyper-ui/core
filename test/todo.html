@@ -12,82 +12,88 @@
     <script src="../dist/hyper-ui.umd.js"></script>
     <!-- Create the app -->
     <script type="text/javascript">
-        // Define the editor component
-        HUI.define('Editor', {
-            render: function (props, store, context) {
-                // Render a form with an input and a button
-                return HUI('form', {
-                    // Handle the submit event
-                    onsubmit: function (e) {
-                        e.preventDefault();
-                        // Get the input element and its value
-                        var input = store.get('input'),
-                            content = input.value;
-                        if (content) {
-                            // Add this item
-                            context.push('items', content);
-                            // Clear the input
-                            input.value = '';
-                        } else {
-                            // Hint the user to input something
-                            store.get('input').focus();
-                        }
-                    }
-                }, [
-                    // content input
-                    HUI('input', {
-                        ref: store.setter('input'),
-                        placeholder: 'content'
-                    }),
-                    // submit button
-                    HUI('input', {
-                        attributes: {
-                            type: 'submit',
-                            value: 'Add'
-                        }
-                    })
-                ]);
-            }
-        });
-        // Define the list component
-        HUI.define('List', {
-            // Subscribe to changes of the context value `items`
-            context: ['items'],
-            render: function (props, store, context) {
-                // Render an unordered list
-                return HUI('ul', null, context.get('items').map(function (item, i) {
-                    // list item
-                    return HUI('li', null, [
-                        // content
-                        HUI('span', {
-                            style: 'margin-right: 1em;'
-                        }, item),
-                        // deleting link
-                        HUI('a', {
-                            href: 'javascript:;',
-                            // Handle the click event
-                            onclick: function () {
-                                // Delete the item
-                                context.splice('items', i, 1);
+        // Define the app
+        HUI.define('TODO', {
+            // Define the state
+            state: ['items'],
+            // Define the initializer
+            init: function (props, store) {
+                // Initialize the item list
+                store.set('items', []);
+            },
+            // Define the renderer
+            render: function (props, store) {
+                return [
+                    // Render a form
+                    HUI('form', {
+                        // Handle the submit event
+                        onsubmit: function (e) {
+                            e.preventDefault();
+                            // Get the input element and its value
+                            var input = store.get('input'),
+                                content = input.value;
+                            // Validate the input data
+                            if (content) {
+                                // Add this item
+                                store.push('items', content);
+                                /** 
+                                 * @TODO Improve patching and fix this
+                                 * 
+                                 * // Clear the input
+                                 * input.value = '';
+                                 * 
+                                 */
+                                // Fix focus
+                                HUI.defer(function () {
+                                    store.get('input').focus();
+                                });
+                            } else {
+                                // Hint the user to input something
+                                input.focus();
                             }
-                        }, 'Del')
-                    ]);
-                }));
+                        }
+                    }, [
+                        // content input
+                        HUI('input', {
+                            ref: store.setter('input'),
+                            placeholder: 'content'
+                        }),
+                        // submit button
+                        HUI('input', {
+                            attr: {
+                                type: 'submit',
+                                value: 'Add'
+                            }
+                        })
+                    ]),
+                    // Render an unordered list
+                    HUI('ul', {}, store.get('items').map(function (item, i) {
+                        // list item
+                        return HUI('li', null, [
+                            // content
+                            HUI('span', {
+                                style: 'margin-right: 1em;'
+                            }, item),
+                            // deleting link
+                            HUI('a', {
+                                href: 'javascript:;',
+                                // Handle the click event
+                                onclick: function () {
+                                    // Delete the item
+                                    store.splice('items', i, 1);
+                                }
+                            }, 'Del')
+                        ]);
+                    }))
+                ];
             }
         });
-        // Render the app
+        // Render
         HUI.render([
-            // Set the initial context value
-            HUI(HUI.Context, {
-                key: 'items',
-                value: []
-            }),
             // Render a heading
             HUI('h1', null, 'TODO'),
-            // Render the editor
-            HUI('Editor'),
-            // and the list
-            HUI('List')
+            // Render the app
+            HUI('TODO')
         ]);
     </script>
 </body>

@@ -1,12 +1,13 @@
 import { HNode, toNode } from "./HNode";
 import { toArr, toFrag, isHNode, clear } from "./utils";
-import { _splice, _Infinity, _keys, _push, _indexOf, _null } from "./refCache";
+import { _splice, _Infinity, _keys, _push, _indexOf, _null, _undefined } from "./refCache";
 import { HUI } from "./HUI";
 import { patch } from "./patch";
+import { handleError } from "./handleError";
 
-export const update = function (hNode: HNode<any>) {
+export const update = function u(hNode: HNode<any>) {
 
-    const { desc, output, nodes, owner, ownerNode, context, props, store } = hNode,
+    const { desc, output, nodes, owner, ownerNode, context, props, store, error } = hNode,
         outputLength = output!.length,
         ownerNodes = owner && owner.nodes!,
         nodesLength = nodes!.length;
@@ -17,6 +18,11 @@ export const update = function (hNode: HNode<any>) {
 
         hNode.active = false;
 
+        if (error) {
+            hNode.error = _undefined;
+            throw error;
+        }
+
         const ownerNodeNodes = ownerNode!.childNodes;
         let old: unknown, oldProps: any, oldNodes: Node[], oldNodesLength: number,
             curNodes: Node[], curProps: any, curPropKeys: string[],
@@ -25,7 +31,7 @@ export const update = function (hNode: HNode<any>) {
             newOutput: unknown[];
 
         (newOutput = hNode.output = toArr(
-            desc!.render(props, store!, context!)
+            desc!.render.call(hNode, props, store!, context!)
         ).flat(_Infinity)).forEach((cur: unknown, i) => {
 
             if (i < outputLength) {
@@ -44,9 +50,7 @@ export const update = function (hNode: HNode<any>) {
 
                             newOutput[i] = old;
 
-                            return patch(
-                                oldNodes[0], curProps, oldProps, curPropKeys, old.context!, old.events!
-                            );
+                            return patch(oldNodes[0], curProps, oldProps, curPropKeys, old);
 
                         }
 
@@ -98,7 +102,7 @@ export const update = function (hNode: HNode<any>) {
         if (desc!.catch) {
 
             newNodes = toArr(toNode(
-                hNode.output = toArr(desc!.catch!(err, props, store!, context!)),
+                hNode.output = toArr(desc!.catch!.call(hNode, err, props, store!, context!)),
                 context!,
                 ownerNode!,
                 hNode
@@ -119,7 +123,7 @@ export const update = function (hNode: HNode<any>) {
             });
 
         } else {
-            throw err;
+            handleError(err, hNode);
         }
 
     } finally {

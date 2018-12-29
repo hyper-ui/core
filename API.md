@@ -42,6 +42,14 @@ This option indicates the parent node and is optional. (Default: `document.body`
 
 This is an optional boolean telling whether to clear the parent node before rendering. (Default: false)
 
+### renderOptions.sync
+
+This optional boolean tells whether to do rendering synchronously. (Default: false)
+
+### renderOptions.owner
+
+This optional option tells the owner virtual node. You may need this to link virtual nodes correctly.
+
 ### renderOptions.context
 
 This is an optional option which can be a store object representing the initial context. (You may not need this parameter in most cases because you can use [`HUI.Context`](#huicontext) instead. If you do want to pass an initial context store, use [`HUI.createStore`](#huicreatestore) to create one.)
@@ -82,7 +90,7 @@ This is an array which contains some keys of the context. When any context value
 #### desc.init
 
 ```ts
-function init(this: void, props: object, store: Store, context: Store): void;
+function init(this: HNode, props: object, store: Store, context: Store): void;
 ```
 
 This property is an optional function. It will be called before the first paint of the component to initialize the component (e.g. store some initial values or fetch some data for the component).
@@ -90,7 +98,7 @@ This property is an optional function. It will be called before the first paint 
 #### desc.render
 
 ```ts
-function render(this: void, props: object, store: Store, context: Store): any;
+function render(this: HNode, props: object, store: Store, context: Store): any;
 ```
 
 This property is required and returns what to be rendered.
@@ -98,7 +106,7 @@ This property is required and returns what to be rendered.
 #### desc.clear
 
 ```ts
-function clear(this: void, props: object, store: Store, context: Store): void;
+function clear(this: HNode, props: object, store: Store, context: Store): void;
 ```
 
 This property is an optional function. It will be called when the component will be destroyed to do some clear things (e.g. clear the timers set in `init` or cancel unfinished data fetching started in `init`).
@@ -106,12 +114,16 @@ This property is an optional function. It will be called when the component will
 #### desc.catch
 
 ```ts
-function catch(this: void, err: any, props: object, store: Store, context: Store): any;
+function catch(this: HNode, err: any, props: object, store: Store, context: Store): any;
 ```
 
 This property is an optional function. It will be called when something goes wrong with the component. The first argument will be the error. In addition, what it returns will be rendered so that you can show some error messages. (Errors in `clear` will be printed in console but not be passed to this method.)
 
 #### arguments explanation
+
+##### this
+
+The `this` pointers will be set to the virtual node instance.
 
 ##### props
 

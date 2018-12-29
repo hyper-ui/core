@@ -2,27 +2,27 @@ import { HNode } from "./HNode";
 import { _undefined, _splice } from "./refCache";
 import { HUI } from "./HUI";
 import { update } from "./update";
+import { renderCallbacks } from "./render";
 
 export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
 
 export const expired = new Array<HNode<any> | undefined>();
 
-const deferCallbacks = new Array<DeferCallback>();
-
-export const preDeferCallbacks = new Array<DeferCallback<[]>>();
+const deferCallbacks = new Array<DeferCallback>(),
+    preDeferCallbacks = new Array<DeferCallback<[]>>();
 
 let willTick = false;
 
-const ticker = function () {
+const ticker = function t() {
 
     willTick = false;
 
     const deadline = Date.now() + HUI.frameLimit;
+    let i: number;
 
-    let i = 0,
-        cur: HNode<any> | undefined;
+    let cur: HNode<any> | undefined;
 
-    for (; i < expired.length; i++) {
+    for (i = 0; i < expired.length; i++) {
 
         cur = expired[i];
 
@@ -61,6 +61,19 @@ const ticker = function () {
 
     preDeferCallbacks.length = 0;
 
+    for (i = 0; i < renderCallbacks.length; i++) {
+
+        renderCallbacks[i]();
+
+        if (Date.now() >= deadline) {
+            renderCallbacks.splice(0, i + 1);
+            return tick();
+        }
+
+    }
+
+    renderCallbacks.length = 0;
+
     for (i = 0; i < deferCallbacks.length; i++) {
 
         deferCallbacks[i]();
@@ -76,31 +89,30 @@ const ticker = function () {
 
 };
 
-export const tick = function () {
+const tick = function t() {
     HUI.tick(ticker);
     willTick = true;
 };
 
-export const mark = function (hNode: HNode) {
-
-    if (!expired.includes(hNode)) {
-        expired.push(hNode);
-    }
-
+export const reqTick = function r() {
     if (!willTick) {
         tick();
     }
-
 };
 
-export const defer = function <A extends any[]=any[]>(callback: DeferCallback<A>, ...args: A) {
+export const mark = function m(hNode: HNode) {
+    if (!expired.includes(hNode)) {
+        reqTick();
+        expired.push(hNode);
+    }
+};
+
+export const defer = function d<A extends any[]=any[]>(callback: DeferCallback<A>, ...args: A) {
 
     deferCallbacks.push(function () {
         callback(...args);
     });
 
-    if (!willTick) {
-        tick();
-    }
+    reqTick();
 
 };

@@ -2,7 +2,6 @@ import { render } from "./render";
 import { registry } from "./registry";
 import { HDesc } from "./HNode";
 import { _document, _Symbol } from "./refCache";
-import { preDeferCallbacks } from "./ticker";
 import { isHNode, clear } from "./utils";
 
 export interface PortalProps {
@@ -22,11 +21,10 @@ registry.set(portalSymbol, {
     },
 
     render(props, store, context) {
-        preDeferCallbacks.push(() => {
-            render(props.children, {
-                parent: store.get('parent'),
-                context
-            });
+        render(props.children, {
+            parent: store.get('parent'),
+            owner: this,
+            context
         });
     },
 

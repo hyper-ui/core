@@ -2,11 +2,9 @@
 
 let root;
 
-const pick = (obj, keys) => keys.reduce((o, k) => ({ ...o, [k]: obj[k] }), {});
-
 const summarize = obj =>
     obj && typeof obj === 'object' &&
-    (Array.isArray(obj) ? obj.map(summarize) : pick(obj, ['type', 'props', 'nodes', 'output']));
+    (Array.isArray(obj) ? obj.map(summarize) : obj);
 
 HUI.define('Inspector', {
     render(props) {
@@ -125,7 +123,8 @@ HUI.define('Thrower', {
 
 HUI.define('CatchTest', {
     render() {
-        return HUI('div', { title: '?!' }, [
+        return HUI('p', { title: '?!' }, [
+            'Catch test: pending...',
             HUI('Thrower', { msg: 'Error4Test' })
         ]);
     },

@@ -3,6 +3,7 @@ import { _document, _isArray, _keys, _Infinity } from "./refCache";
 import { RefCallback, AttributeMap } from "./propHandlers";
 import { toArr, isHNode } from "./utils";
 import { handleProp } from "./handleProp";
+import { handleError } from "./handleError";
 
 export interface NodeProps {
     xmlns?: string;
@@ -20,10 +21,10 @@ export type HProps<P extends object = NodeProps> = P & {
 export interface HDesc<P extends object = NodeProps, S extends object = any, C extends object = any> {
     state?: Array<keyof S>;
     context?: Array<keyof C>;
-    init?: (this: void, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
-    render: (this: void, props: HProps<P>, store: Store<S>, context: Store<C>) => unknown;
-    clear?: (this: void, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
-    catch?: (this: void, err: any, props: HProps<P>, store: Store<S>, context: Store<C>) => unknown;
+    init?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
+    render: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S>, context: Store<C>) => unknown;
+    clear?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
+    catch?: (this: HNode<P, S, C>, err: any, props: HProps<P>, store: Store<S>, context: Store<C>) => unknown;
 }
 
 export type EventRecord = [string, EventListener, boolean | AddEventListenerOptions];
@@ -42,9 +43,10 @@ export interface HNode<P extends object = NodeProps, S extends object = any, C e
     nodes?: Node[];
     active: boolean;
     events?: EventMap;
+    error?: unknown;
 }
 
-export const toNode = function (
+export const toNode = function t(
     src: unknown, context: Store, ownerNode: Node, owner?: HNode
 ): Node | Node[] {
 
@@ -73,11 +75,10 @@ export const toNode = function (
 
                 const node = props.xmlns ?
                     _document.createElementNS(props.xmlns, type as string) :
-                    _document.createElement(type as string),
-                    { events } = src;
+                    _document.createElement(type as string);
 
                 _keys(props).forEach(key => {
-                    handleProp(node, key, props[key], context, events!);
+                    handleProp(node, key, props[key], src);
                 });
 
                 src.output = [];
@@ -96,11 +97,11 @@ export const toNode = function (
                 src.active = false;
 
                 if (desc.init) {
-                    desc.init(props, store!, ctx);
+                    desc.init.call(src, props, store!, ctx);
                 }
 
                 return src.nodes = toArr(toNode(
-                    src.output = toArr(desc.render(props, store!, ctx)).flat(_Infinity),
+                    src.output = toArr(desc.render.call(src, props, store!, ctx)).flat(_Infinity),
                     ctx,
                     ownerNode,
                     src
@@ -110,19 +111,17 @@ export const toNode = function (
 
                 if (desc.catch) {
                     return src.nodes = toArr(toNode(
-                        src.output = toArr(desc.catch(err, props, store!, ctx)).flat(_Infinity),
+                        src.output = toArr(desc.catch.call(src, err, props, store!, ctx)).flat(_Infinity),
                         ctx,
                         ownerNode,
                         src
                     ));
                 } else {
-                    throw err;
+                    handleError(err, src);
                 }
 
             } finally {
-
                 src.active = true;
-
             }
 
         }

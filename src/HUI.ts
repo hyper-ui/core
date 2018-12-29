@@ -9,7 +9,7 @@ import { contextSymbol } from "./Context";
 import { defer } from "./ticker";
 import { cmp } from "./utils";
 
-export const HUI = function <P extends object = NodeProps, S extends object = any, C extends object = any>(
+export const HUI = function H<P extends object = NodeProps, S extends object = any, C extends object = any>(
     type: unknown, props?: P, ...children: unknown[]
 ): HNode<P, S, C> {
 

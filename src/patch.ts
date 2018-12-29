@@ -1,13 +1,13 @@
 import { listenerPrefix } from "./listen";
 import { HUI } from "./HUI";
-import { EventMap } from "./HNode";
-import { Store } from "./Store";
+import { HNode } from "./HNode";
 import { handleProp } from "./handleProp";
 
 export function patch(
-    node: Node, curProps: any, oldProps: any, curPropKeys: string[], context: Store, events: EventMap
+    node: Node, curProps: any, oldProps: any, curPropKeys: string[], hNode: HNode<any>
 ) {
 
+    const { events } = hNode;
     let curProp, record;
 
     curPropKeys.forEach(key => {
@@ -22,7 +22,7 @@ export function patch(
 
             oldProps[key] = curProp;
 
-            handleProp(node, key, curProp, context, events!);
+            handleProp(node, key, curProp, hNode);
 
         }
 

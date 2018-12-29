@@ -19,7 +19,7 @@ export interface Store<T extends object = any> {
     splice<K extends keyof T>(key: K, start: number, deleteCount: number, ...items: AssertArray<T[K]>): this;
 }
 
-export const createStore = function <T extends object = any>(
+export const createStore = function c<T extends object = any>(
     binding?: HNode<any>, subscriptions?: Array<keyof T>, origin?: Store<T>
 ): Store<T> {
 

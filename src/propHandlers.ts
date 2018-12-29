@@ -1,9 +1,8 @@
 import { _isArray, _keys, _assign, _Boolean, _Map } from "./refCache";
-import { Store } from "./Store";
 import { render } from "./render";
-import { EventMap } from "./HNode";
+import { HNode } from "./HNode";
 
-export type PropHandler = (node: Node, value: any, context: Store, events: EventMap) => void;
+export type PropHandler = (node: Node, value: any, hNode: HNode<any>) => void;
 
 export type RefCallback = (node?: Node) => void;
 
@@ -13,11 +12,12 @@ export interface AttributeMap {
 
 export const propHandlers = new _Map<string, PropHandler>([
 
-    ['children', function (node, children, context) {
+    ['children', function (node, children, hNode) {
         render(children, {
             parent: node,
-            clear: true,
-            context
+            owner: hNode,
+            context: hNode.context!,
+            clear: true
         });
     }],
 
