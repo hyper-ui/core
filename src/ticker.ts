@@ -1,7 +1,7 @@
 import { HNode } from "./HNode";
 import { _undefined, _splice } from "./refCache";
 import { HUI } from "./HUI";
-import { patch } from "./patch";
+import { update } from "./update";
 
 export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
 
@@ -33,7 +33,7 @@ const ticker = function () {
         expired[i] = _undefined;
 
         try {
-            patch(cur);
+            update(cur);
         } catch (err) {
             expired.splice(0, i + 1);
             throw err;
@@ -81,7 +81,7 @@ export const tick = function () {
     willTick = true;
 };
 
-export const update = function (hNode: HNode) {
+export const mark = function (hNode: HNode) {
 
     if (!expired.includes(hNode)) {
         expired.push(hNode);

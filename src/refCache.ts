@@ -10,4 +10,5 @@ export const _document = document,
     { assign: _assign, is: _is, keys: _keys } = _Object,
     { isArray: _isArray, prototype: { splice: _splice, push: _push, indexOf: _indexOf } } = _Array,
     _undefined = undefined,
+    _null = null,
     _Infinity = Infinity;

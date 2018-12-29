@@ -1,6 +1,6 @@
 import { _Map, _splice } from "./refCache";
 import { HNode } from "./HNode";
-import { update } from "./ticker";
+import { mark } from "./ticker";
 import { HUI } from "./HUI";
 
 type AssertArray<T> = T extends any[] ? T : never;
@@ -43,7 +43,7 @@ export const createStore = function <T extends object = any>(
                 }
 
                 if (binding && binding.active && subscriptions && subscriptions.includes(key)) {
-                    update(binding);
+                    mark(binding);
                 }
 
                 copies.forEach(copy => {
