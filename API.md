@@ -161,10 +161,7 @@ This is a very special prop which you can use to get the real DOM node. You need
 
 ```jsx
 // Create an input element and get it
-<input ref={inputEle => {
-    // Here is the input element
-    console.log(inputEle);
-}} />
+<input ref={inputEle => console.log(inputEle)} />
 ```
 
 ## HUI.createStore
@@ -258,7 +255,7 @@ This method accepts a callback and some optional arguments for it. The `callback
 
 One use case is doing DOM manipulations after the DOM objects are completely ready:
 
-```js
+```jsx
 // Define a component which renders an auto-focused input
 HUI.define('AutofocusedInput', {
     render: function (props, store) {
@@ -268,47 +265,10 @@ HUI.define('AutofocusedInput', {
             store.get('input').focus();
         });
         // Render an input and stores its reference in the store
-        return HUI('input', { ref: store.setter('input') });
+        return <input ref={store.setter('input')} />
     }
 });
 ```
-
-## HUI.Portal
-
-This is a symbol standing for `portal`s. `Portal`s let you render something elsewhere. For example:
-
-```js
-// Define a dialog window component
-HUI.define('DialogWindow', {
-    // Declare `on` as a state
-    state: ['on'],
-    // Initializing callback
-    init: function (props, store) {
-        // Set the default state
-        store.set('on', false);
-    },
-    render: function (props, store) {
-        return [
-            // A toggle button
-            HUI('button', {
-                onclick: function () {
-                    store.set('on', !store.get('on'));
-                }
-            }, [
-                'Toggle dialog'
-            ]),
-            // a paragraph somewhere else if the state `on` is true
-            store.get('on') && HUI(HUI.Portal, null, [
-                HUI('p', { attr: { style: 'color: blue;' } }, '[Dialog window]')
-            ])
-        ];
-    }
-});
-```
-
-### PortalProps.node
-
-By default, the children of the portal will be appended to `document.body`, but you can also directly specify a container node.
 
 ## HUI.Fragment
 
@@ -324,6 +284,41 @@ render(props) {
     );
 }
 ```
+
+## HUI.Portal
+
+This is a symbol standing for `portal`s. `Portal`s let you render something elsewhere. For example:
+
+```jsx
+// Define a dialog window component
+HUI.define('DialogWindow', {
+    // Declare `on` as a state
+    state: ['on'],
+    // Initializing callback
+    init: function (props, store) {
+        // Set the default state
+        store.set('on', false);
+    },
+    render: function (props, store) {
+        return (
+            <HUI.Fragment>
+                {/* A toggle button */}
+                <button onclick={() => store.toggle('on')}>Toggle dialog</button>
+                {/* a paragraph somewhere else if the state `on` is true */}
+                {store.get('on') && (
+                    <HUI.Portal>
+                        <p style="color: blue;">[Dialog window]</p>
+                    </HUI.Portal>
+                )}
+            </HUI.Fragment>
+        );
+    }
+});
+```
+
+### PortalProps.node
+
+By default, the children of the portal will be appended to `document.body`, but you can also directly specify a container node.
 
 ## HUI.Context
 

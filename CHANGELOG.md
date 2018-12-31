@@ -1,3 +1,9 @@
+## 0.6.0 - 2018-12-31
+
+- Add JSX support
+- Improve some internals
+- Fix some bugs
+
 ## 0.5.0 - 2018-12-29
 
 - Add `RenderOptions`
