@@ -1,6 +1,6 @@
-import { HNode, HProps, HDesc, NodeProps } from "./HNode";
-import { registry, define } from "./registry";
-import { _String, _assign, _Map } from "./refCache";
+import { HNode, HProps, HDesc, ElementProps } from "./HNode";
+import { registry, define, HType } from "./registry";
+import { _String, _assign, _Map, _Infinity } from "./refCache";
 import { createStore } from "./Store";
 import { render } from "./render";
 import { propHandlers } from "./propHandlers";
@@ -8,9 +8,10 @@ import { portalSymbol } from "./Portal";
 import { contextSymbol } from "./Context";
 import { defer } from "./ticker";
 import { cmp } from "./utils";
+import { fragmentSymbol } from "./Fragment";
 
-export const HUI = function H<P extends object = NodeProps, S extends object = any, C extends object = any>(
-    type: unknown, props?: P, ...children: unknown[]
+export const HUI = function <P extends object = ElementProps, S extends object = any, C extends object = any>(
+    type: HType<P, S, C> | string, props?: P | null, ...children: unknown[]
 ): HNode<P, S, C> {
 
     const desc: HDesc<P, S, C> | undefined = registry.get(type);
@@ -19,7 +20,7 @@ export const HUI = function H<P extends object = NodeProps, S extends object = a
         isHNode: true,
         type,
         desc,
-        props: _assign({ children }, props) as HProps<P>,
+        props: _assign({ children: children.flat(_Infinity) }, props) as HProps<P>,
         active: true
     };
 
@@ -50,5 +51,6 @@ HUI.defer = defer;
 
 HUI.Portal = portalSymbol;
 HUI.Context = contextSymbol;
+HUI.Fragment = fragmentSymbol;
 
 HUI.cmp = cmp;

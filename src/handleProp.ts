@@ -2,33 +2,33 @@ import { propHandlers } from "./propHandlers";
 import { listen, listenerPrefix } from "./listen";
 import { HNode } from "./HNode";
 
-export const handleProp = function h(node: Node, key: string, value: unknown, hNode: HNode<any>) {
+export const handleProp = function (element: HTMLElement, key: string, value: unknown, hNode: HNode<any>) {
 
     const handler = propHandlers.get(key),
         { events } = hNode;
 
     if (handler) {
 
-        handler(node, value, hNode);
+        handler(element, value, hNode);
 
     } else {
 
         if (key.startsWith(listenerPrefix)) {
 
-            events!.set(key, listen(node, key.slice(2), value as EventListener));
+            events!.set(key, listen(element, key.slice(2), value as EventListener));
 
-        } else if (key in node) {
+        } else if (key in element) {
 
             try {
                 // @ts-ignore
-                node[key] = value;
+                element[key] = value;
             } catch {
-                (node as Element).setAttribute(key, value as string);
+                element.setAttribute(key, value as string);
             }
 
         } else {
 
-            (node as Element).setAttribute(key, value as string);
+            element.setAttribute(key, value as string);
 
         }
 

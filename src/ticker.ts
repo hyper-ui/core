@@ -13,7 +13,7 @@ const deferCallbacks = new Array<DeferCallback>(),
 
 let willTick = false;
 
-const ticker = function t() {
+const ticker = function () {
 
     willTick = false;
 
@@ -89,25 +89,25 @@ const ticker = function t() {
 
 };
 
-const tick = function t() {
+const tick = function () {
     HUI.tick(ticker);
     willTick = true;
 };
 
-export const reqTick = function r() {
+export const reqTick = function () {
     if (!willTick) {
         tick();
     }
 };
 
-export const mark = function m(hNode: HNode) {
+export const mark = function (hNode: HNode) {
     if (!expired.includes(hNode)) {
         reqTick();
         expired.push(hNode);
     }
 };
 
-export const defer = function d<A extends any[]=any[]>(callback: DeferCallback<A>, ...args: A) {
+export const defer = function <A extends any[]=any[]>(callback: DeferCallback<A>, ...args: A) {
 
     deferCallbacks.push(function () {
         callback(...args);

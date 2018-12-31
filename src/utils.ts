@@ -13,7 +13,7 @@ export const toFrag = (nodes: Node[]) => nodes.reduce(
 export const isHNode = (value: unknown): value is HNode<any> =>
     value && typeof value === 'object' && (value as any).isHNode;
 
-export const clear = function c(hNode: HNode) {
+export const clear = function (hNode: HNode<any>) {
 
     const { desc, output } = hNode;
 
@@ -49,7 +49,7 @@ export const clear = function c(hNode: HNode) {
 
 };
 
-export const cmp = function c(a: unknown, b: unknown): boolean {
+export const cmp = function (a: unknown, b: unknown): boolean {
 
     if (_is(a, b)) {
         return true;

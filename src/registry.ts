@@ -1,22 +1,23 @@
-import { HDesc, NodeProps } from "./HNode";
-import { _String, _Map } from "./refCache";
+import { HDesc, ElementProps } from "./HNode";
+import { _String, _Map, _Symbol } from "./refCache";
+import { Store } from "./Store";
 
-export const registry = new _Map<any, HDesc<any>>();
+export const registry = new _Map<HType<any> | string, HDesc<any>>();
 
 type obj = object;
 
-export const define = function d<P extends obj = NodeProps, S extends obj = any, C extends obj = any>(
-    type: unknown, desc: HDesc<P, S, C>, force?: boolean
-) {
+export interface HType<P extends obj = ElementProps, S extends obj = any, C extends obj = any> {
+    (props: P, store: Store<S>, context: Store<C>): unknown;
+};
 
-    if (!force && registry.has(type)) {
+export const define = function <P extends obj = ElementProps, S extends obj = any, C extends obj = any>(
+    name: string, desc: HDesc<P, S, C>
+): HType<P, S, C> {
 
-        throw `"${_String(type)}" has been defined`;
+    const type = _Symbol(name) as unknown as HType<P, S, C>;
 
-    } else {
+    registry.set(type, desc);
 
-        registry.set(type, desc);
-
-    }
+    return type;
 
 };

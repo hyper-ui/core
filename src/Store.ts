@@ -5,8 +5,13 @@ import { HUI } from "./HUI";
 
 type AssertArray<T> = T extends any[] ? T : never;
 
-export interface Store<T extends object = any> {
+export interface StoreLike<T extends object = any> {
     get<K extends keyof T>(key: K): T[K];
+    set<K extends keyof T>(key: K, value: T[K]): this;
+}
+
+export interface Store<T extends object = any> extends StoreLike<T> {
+    map: StoreLike<T>;
     set<K extends keyof T>(key: K, value: T[K], force?: boolean): this;
     setter<K extends keyof T>(key: K, force?: boolean): (value: T[K]) => void;
     forward(binding?: HNode, subscriptions?: Array<keyof T>): Store<T>;
@@ -19,28 +24,26 @@ export interface Store<T extends object = any> {
     splice<K extends keyof T>(key: K, start: number, deleteCount: number, ...items: AssertArray<T[K]>): this;
 }
 
-export const createStore = function c<T extends object = any>(
-    binding?: HNode<any>, subscriptions?: Array<keyof T>, origin?: Store<T>
+export const createStore = function <T extends object = any>(
+    binding?: HNode<any>, subscriptions?: Array<keyof T>, origin?: StoreLike<T>
 ): Store<T> {
 
-    const map = origin || new _Map(),
+    const map: StoreLike<T> = origin || new _Map(),
         copies = new Array<Store<T>>();
 
     const store: Store<T> = {
 
+        map,
+
         get(key) {
-            return origin ? origin.get(key) : (map as Map<any, any>).get(key);
+            return map.get(key);
         },
 
         set(key, value, force) {
 
             if (force || !HUI.cmp(value, store.get(key))) {
 
-                if (origin) {
-                    origin.set(key, value);
-                } else {
-                    (map as Map<any, any>).set(key, value);
-                }
+                map.set(key, value);
 
                 if (binding && binding.active && subscriptions && subscriptions.includes(key)) {
                     mark(binding);

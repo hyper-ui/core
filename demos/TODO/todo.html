@@ -9,11 +9,11 @@
 
 <body>
     <!-- Load the lib -->
-    <script src="../dist/hyper-ui.umd.js"></script>
+    <script src="../../dist/hyper-ui.umd.js"></script>
     <!-- Create the app -->
     <script type="text/javascript">
         // Define the app
-        HUI.define('TODO', {
+        const TODO = HUI.define('TODO', {
             // Define the state
             state: ['items'],
             // Define the initializer
@@ -93,7 +93,7 @@
             // Render a heading
             HUI('h1', null, 'TODO'),
             // Render the app
-            HUI('TODO')
+            HUI(TODO)
         ]);
     </script>
 </body>

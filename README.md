@@ -89,7 +89,7 @@ You can just easily include it and start writing the code of you app because it 
 ```js
 /* index.js */
 // Define a component called `Greeting`
-HUI.define('Greeting', {
+const Greeting = HUI.define('Greeting', {
     // Define the `render` method
     render: function (props) {
         // Render a simple heading: h1#heading
@@ -103,12 +103,13 @@ HUI.define('Greeting', {
 // Render the app
 HUI.render(
     // Create a greeting
-    HUI('Greeting', { target: 'world' })
+    HUI(Greeting, { target: 'world' })
 );
 ```
 
 ## Links
 
+- [JSX Usage](JSX.md)
 - [API Reference](API.md)
 - [Changelog](CHANGELOG.md)
 - [License](LICENSE) (MIT)
@@ -144,7 +145,7 @@ Here is a TODO app example:
     <!-- Create the app -->
     <script type="text/javascript">
         // Define the app
-        HUI.define('TODO', {
+        const TODO = HUI.define('TODO', {
             // Define the state
             state: ['items'],
             // Define the initializer
@@ -215,7 +216,7 @@ Here is a TODO app example:
             // Render a heading
             HUI('h1', null, 'TODO'),
             // Render the app
-            HUI('TODO')
+            HUI(TODO)
         ]);
     </script>
 </body>

@@ -2,9 +2,9 @@ import { _isArray, _keys, _assign, _Boolean, _Map } from "./refCache";
 import { render } from "./render";
 import { HNode } from "./HNode";
 
-export type PropHandler = (node: Node, value: any, hNode: HNode<any>) => void;
+export type PropHandler = (element: HTMLElement, value: any, hNode: HNode<any>) => void;
 
-export type RefCallback = (node?: Node) => void;
+export type RefCallback<T extends HTMLElement = HTMLElement> = (node?: T) => void;
 
 export interface AttributeMap {
     [key: string]: string;
@@ -12,41 +12,41 @@ export interface AttributeMap {
 
 export const propHandlers = new _Map<string, PropHandler>([
 
-    ['children', function (node, children, hNode) {
+    ['children', function (element, children, hNode) {
         render(children, {
-            parent: node,
+            parent: element,
             owner: hNode,
             context: hNode.context!,
             clear: true
         });
     }],
 
-    ['style', function (node, style) {
+    ['style', function (element, style) {
         if (style && typeof style === 'object') {
-            _assign((node as HTMLElement).style, style);
+            _assign(element.style, style);
         } else {
             try {
-                ((node as HTMLElement).style as any) = style;
+                (element.style as any) = style;
             } catch {
-                (node as Element).setAttribute('style', style);
+                element.setAttribute('style', style);
             }
         }
     }],
 
-    ['class', function (node, classes) {
-        (node as Element).setAttribute(
+    ['class', function (element, classes) {
+        element.setAttribute(
             'class',
             _isArray(classes) ? (classes as any[]).filter(_Boolean).join(' ') : classes
         );
     }],
 
-    ['ref', function (node, ref: RefCallback) {
-        ref(node);
+    ['ref', function (element, ref: RefCallback) {
+        ref(element);
     }],
 
-    ['attr', function (node, attributes: AttributeMap) {
+    ['attr', function (element, attributes: AttributeMap) {
         _keys(attributes).forEach(key => {
-            (node as Element).setAttribute(key, attributes[key]);
+            element.setAttribute(key, attributes[key]);
         });
     }]
 

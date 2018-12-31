@@ -1,22 +1,20 @@
 import { _document, _Symbol } from "./refCache";
-import { registry } from "./registry";
-import { HDesc } from "./HNode";
+import { define } from "./registry";
 
 export interface ContextProps {
     key: any;
     value: any;
+    children?: unknown[];
 }
 
-export const contextSymbol = _Symbol('HUI.Context');
+export const contextSymbol = define<ContextProps, {}, any>('HUI.Context', {
 
-registry.set(contextSymbol, {
-
-    init(props, store, context) {
+    init: function (props, store, context) {
         context.set(props.key, props.value);
     },
 
-    render(props) {
+    render: function (props) {
         return props.children;
     }
 
-} as HDesc<ContextProps, {}>);
+});

@@ -5,12 +5,11 @@ import { HUI } from "./HUI";
 import { patch } from "./patch";
 import { handleError } from "./handleError";
 
-export const update = function u(hNode: HNode<any>) {
+export const update = function (hNode: HNode<any>) {
 
     const { desc, output, nodes, owner, ownerNode, context, props, store, error } = hNode,
         outputLength = output!.length,
-        ownerNodes = owner && owner.nodes!,
-        nodesLength = nodes!.length;
+        ownerNodes = owner && owner.nodes!;
 
     let newNodes = ([] as Node[]).concat(nodes!);
 
@@ -37,10 +36,11 @@ export const update = function u(hNode: HNode<any>) {
             if (i < outputLength) {
 
                 old = output![i];
+                oldNodesLength = 1;
 
                 if (isHNode(old)) {
 
-                    nodeOffset += (oldNodesLength = (oldNodes = old.nodes!).length);
+                    oldNodesLength = (oldNodes = old.nodes!).length;
 
                     if (isHNode(cur) && old.type === cur.type && !old.desc) {
 
@@ -50,7 +50,9 @@ export const update = function u(hNode: HNode<any>) {
 
                             newOutput[i] = old;
 
-                            return patch(oldNodes[0], curProps, oldProps, curPropKeys, old);
+                            nodeOffset += oldNodesLength;
+
+                            return patch(oldNodes[0] as HTMLElement, curProps, oldProps, curPropKeys, old);
 
                         }
 
@@ -60,11 +62,8 @@ export const update = function u(hNode: HNode<any>) {
 
                 } else if (!isHNode(cur) && HUI.cmp(old, cur)) {
                     return;
-                } else {
-                    nodeOffset++;
                 }
 
-                oldNodesLength = 1;
                 curNodes = toArr(toNode(cur, context!, ownerNode!, hNode));
 
                 oldNodes = _splice.apply(
@@ -72,6 +71,8 @@ export const update = function u(hNode: HNode<any>) {
                     ([newNodes.indexOf(nodes![nodeOffset]), oldNodesLength] as any[])
                         .concat(curNodes) as [number, number, ...any[]]
                 );
+
+                nodeOffset += oldNodesLength;
 
                 oldNodes.forEach((oldNode, i) => {
                     if (i) {
@@ -131,11 +132,29 @@ export const update = function u(hNode: HNode<any>) {
     }
 
     if (ownerNodes) {
-        _splice.apply(
-            ownerNodes,
-            ([ownerNodes.indexOf(nodes![0]), nodesLength] as any[])
-                .concat(newNodes) as [number, number, ...any[]]
-        );
+
+        type RestArgs = [number, ...Node[]];
+        type SpliceArgs = [number, number, ...Node[]];
+
+        const firstNode = nodes![0],
+            restArgs = ([nodes!.length] as RestArgs).concat(newNodes) as RestArgs;
+
+        let target = owner,
+            targetNodes = ownerNodes;
+
+        while (target) {
+
+            targetNodes = target.nodes!;
+
+            _splice.apply(
+                targetNodes,
+                ([targetNodes.indexOf(firstNode)] as SpliceArgs).concat(restArgs) as SpliceArgs
+            );
+
+            target = target.owner;
+
+        }
+
     }
 
     hNode.nodes = newNodes;

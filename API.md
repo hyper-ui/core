@@ -1,12 +1,14 @@
 # API Reference
 
+Here is the API reference. (This doc uses some JSX code. If you feel hard to understand it, you can read [`JSX Usage`](JSX.md) first.)
+
 ## HUI
 
 ```ts
 function HUI(type: any, properties?: object, ...children: any[]): HNode;
 ```
 
-This is the default export of the lib, and the only global exported by the lib if you include the UMD module in your HTML file. You can call this to create virtual nodes (named `HNode` in this lib).
+This is the default export of the lib, and the only global exported by the lib if you include the UMD module in your HTML file. You can call this to create virtual nodes (called `HNode` in this lib). This is also used as the JSX factory function.
 
 ### type
 
@@ -28,7 +30,7 @@ Other arguments will be rendered as the children of the element or passed to the
 function render(src: any,renderOptions?: RenderOptions): void;
 ```
 
-This method renders `src` into real DOM node(s) in `parent`.
+This method renders `src` into real DOM node(s).
 
 ### src
 
@@ -58,7 +60,7 @@ This is an optional option which can be a store object representing the initial 
 
 It is true that you can render anything, but there are still some rendering rules:
 
-- `HNode`s will be rendered as described in [`type`](#type) explanation in `HUI` section;
+- `HNode`s will be rendered as described in [`type`](#type) explanation at `HUI` section;
 - Strings and numbers will be rendered as text nodes;
 - Arrays will be rendered as their elements;
 - Other things will be rendered as empty text nodes.
@@ -66,14 +68,14 @@ It is true that you can render anything, but there are still some rendering rule
 ## HUI.define
 
 ```ts
-function define(name: any, desc: object): void;
+function define(name: any, desc: object): symbol;
 ```
 
-This method lets you define a custom component.
+This method lets you define a custom component. It returns a unique symbol standing for the component. You should pass the returned symbol to `HUI` calls as the first argument to create such components.
 
 ### name
 
-This is either a string or a symbol used to identify the component.
+This should be a readable name used to identify the component.
 
 ### desc
 
@@ -123,7 +125,7 @@ This property is an optional function. It will be called when something goes wro
 
 ##### this
 
-The `this` pointers will be set to the virtual node instance.
+The `this` pointers will be bound to the virtual node instance.
 
 ##### props
 
@@ -157,20 +159,17 @@ With this handler, you can specify some attributes that will be set by calling t
 
 This is a very special prop which you can use to get the real DOM node. You need to pass a callback as the value of this prop to receive the node. For example:
 
-```js
+```jsx
 // Create an input element and get it
-HUI('input', {
-    // The reference callback
-    ref: function (inputEle) {
-        // Here is the input element
-        console.log(inputEle);
-    }
-});
+<input ref={inputEle => {
+    // Here is the input element
+    console.log(inputEle);
+}} />
 ```
 
 ## HUI.createStore
 
-This method creates a new store and returns it. You don't need to know this method in most cases. But you should know store objects it returns.
+This method creates a new store and returns it. You don't need to know this method in most cases, but you should know the store objects it returns.
 
 ### Store
 
@@ -311,17 +310,31 @@ HUI.define('DialogWindow', {
 
 By default, the children of the portal will be appended to `document.body`, but you can also directly specify a container node.
 
+## HUI.Fragment
+
+This is a symbol standing for `fragment`s which make it easier for you to render several things without adding an extra wrapper. They are especially useful in `JSX` usage, e.g.:
+
+```jsx
+render(props) {
+    return (
+        <HUI.Fragment>
+            <h1>{props.title}</h1>
+            <p>{props.content}</p>
+        </HUI.Fragment>
+    );
+}
+```
+
 ## HUI.Context
 
-This is a symbol standing for `context`s. `Context`s enable you to easily set context values out of components. A `context` component accepts a `key` prop and a `value` prop. For example,
+This symbol stands for `context`s. `Context`s enable you to easily set context values out of components. A `context` component accepts a `key` prop and a `value` prop. For example,
 
 ```js
 // Set the context value `foo` to 'bar'
-HUI(HUI.Context, {
-    key: 'foo',
-    value: 'bar'
-});
+<HUI.Context key="foo" value="bar" />
 ```
+
+In addition, it renders its children if there's any.
 
 ## HUI.tick
 

@@ -14,7 +14,7 @@ export interface RenderOptions {
     sync?: boolean;
 }
 
-export const render = function r(src: any, options: RenderOptions = {}) {
+export const render = function (src: any, options: RenderOptions = {}) {
 
     const { parent = _document.body, context = createStore(), clear, owner } = options;
 
