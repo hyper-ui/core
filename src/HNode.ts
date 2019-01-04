@@ -114,7 +114,7 @@ export const toNode = function (
                     _document.createElement(type as string);
 
                 _keys(props).forEach(key => {
-                    handleProp(node, key, props[key], src);
+                    handleProp(node, src, key, props[key]);
                 });
 
                 src.output = [];

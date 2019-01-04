@@ -52,7 +52,7 @@ export const update = function (hNode: HNode<any>) {
 
                             nodeOffset += oldNodesLength;
 
-                            return patch(oldNodes[0] as HTMLElement, curProps, oldProps, curPropKeys, old);
+                            return patch(oldNodes[0] as HTMLElement, old, curProps, oldProps, curPropKeys);
 
                         }
 

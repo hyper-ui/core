@@ -4,25 +4,26 @@ import { HNode } from "./HNode";
 import { handleProp } from "./handleProp";
 
 export function patch(
-    node: HTMLElement, curProps: any, oldProps: any, curPropKeys: string[], hNode: HNode<any>
+    node: HTMLElement, hNode: HNode<any>, curProps: any, oldProps: any, curPropKeys: string[]
 ) {
 
     const { events } = hNode;
-    let curProp, record;
+    let curProp, oldProp, record;
 
     curPropKeys.forEach(key => {
 
         curProp = curProps[key];
+        oldProp = oldProps[key];
 
-        if (!HUI.cmp(curProp, oldProps[key])) {
+        if (!HUI.cmp(curProp, oldProp)) {
 
             if (key.startsWith(listenerPrefix) && (record = events!.get(key))) {
                 node.removeEventListener(record[0], record[1], record[2]);
             }
 
-            oldProps[key] = curProp;
+            handleProp(node, hNode, key, curProp, oldProp);
 
-            handleProp(node, key, curProp, hNode);
+            oldProps[key] = curProp;
 
         }
 

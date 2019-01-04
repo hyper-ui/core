@@ -2,7 +2,8 @@ import { _isArray, _keys, _assign, _Boolean, _Map } from "./refCache";
 import { render } from "./render";
 import { HNode } from "./HNode";
 
-export type PropHandler = (element: HTMLElement, value: any, hNode: HNode<any>) => void;
+export type PropHandler<T = unknown> =
+    (element: HTMLElement, newValue: T, oldValue: T, hNode: HNode<any>) => void;
 
 export type RefCallback<T extends HTMLElement = HTMLElement> = (node?: T) => void;
 
@@ -10,10 +11,10 @@ export interface AttributeMap {
     [key: string]: string;
 }
 
-export const propHandlers = new _Map<string, PropHandler>([
+export const propHandlers = new _Map<string, PropHandler<any>>([
 
-    ['children', function (element, children, hNode) {
-        render(children, {
+    ['children', function (element, newChildren, oldChildren, hNode) {
+        render(newChildren, {
             parent: element,
             owner: hNode,
             context: hNode.context!,
