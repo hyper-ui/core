@@ -1,4 +1,4 @@
-/// <reference types=".." />
+/// <reference types="../.." />
 
 interface TestContext {
     target: string;

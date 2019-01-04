@@ -136,7 +136,7 @@ const ShowTime = HUI.define('ShowTime', {
         clearInterval(store.get('timer'));
     }
 });
-/// <reference types=".." />
+/// <reference types="../.." />
 const SVG_NS = 'http://www.w3.org/2000/svg';
 HUI.render(HUI(Inspector, null,
     HUI(HUI.Context, { key: "greeting-color", value: "blue" }),
