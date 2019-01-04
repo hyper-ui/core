@@ -11,6 +11,8 @@ export interface AttributeMap {
     [key: string]: string;
 }
 
+export const noCmpProps = ['children'];
+
 export const propHandlers = new _Map<string, PropHandler<any>>([
 
     ['children', function (element, newChildren, oldChildren, hNode) {

@@ -3,7 +3,7 @@ import { registry, define, HType } from "./registry";
 import { _String, _assign, _Map, _Infinity } from "./refCache";
 import { createStore } from "./Store";
 import { render } from "./render";
-import { propHandlers } from "./propHandlers";
+import { propHandlers, noCmpProps } from "./propHandlers";
 import { portalSymbol } from "./Portal";
 import { contextSymbol } from "./Context";
 import { defer } from "./ticker";
@@ -42,6 +42,7 @@ HUI.define = define;
 HUI.createStore = createStore;
 
 HUI.propHandlers = propHandlers;
+HUI.noCmpProps = noCmpProps;
 
 HUI.render = render;
 

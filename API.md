@@ -143,19 +143,23 @@ This is also a store object but each component instance under the same [`HUI.ren
 
 This is a map which stores custom node prop handlers. There are some built-in handlers as well:
 
-### style
+### propHandler-children
+
+This handler compares and updates the child nodes.
+
+### propHandler-style
 
 The style handler handles style for you so that you can use either strings or objects to describe styles.
 
-### class
+### propHandler-class
 
 This handler deals with class names and enables you to pass either a simple string or an array as the class list.
 
-### attr
+### propHandler-attr
 
 With this handler, you can specify some attributes that will be set by calling the `setAttribute` method on the node.
 
-### ref
+### propHandler-ref
 
 This is a very special prop which you can use to get the real DOM node. You need to pass a callback as the value of this prop to receive the node. For example:
 
@@ -163,6 +167,10 @@ This is a very special prop which you can use to get the real DOM node. You need
 // Create an input element and get it
 <input ref={inputEle => console.log(inputEle)} />
 ```
+
+## HUI.noCmpProps
+
+This is an array of strings telling the props that don't need comparing. (That is, any prop whose key is in this array will be always considered changed.)
 
 ## HUI.createStore
 
