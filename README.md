@@ -19,7 +19,7 @@ This lib is rather lightweight. The size of the file which you need to include i
 
 ### Declarative
 
-To create interactive UIs, just define simple components for each state in your app, and this lib will find out the changes as well as update them efficiently.
+To create interactive UIs, just define simple components for each state in your app, and changes will be found as well as updated efficiently.
 
 ### Simple
 
