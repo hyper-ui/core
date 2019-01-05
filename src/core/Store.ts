@@ -35,11 +35,11 @@ export const createStore = function <T extends object = any>(
 
         map,
 
-        get(key) {
+        get: function store_get(key) {
             return map.get(key);
         },
 
-        set(key, value, force) {
+        set: function store_set(key, value, force) {
 
             if (force || !HUI.cmp(value, store.get(key))) {
 
@@ -59,39 +59,39 @@ export const createStore = function <T extends object = any>(
 
         },
 
-        setter(key, force) {
+        setter: function store_setter(key, force) {
             return function (value) {
                 store.set(key, value, force);
             };
         },
 
-        forward(newBinding, newSubscriptions) {
+        forward: function store_forward(newBinding, newSubscriptions) {
             const newStore = createStore(newBinding, newSubscriptions, store);
             copies.push(newStore);
             return newStore;
         },
 
-        toggle(key) {
+        toggle: function store_toggle(key) {
             return store.set(key, !store.get(key) as any);
         },
 
-        inc(key, addition = 1) {
+        inc: function store_inc(key, addition = 1) {
             return store.set(key, store.get(key) + addition);
         },
 
-        push(key, ...items) {
+        push: function store_push(key, ...items) {
             return store.set(key, (store.get(key) as unknown as any[]).concat(items) as any);
         },
 
-        unshift(key, ...items) {
+        unshift: function store_unshift(key, ...items) {
             return store.set(key, items.concat(store.get(key)) as any);
         },
 
-        slice(key, start, end) {
+        slice: function store_slice(key, start, end) {
             return store.set(key, (store.get(key) as unknown as any[]).slice(start, end) as any);
         },
 
-        splice(key: keyof T, start: number, deleteCount: number, ...items: any[]) {
+        splice: function store_splice(key: keyof T, start: number, deleteCount: number, ...items: any[]) {
             const arr = (store.get(key) as unknown as any[]).slice();
             _splice.apply(arr, [start, deleteCount].concat(items) as [number, number, ...any[]]);
             return store.set(key, arr as any);

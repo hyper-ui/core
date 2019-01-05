@@ -1,11 +1,11 @@
 import { HNode, ElementProps, toNodes } from "./HNode";
 import { render } from "./render";
 import { isHNode, replaceNodes, inherit as inherit } from "../utils/helpers";
-import { updateComponent } from "./updateComponent";
 import { patch } from "./patch";
 import { _keys } from "../utils/refCache";
 import { clear } from "../utils/clear";
 import { HUI } from "./HUI";
+import { mark } from "./ticker";
 
 export const updateChildren = function (
     element: Element, hNode: HNode<ElementProps>, newChildren: unknown[], oldChildren: unknown[]
@@ -42,7 +42,7 @@ export const updateChildren = function (
 
                         nodeOffset += newNodes.length;
 
-                        return updateComponent(newChild);
+                        return mark(newChild);
 
                     } else {
 

@@ -5,6 +5,7 @@ import { HUI } from "./HUI";
 import { patch } from "./patch";
 import { handleError } from "./handleError";
 import { clear } from "../utils/clear";
+import { mark } from "./ticker";
 
 export const updateComponent = function (hNode: HNode<any>) {
 
@@ -48,7 +49,7 @@ export const updateComponent = function (hNode: HNode<any>) {
 
                             inherit(cur, old);
 
-                            updateComponent(cur);
+                            mark(cur);
 
                             nodeOffset += cur.nodes!.length;
 

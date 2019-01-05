@@ -100,7 +100,7 @@ export const reqTick = function () {
     }
 };
 
-export const mark = function (hNode: HNode) {
+export const mark = function (hNode: HNode<any>) {
     if (!expired.includes(hNode)) {
         reqTick();
         expired.push(hNode);
