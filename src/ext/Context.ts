@@ -1,5 +1,5 @@
-import { _document, _Symbol } from "./refCache";
-import { define } from "./registry";
+import { _document, _Symbol } from "../utils/refCache";
+import { define } from "../core/registry";
 
 export interface ContextProps {
     key: any;
@@ -9,11 +9,11 @@ export interface ContextProps {
 
 export const contextSymbol = define<ContextProps, {}, any>('HUI.Context', {
 
-    init: function (props, store, context) {
+    init: function context_init(props, store, context) {
         context.set(props.key, props.value);
     },
 
-    render: function (props) {
+    render: function context_render(props) {
         return props.children;
     }
 

@@ -1,3 +1,3 @@
-import { HUI } from "./HUI";
+import { HUI } from "./core/HUI";
 
 export default HUI;

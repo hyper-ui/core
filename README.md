@@ -168,10 +168,8 @@ Here is a TODO app example:
                             if (content) {
                                 // Add this item
                                 store.push('items', content);
-                                // Fix focus
-                                HUI.defer(function () {
-                                    store.get('input').focus();
-                                });
+                                // Clear the input
+                                input.value = '';
                             } else {
                                 // Hint the user to input something
                                 input.focus();

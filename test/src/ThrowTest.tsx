@@ -22,7 +22,11 @@ const ThrowTest = HUI.define<{}, ThrowTestStore, {}>('ThrowTest', {
     },
 
     catch(err) {
-        return <p>I caught you: '{err}</p>;
+        return (
+            <div>
+                <p>I caught you: "{err}"</p>
+            </div>
+        );
     }
 
 });

@@ -1,10 +1,10 @@
-import { render } from "./render";
-import { define } from "./registry";
-import { _document, _Symbol, _null } from "./refCache";
-import { clear } from "./utils";
-import { HNode } from "./HNode";
+import { render } from "../core/render";
+import { define } from "../core/registry";
+import { _document, _Symbol, _null } from "../utils/refCache";
+import { clear } from "../utils/clear";
+import { HNode } from "../core/HNode";
 import { FragmentProps } from "./Fragment";
-import { HUI } from "./HUI";
+import { HUI } from "../core/HUI";
 
 export interface PortalProps {
     parent?: Node;
@@ -18,12 +18,12 @@ export interface PortalStore {
 
 export const portalSymbol = define<PortalProps, PortalStore, {}>('HUI.Portal', {
 
-    init: function (props, store) {
+    init: function portal_init(props, store) {
         store.set('parent', props.parent || _document.body);
         store.set('fragment', HUI(HUI.Fragment, _null, props.children));
     },
 
-    render: function (props, store, context) {
+    render: function portal_render(props, store, context) {
         render(store.get('fragment'), {
             parent: store.get('parent'),
             owner: this,
@@ -31,16 +31,18 @@ export const portalSymbol = define<PortalProps, PortalStore, {}>('HUI.Portal', {
         });
     },
 
-    clear: function (props, store) {
+    clear: function portal_clear(props, store) {
 
         const fragment = store.get('fragment'),
-            { ownerNode } = fragment;
+            { ownerNode, nodes } = fragment;
 
         clear(fragment);
 
-        fragment.nodes!.forEach(node => {
+        nodes!.forEach(node => {
             ownerNode!.removeChild(node);
         });
+
+        nodes!.length = 0;
 
     }
 

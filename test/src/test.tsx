@@ -18,7 +18,7 @@ HUI.render(
         <hr />
 
         Global Timer:<br />
-        <ShowTime start={100} />
+        <Timer start={100} />
 
         <hr />
 
@@ -46,7 +46,7 @@ HUI.render(
 
         <hr />
 
-        <AutofocusedInput />
+        <TestInput />
 
         <hr />
 
@@ -57,14 +57,14 @@ HUI.render(
         <HUI.Portal parent={document.getElementById('portal')!}>
             Portal Timer 0:
             <br />
-            <ShowTime />
+            <Timer />
             <br />
         </HUI.Portal>
 
         <HUI.Portal>
             Portal Timer 1:
             <br />
-            <ShowTime />
+            <Timer />
             <br />
         </HUI.Portal>
 

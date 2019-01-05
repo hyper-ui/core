@@ -1,12 +1,4 @@
 "use strict";
-const AutofocusedInput = HUI.define('AutofocusedInput', {
-    render(props, store) {
-        HUI.defer(() => {
-            store.get('input').focus();
-        });
-        return HUI("input", { ref: store.setter('input'), attr: { value: 'An auto-focused input.' } });
-    }
-});
 const Thrower = HUI.define('Thrower', {
     render(props) {
         throw props.msg;
@@ -59,7 +51,8 @@ const Greeting = HUI.define('Greeting', {
             HUI("br", null),
             "This is hyper-ui.",
             HUI(RefTest, null),
-            HUI(ShowTime, null),
+            "Timer in Greeting:",
+            HUI(Timer, null),
             HUI("br", null)));
     }
 });
@@ -99,6 +92,16 @@ const Inspector = HUI.define('Inspector', {
         debugger;
     }
 });
+const TestInput = HUI.define('TestInput', {
+    render(props, store) {
+        HUI.defer(() => {
+            store.get('input').focus();
+        });
+        return (HUI(HUI.Fragment, null,
+            HUI("input", { ref: store.setter('input'), value: "An auto-focused input.", oninput: () => store.set('value', store.get('input').value) }),
+            HUI("p", null, store.get('value'))));
+    }
+});
 const ThrowTest = HUI.define('ThrowTest', {
     state: ['msg'],
     render(props, store) {
@@ -114,12 +117,14 @@ const ThrowTest = HUI.define('ThrowTest', {
         }
     },
     catch(err) {
-        return HUI("p", null,
-            "I caught you: '",
-            err);
+        return (HUI("div", null,
+            HUI("p", null,
+                "I caught you: \"",
+                err,
+                "\"")));
     }
 });
-const ShowTime = HUI.define('ShowTime', {
+const Timer = HUI.define('Timer', {
     state: ['time'],
     init(props, store) {
         store.set('time', props.start || 0);
@@ -144,7 +149,7 @@ HUI.render(HUI(Inspector, null,
     HUI("hr", null),
     "Global Timer:",
     HUI("br", null),
-    HUI(ShowTime, { start: 100 }),
+    HUI(Timer, { start: 100 }),
     HUI("hr", null),
     HUI(ShowTarget, null),
     HUI("hr", null),
@@ -155,19 +160,19 @@ HUI.render(HUI(Inspector, null,
     HUI("svg", { xmlns: SVG_NS, width: "100", height: "100", style: { 'box-shadow': '0 0 10px #999' } },
         HUI("path", { xmlns: SVG_NS, d: "M 10 40 C 20 80 80 80 90 40", stroke: "#f00", "stroke-width": "2", fill: "none" })),
     HUI("hr", null),
-    HUI(AutofocusedInput, null),
+    HUI(TestInput, null),
     HUI("hr", null),
     HUI("p", { class: ['p', false, 'red'] }, ['I should be red!']),
     HUI("hr", null),
     HUI(HUI.Portal, { parent: document.getElementById('portal') },
         "Portal Timer 0:",
         HUI("br", null),
-        HUI(ShowTime, null),
+        HUI(Timer, null),
         HUI("br", null)),
     HUI(HUI.Portal, null,
         "Portal Timer 1:",
         HUI("br", null),
-        HUI(ShowTime, null),
+        HUI(Timer, null),
         HUI("br", null)),
     HUI(Dialog, null),
     HUI("hr", null)));

@@ -7,7 +7,7 @@ interface TimerStore {
     timer: any;
 }
 
-const ShowTime = HUI.define<TimerProps, TimerStore, {}>('ShowTime', {
+const Timer = HUI.define<TimerProps, TimerStore, {}>('Timer', {
 
     state: ['time'],
 

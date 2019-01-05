@@ -1,11 +1,12 @@
-import { HNode, toNode } from "./HNode";
-import { toArr, toFrag, isHNode, clear } from "./utils";
-import { _splice, _Infinity, _keys, _push, _indexOf, _null, _undefined } from "./refCache";
+import { HNode, toNodes } from "./HNode";
+import { toArr, toFrag, isHNode, replaceNodes, inherit } from "../utils/helpers";
+import { _splice, _Infinity, _keys, _push, _indexOf, _null, _undefined } from "../utils/refCache";
 import { HUI } from "./HUI";
 import { patch } from "./patch";
 import { handleError } from "./handleError";
+import { clear } from "../utils/clear";
 
-export const update = function (hNode: HNode<any>) {
+export const updateComponent = function (hNode: HNode<any>) {
 
     const { desc, output, nodes, owner, ownerNode, context, props, store, error } = hNode,
         outputLength = output!.length,
@@ -26,10 +27,9 @@ export const update = function (hNode: HNode<any>) {
         let old: unknown, oldProps: any, oldNodes: Node[], oldNodesLength: number,
             curNodes: Node[], curProps: any, curPropKeys: string[],
             nodeOffset = 0,
-            nextNode: Node | null,
-            newOutput: unknown[];
+            nextNode: Node | null;
 
-        (newOutput = hNode.output = toArr(
+        (hNode.output = toArr(
             desc!.render.call(hNode, props, store!, context!)
         ).flat(_Infinity)).forEach((cur: unknown, i) => {
 
@@ -42,17 +42,37 @@ export const update = function (hNode: HNode<any>) {
 
                     oldNodesLength = (oldNodes = old.nodes!).length;
 
-                    if (isHNode(cur) && old.type === cur.type && !old.desc) {
+                    if (isHNode(cur) && old.type === cur.type) {
 
-                        curPropKeys = _keys(curProps = cur.props);
+                        if (old.desc) {
 
-                        if (_keys(oldProps = old.props).every(k => curPropKeys.includes(k))) {
+                            inherit(cur, old);
 
-                            newOutput[i] = old;
+                            updateComponent(cur);
 
-                            nodeOffset += oldNodesLength;
+                            nodeOffset += cur.nodes!.length;
 
-                            return patch(oldNodes[0] as HTMLElement, old, curProps, oldProps, curPropKeys);
+                            return;
+
+                        } else {
+
+                            curPropKeys = _keys(curProps = cur.props);
+
+                            if (_keys(oldProps = old.props).every(k => curPropKeys.includes(k))) {
+
+                                nodeOffset++;
+
+                                inherit(cur, old);
+
+                                return patch(
+                                    oldNodes[0] as HTMLElement,
+                                    cur,
+                                    curProps,
+                                    oldProps,
+                                    curPropKeys
+                                );
+
+                            }
 
                         }
 
@@ -64,7 +84,7 @@ export const update = function (hNode: HNode<any>) {
                     return;
                 }
 
-                curNodes = toArr(toNode(cur, context!, ownerNode!, hNode));
+                curNodes = toNodes(cur, context!, ownerNode!, hNode);
 
                 oldNodes = _splice.apply(
                     newNodes,
@@ -74,13 +94,7 @@ export const update = function (hNode: HNode<any>) {
 
                 nodeOffset += oldNodesLength;
 
-                oldNodes.forEach((oldNode, i) => {
-                    if (i) {
-                        ownerNode!.removeChild(oldNode);
-                    } else {
-                        ownerNode!.replaceChild(toFrag(curNodes), oldNode);
-                    }
-                });
+                replaceNodes(ownerNode!, oldNodes, curNodes);
 
             } else {
 
@@ -90,7 +104,7 @@ export const update = function (hNode: HNode<any>) {
                         _null;
                 }
 
-                _push.apply(newNodes, curNodes = toArr(toNode(cur, context!, ownerNode!, hNode)));
+                _push.apply(newNodes, curNodes = toNodes(cur, context!, ownerNode!, hNode));
 
                 ownerNode!.insertBefore(toFrag(curNodes), nextNode);
 
@@ -102,20 +116,14 @@ export const update = function (hNode: HNode<any>) {
 
         if (desc!.catch) {
 
-            newNodes = toArr(toNode(
+            newNodes = toNodes(
                 hNode.output = toArr(desc!.catch!.call(hNode, err, props, store!, context!)),
                 context!,
                 ownerNode!,
                 hNode
-            ));
+            );
 
-            nodes!.forEach((node, i) => {
-                if (i > 0) {
-                    ownerNode!.removeChild(node);
-                } else {
-                    ownerNode!.replaceChild(toFrag(newNodes), node);
-                }
-            });
+            replaceNodes(ownerNode!, nodes!, newNodes);
 
             output!.forEach(child => {
                 if (isHNode(child)) {

@@ -1,4 +1,4 @@
-import { _Map, _splice } from "./refCache";
+import { _Map, _splice } from "../utils/refCache";
 import { HNode } from "./HNode";
 import { mark } from "./ticker";
 import { HUI } from "./HUI";
@@ -14,7 +14,7 @@ export interface Store<T extends object = any> extends StoreLike<T> {
     map: StoreLike<T>;
     set<K extends keyof T>(key: K, value: T[K], force?: boolean): this;
     setter<K extends keyof T>(key: K, force?: boolean): (value: T[K]) => void;
-    forward(binding?: HNode, subscriptions?: Array<keyof T>): Store<T>;
+    forward(binding?: HNode<any>, subscriptions?: Array<keyof T>): Store<T>;
     toggle(key: keyof T): this;
     inc(key: keyof T, addition?: any): this;
     push<K extends keyof T>(key: K, ...items: AssertArray<T[K]>): this;

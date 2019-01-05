@@ -1,14 +1,14 @@
 import { HNode, HProps, HDesc, ElementProps } from "./HNode";
 import { registry, define, HType } from "./registry";
-import { _String, _assign, _Map, _Infinity } from "./refCache";
+import { _String, _assign, _Map, _Infinity } from "../utils/refCache";
 import { createStore } from "./Store";
 import { render } from "./render";
 import { propHandlers, noCmpProps } from "./propHandlers";
-import { portalSymbol } from "./Portal";
-import { contextSymbol } from "./Context";
+import { portalSymbol } from "../ext/Portal";
+import { contextSymbol } from "../ext/Context";
 import { defer } from "./ticker";
-import { cmp } from "./utils";
-import { fragmentSymbol } from "./Fragment";
+import { cmp } from "../utils/cmp";
+import { fragmentSymbol } from "../ext/Fragment";
 
 export const HUI = function <P extends object = ElementProps, S extends object = any, C extends object = any>(
     type: HType<P, S, C> | string, props?: P | null, ...children: unknown[]

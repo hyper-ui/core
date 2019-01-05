@@ -1,7 +1,7 @@
 import { Store } from "./Store";
-import { _document, _isArray, _keys, _Infinity } from "./refCache";
+import { _document, _isArray, _keys, _Infinity } from "../utils/refCache";
 import { RefCallback, AttributeMap } from "./propHandlers";
-import { toArr, isHNode } from "./utils";
+import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
 import { handleError } from "./handleError";
 
@@ -37,7 +37,7 @@ export interface HNode<P extends object = ElementProps, S extends object = any, 
     props: HProps<P>;
     store?: Store<S>;
     context?: Store<C>;
-    owner?: HNode;
+    owner?: HNode<any>;
     ownerNode?: Node;
     output?: unknown[];
     nodes?: Node[];
@@ -46,23 +46,23 @@ export interface HNode<P extends object = ElementProps, S extends object = any, 
     error?: unknown;
 }
 
-export const toNode = function (
-    src: unknown, context: Store, ownerNode: Node, owner?: HNode
-): Node | Node[] {
+export const toNodes = function (
+    src: unknown, context: Store, ownerNode: Node, owner?: HNode<any>
+): Node[] {
 
     const srcType = typeof src;
 
     if (srcType === 'string') {
-        return _document.createTextNode(src as string);
+        return [_document.createTextNode(src as string)];
     } else if (srcType === 'number') {
-        return _document.createTextNode(String(src));
+        return [_document.createTextNode(String(src))];
     }
 
     if (src) {
 
         if (_isArray(src) && src.length) {
 
-            return src.flatMap(s => toNode(s, context, ownerNode, owner));
+            return src.flat(_Infinity).map(s => toNodes(s, context, ownerNode, owner)).flat();
 
         } else if (isHNode(src)) {
 
@@ -83,22 +83,22 @@ export const toNode = function (
                         desc.init.call(src, props, store!, ctx);
                     }
 
-                    return src.nodes = toArr(toNode(
+                    return src.nodes = toNodes(
                         src.output = toArr(desc.render.call(src, props, store!, ctx)).flat(_Infinity),
                         ctx,
                         ownerNode,
                         src
-                    ));
+                    );
 
                 } catch (err) {
 
                     if (desc.catch) {
-                        return src.nodes = toArr(toNode(
+                        return src.nodes = toNodes(
                             src.output = toArr(desc.catch.call(src, err, props, store!, ctx)).flat(_Infinity),
                             ctx,
                             ownerNode,
                             src
-                        ));
+                        );
                     } else {
                         handleError(err, src);
                     }
@@ -120,13 +120,13 @@ export const toNode = function (
                 src.output = [];
                 src.nodes = [node];
 
-                return node;
+                return [node];
 
             }
         }
 
     }
 
-    return _document.createTextNode('');
+    return [_document.createTextNode('')];
 
 };

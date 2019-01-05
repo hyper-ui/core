@@ -17,6 +17,11 @@ export const handleProp = function (
 
         if (key.startsWith(listenerPrefix)) {
 
+            const record = events!.get(key);
+            if (record) {
+                element.removeEventListener(record[0], record[1], record[2]);
+            }
+
             events!.set(key, listen(element, key.slice(2), newValue as EventListener));
 
         } else if (key in element) {

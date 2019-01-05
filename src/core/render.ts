@@ -1,7 +1,7 @@
-import { toNode, HNode } from "./HNode";
-import { _document, _assign, _from } from "./refCache";
+import { toNodes, HNode } from "./HNode";
+import { _document, _assign, _from } from "../utils/refCache";
 import { Store, createStore } from "./Store";
-import { toFrag, toArr } from "./utils";
+import { toFrag } from "../utils/helpers";
 import { DeferCallback, reqTick } from "./ticker";
 
 export const renderCallbacks = new Array<DeferCallback<[]>>();
@@ -26,7 +26,7 @@ export const render = function (src: any, options: RenderOptions = {}) {
             });
         }
 
-        parent.appendChild(toFrag(toArr(toNode(src, context, parent, owner))));
+        parent.appendChild(toFrag(toNodes(src, context, parent, owner)));
 
     } else {
 

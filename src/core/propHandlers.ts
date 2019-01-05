@@ -1,9 +1,9 @@
-import { _isArray, _keys, _assign, _Boolean, _Map } from "./refCache";
-import { render } from "./render";
+import { _isArray, _keys, _assign, _Boolean, _Map } from "../utils/refCache";
 import { HNode } from "./HNode";
+import { updateChildren } from "./updateChildren";
 
 export type PropHandler<T = unknown> =
-    (element: HTMLElement, newValue: T, oldValue: T, hNode: HNode<any>) => void;
+    (element: HTMLElement, newValue: T, oldValue: T | undefined, hNode: HNode<any>) => void;
 
 export type RefCallback<T extends HTMLElement = HTMLElement> = (node?: T) => void;
 
@@ -15,13 +15,8 @@ export const noCmpProps = ['children'];
 
 export const propHandlers = new _Map<string, PropHandler<any>>([
 
-    ['children', function (element, newChildren, oldChildren, hNode) {
-        render(newChildren, {
-            parent: element,
-            owner: hNode,
-            context: hNode.context!,
-            clear: true
-        });
+    ['children', function (element, newChildren: unknown[], oldChildren: unknown[] | undefined, hNode) {
+        updateChildren(element, hNode, newChildren, oldChildren || []);
     }],
 
     ['style', function (element, style) {

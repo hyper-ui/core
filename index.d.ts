@@ -1,7 +1,7 @@
 import HUI from "./typings/index";
-import { HNode, HDesc, ElementProps } from "./typings/HNode";
-import { Store } from "./typings/Store";
-import { RefCallback } from "./typings/propHandlers";
+import { HNode, HDesc, ElementProps } from "./typings/core/HNode";
+import { Store } from "./typings/core/Store";
+import { RefCallback } from "./typings/core/propHandlers";
 
 export as namespace HUI;
 

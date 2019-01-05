@@ -1,7 +1,7 @@
 import { HNode } from "./HNode";
-import { _undefined, _splice } from "./refCache";
+import { _undefined, _splice } from "../utils/refCache";
 import { HUI } from "./HUI";
-import { update } from "./update";
+import { updateComponent } from "./updateComponent";
 import { renderCallbacks } from "./render";
 
 export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
@@ -33,7 +33,7 @@ const ticker = function () {
         expired[i] = _undefined;
 
         try {
-            update(cur);
+            updateComponent(cur);
         } catch (err) {
             expired.splice(0, i + 1);
             throw err;
