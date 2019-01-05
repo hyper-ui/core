@@ -52,6 +52,7 @@ const Greeting = HUI.define('Greeting', {
             "This is hyper-ui.",
             HUI(RefTest, null),
             "Timer in Greeting:",
+            HUI("br", null),
             HUI(Timer, null),
             HUI("br", null)));
     }
@@ -93,12 +94,16 @@ const Inspector = HUI.define('Inspector', {
     }
 });
 const TestInput = HUI.define('TestInput', {
+    state: ['value'],
+    init(props, store) {
+        store.set('value', props.children[0]);
+    },
     render(props, store) {
         HUI.defer(() => {
             store.get('input').focus();
         });
         return (HUI(HUI.Fragment, null,
-            HUI("input", { ref: store.setter('input'), value: "An auto-focused input.", oninput: () => store.set('value', store.get('input').value) }),
+            HUI("input", { ref: store.setter('input'), value: props.children[0], oninput: () => store.set('value', store.get('input').value) }),
             HUI("p", null, store.get('value'))));
     }
 });
@@ -160,7 +165,7 @@ HUI.render(HUI(Inspector, null,
     HUI("svg", { xmlns: SVG_NS, width: "100", height: "100", style: { 'box-shadow': '0 0 10px #999' } },
         HUI("path", { xmlns: SVG_NS, d: "M 10 40 C 20 80 80 80 90 40", stroke: "#f00", "stroke-width": "2", fill: "none" })),
     HUI("hr", null),
-    HUI(TestInput, null),
+    HUI(TestInput, null, "I should be auto-focused!"),
     HUI("hr", null),
     HUI("p", { class: ['p', false, 'red'] }, ['I should be red!']),
     HUI("hr", null),

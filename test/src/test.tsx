@@ -46,7 +46,9 @@ HUI.render(
 
         <hr />
 
-        <TestInput />
+        <TestInput>
+            I should be auto-focused!
+        </TestInput>
 
         <hr />
 

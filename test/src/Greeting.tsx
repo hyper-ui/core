@@ -31,6 +31,7 @@ const Greeting = HUI.define<GreetingProps, {}, TestContext>('Greeting', {
                 <RefTest />
 
                 Timer in Greeting:
+                <br />
                 <Timer />
                 <br />
 

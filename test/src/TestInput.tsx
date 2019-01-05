@@ -1,9 +1,20 @@
+interface TestInputProps {
+    children: string;
+}
+
 interface TestInputStore {
     input?: HTMLElement;
     value: string;
 }
 
-const TestInput = HUI.define<{}, TestInputStore, {}>('TestInput', {
+const TestInput = HUI.define<TestInputProps, TestInputStore, {}>('TestInput', {
+
+    state: ['value'],
+
+    init(props, store) {
+        store.set('value', props.children[0]);
+    },
+
     render(props, store) {
         HUI.defer(() => {
             store.get('input')!.focus();
@@ -12,11 +23,12 @@ const TestInput = HUI.define<{}, TestInputStore, {}>('TestInput', {
             <HUI.Fragment>
                 <input
                     ref={store.setter('input')}
-                    value="An auto-focused input."
+                    value={props.children[0]}
                     oninput={() => store.set('value', (store.get('input') as HTMLInputElement).value)}
                 />
                 <p>{store.get('value')}</p>
             </HUI.Fragment>
         );
     }
+
 });

@@ -1,6 +1,6 @@
 import { HNode, ElementProps, toNodes } from "./HNode";
 import { render } from "./render";
-import { isHNode, replaceNodes, inherit as inherit } from "../utils/helpers";
+import { isHNode, replaceNodes, inherit, toFrag } from "../utils/helpers";
 import { patch } from "./patch";
 import { _keys } from "../utils/refCache";
 import { clear } from "../utils/clear";
@@ -34,7 +34,7 @@ export const updateChildren = function (
 
                 if (isHNode(newChild) && newChild.type === oldChild.type) {
 
-                    newNodes = newChild.nodes = oldNodes;
+                    newNodes = oldNodes;
 
                     if (oldChild.desc) {
 
@@ -52,6 +52,8 @@ export const updateChildren = function (
 
                             inherit(newChild, oldChild);
 
+                            nodeOffset++;
+
                             return patch(
                                 newNodes[0] as HTMLElement,
                                 newChild,
@@ -66,19 +68,21 @@ export const updateChildren = function (
 
                 }
 
-                nodeOffset -= oldNodes.length;
-
                 clear(oldChild);
 
             } else if (HUI.cmp(oldChild, newChild)) {
-                return;
+                return nodeOffset++;
             } else {
                 oldNodes = childNodes.length ? [childNodes[nodeOffset]] : [];
             }
 
-            newNodes = toNodes(newChild, hNode.context!, element, hNode);
-            nodeOffset += newNodes.length;
-            replaceNodes(element, oldNodes, newNodes);
+            nodeOffset += (newNodes = toNodes(newChild, hNode.context!, element, hNode)).length;
+
+            if (oldNodes.length) {
+                replaceNodes(element, oldNodes, newNodes);
+            } else {
+                element.appendChild(toFrag(newNodes));
+            }
 
         } else {
 
@@ -87,7 +91,7 @@ export const updateChildren = function (
                 oldChild.nodes!.forEach(node => {
                     element.removeChild(node);
                 });
-            } else {
+            } else if (childNodes.length) {
                 element.removeChild(childNodes[nodeOffset++]);
             }
 
