@@ -1,3 +1,11 @@
+## 0.8.0 - 2019-01-11
+
+- Improve `Store` APIs
+- Improve context handling
+- Improve initialization
+- Improve some internals
+- Update `JSX.md`
+
 ## 0.7.0 - 2019-01-05
 
 - Add `HUI.noCmpProps`
