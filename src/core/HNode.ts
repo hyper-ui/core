@@ -73,19 +73,25 @@ export const toNodes = function (
 
             if (desc) {
 
-                const ctx = src.context = context.forward(src, desc.context);
+                src.context = context;
+
+                if (desc.context) {
+                    context.bind(src, desc.context);
+                }
 
                 try {
 
                     src.active = false;
 
                     if (desc.init) {
-                        desc.init.call(src, props, store!, ctx);
+                        desc.init.call(src, props, store!, context);
                     }
 
                     return src.nodes = toNodes(
-                        src.output = toArr(desc.render.call(src, props, store!, ctx)).flat(_Infinity),
-                        ctx,
+                        src.output = toArr(
+                            desc.render.call(src, props, store!, context)
+                        ).flat(_Infinity),
+                        context,
                         ownerNode,
                         src
                     );
@@ -94,8 +100,10 @@ export const toNodes = function (
 
                     if (desc.catch) {
                         return src.nodes = toNodes(
-                            src.output = toArr(desc.catch.call(src, err, props, store!, ctx)).flat(_Infinity),
-                            ctx,
+                            src.output = toArr(
+                                desc.catch.call(src, err, props, store!, context)
+                            ).flat(_Infinity),
+                            context,
                             ownerNode,
                             src
                         );

@@ -4,17 +4,14 @@ import { mark } from "./ticker";
 import { HUI } from "./HUI";
 
 type AssertArray<T> = T extends any[] ? T : never;
+type MapOf<T> = Map<keyof T, Pick<T, keyof T>>;
 
-export interface StoreLike<T extends object = any> {
-    get<K extends keyof T>(key: K): T[K];
-    set<K extends keyof T>(key: K, value: T[K]): this;
-}
-
-export interface Store<T extends object = any> extends StoreLike<T> {
-    map: StoreLike<T>;
+export interface Store<T extends object = any> {
+    map: MapOf<T>;
+    bind(hNode: HNode<any>, subscriptions: Array<keyof T>): this;
+    get<K extends keyof T>(key: K): T[K] | undefined;
     set<K extends keyof T>(key: K, value: T[K], force?: boolean): this;
     setter<K extends keyof T>(key: K, force?: boolean): (value: T[K]) => void;
-    forward(binding?: HNode<any>, subscriptions?: Array<keyof T>): Store<T>;
     toggle(key: keyof T): this;
     inc(key: keyof T, addition?: any): this;
     push<K extends keyof T>(key: K, ...items: AssertArray<T[K]>): this;
@@ -24,16 +21,25 @@ export interface Store<T extends object = any> extends StoreLike<T> {
     splice<K extends keyof T>(key: K, start: number, deleteCount: number, ...items: AssertArray<T[K]>): this;
 }
 
-export const createStore = function <T extends object = any>(
-    binding?: HNode<any>, subscriptions?: Array<keyof T>, origin?: StoreLike<T>
-): Store<T> {
+export const createStore = function <T extends object = any>(): Store<T> {
 
-    const map: StoreLike<T> = origin || new _Map(),
-        copies = new Array<Store<T>>();
+    const map = new _Map<keyof T, any>(),
+        bindingMap = new _Map<keyof T, Array<HNode<any>>>();
 
     const store: Store<T> = {
 
         map,
+
+        bind(hNode, subscriptions) {
+            subscriptions.forEach(key => {
+                if (bindingMap.has(key)) {
+                    bindingMap.get(key)!.push(hNode);
+                } else {
+                    bindingMap.set(key, [hNode]);
+                }
+            });
+            return this;
+        },
 
         get: function store_get(key) {
             return map.get(key);
@@ -45,13 +51,13 @@ export const createStore = function <T extends object = any>(
 
                 map.set(key, value);
 
-                if (binding && binding.active && subscriptions && subscriptions.includes(key)) {
-                    mark(binding);
+                if (bindingMap.has(key)) {
+                    bindingMap.get(key)!.forEach(hNode => {
+                        if (hNode.active) {
+                            mark(hNode);
+                        }
+                    });
                 }
-
-                copies.forEach(copy => {
-                    copy.set(key, value, true);
-                });
 
             }
 
@@ -63,12 +69,6 @@ export const createStore = function <T extends object = any>(
             return function (value) {
                 store.set(key, value, force);
             };
-        },
-
-        forward: function store_forward(newBinding, newSubscriptions) {
-            const newStore = createStore(newBinding, newSubscriptions, store);
-            copies.push(newStore);
-            return newStore;
         },
 
         toggle: function store_toggle(key) {

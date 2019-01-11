@@ -33,7 +33,7 @@ export const portalSymbol = define<PortalProps, PortalStore, {}>('HUI.Portal', {
 
     clear: function portal_clear(props, store) {
 
-        const fragment = store.get('fragment'),
+        const fragment = store.get('fragment')!,
             { ownerNode, nodes } = fragment;
 
         clear(fragment);

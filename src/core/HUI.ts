@@ -25,9 +25,16 @@ export const HUI = function <P extends object = ElementProps, S extends object =
     };
 
     if (desc) {
-        hNode.store = createStore<S>(hNode, desc && desc.state);
+
+        hNode.store = createStore<S>();
+        if (desc.state) {
+            hNode.store.bind(hNode, desc.state);
+        }
+
     } else {
+
         hNode.events = new _Map();
+
     }
 
     return hNode;
