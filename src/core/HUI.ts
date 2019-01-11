@@ -1,6 +1,6 @@
 import { HNode, HProps, HDesc, ElementProps } from "./HNode";
 import { registry, define, HType } from "./registry";
-import { _String, _assign, _Map, _Infinity } from "../utils/refCache";
+import { _assign, _Infinity } from "../utils/refCache";
 import { createStore } from "./Store";
 import { render } from "./render";
 import { propHandlers, noCmpProps } from "./propHandlers";
@@ -24,24 +24,9 @@ export const HUI = function <P extends object = ElementProps, S extends object =
         active: true
     };
 
-    if (desc) {
-
-        hNode.store = createStore<S>();
-        if (desc.state) {
-            hNode.store.bind(hNode, desc.state);
-        }
-
-    } else {
-
-        hNode.events = new _Map();
-
-    }
-
     return hNode;
 
 };
-
-/* attachments */
 
 HUI.registry = registry;
 HUI.define = define;

@@ -1,5 +1,5 @@
 import { HDesc, ElementProps } from "./HNode";
-import { _String, _Map, _Symbol } from "../utils/refCache";
+import { _Map, _Symbol } from "../utils/refCache";
 import { Store } from "./Store";
 
 export const registry = new _Map<HType<any> | string, HDesc<any>>();

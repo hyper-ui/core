@@ -1,5 +1,5 @@
-import { Store } from "./Store";
-import { _document, _isArray, _keys, _Infinity } from "../utils/refCache";
+import { Store, createStore } from "./Store";
+import { _document, _isArray, _keys, _Infinity, _Map } from "../utils/refCache";
 import { RefCallback, AttributeMap } from "./propHandlers";
 import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
@@ -66,15 +66,19 @@ export const toNodes = function (
 
         } else if (isHNode(src)) {
 
-            const { type, desc, props, store } = src;
+            const { type, desc, props } = src;
 
             src.ownerNode = ownerNode;
             src.owner = owner;
 
             if (desc) {
 
-                src.context = context;
+                const store = src.store = createStore();
+                if (desc.state) {
+                    src.store.bind(src, desc.state);
+                }
 
+                src.context = context;
                 if (desc.context) {
                     context.bind(src, desc.context);
                 }
@@ -84,12 +88,12 @@ export const toNodes = function (
                     src.active = false;
 
                     if (desc.init) {
-                        desc.init.call(src, props, store!, context);
+                        desc.init.call(src, props, store, context);
                     }
 
                     return src.nodes = toNodes(
                         src.output = toArr(
-                            desc.render.call(src, props, store!, context)
+                            desc.render.call(src, props, store, context)
                         ).flat(_Infinity),
                         context,
                         ownerNode,
@@ -101,7 +105,7 @@ export const toNodes = function (
                     if (desc.catch) {
                         return src.nodes = toNodes(
                             src.output = toArr(
-                                desc.catch.call(src, err, props, store!, context)
+                                desc.catch.call(src, err, props, store, context)
                             ).flat(_Infinity),
                             context,
                             ownerNode,
@@ -116,6 +120,8 @@ export const toNodes = function (
                 }
 
             } else {
+
+                src.events = new _Map();
 
                 const node = props.xmlns ?
                     _document.createElementNS(props.xmlns, type as string) :
