@@ -1,4 +1,4 @@
-import { HNode, HProps, HDesc, ElementProps } from "./HNode";
+import { HNode, HProps, ElementProps } from "./HNode";
 import { registry, define, HType } from "./registry";
 import { _assign, _Infinity } from "../utils/refCache";
 import { createStore } from "./Store";
@@ -10,23 +10,15 @@ import { defer } from "./ticker";
 import { cmp } from "../utils/cmp";
 import { fragmentSymbol } from "../ext/Fragment";
 
-export const HUI = function <P extends object = ElementProps, S extends object = any, C extends object = any>(
+export const HUI = <P extends object = ElementProps, S extends object = any, C extends object = any>(
     type: HType<P, S, C> | string, props?: P | null, ...children: unknown[]
-): HNode<P, S, C> {
-
-    const desc: HDesc<P, S, C> | undefined = registry.get(type);
-
-    const hNode: HNode<P, S, C> = {
-        isHNode: true,
-        type,
-        desc,
-        props: _assign({ children: children.flat(_Infinity) }, props) as HProps<P>,
-        active: true
-    };
-
-    return hNode;
-
-};
+): HNode<P, S, C> => ({
+    isHNode: true,
+    type,
+    desc: registry.get(type),
+    props: _assign({ children: children.flat(_Infinity) }, props) as HProps<P>,
+    active: true
+});
 
 HUI.registry = registry;
 HUI.define = define;

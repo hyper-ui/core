@@ -7,6 +7,8 @@ import { handleError } from "./handleError";
 import { clear } from "../utils/clear";
 import { mark } from "./ticker";
 
+type SpliceNodeArgs = [number, number, ...Node[]];
+
 export const updateComponent = function (hNode: HNode<any>) {
 
     const { desc, output, nodes, owner, ownerNode, context, props, store, error } = hNode,
@@ -27,8 +29,7 @@ export const updateComponent = function (hNode: HNode<any>) {
         const ownerNodeNodes = ownerNode!.childNodes;
         let old: unknown, oldProps: any, oldNodes: Node[], oldNodesLength: number,
             curNodes: Node[], curProps: any, curPropKeys: string[],
-            nodeOffset = 0,
-            nextNode: Node | null;
+            nodeOffset = 0, nextNode: Node | null;
 
         (hNode.output = toArr(
             desc!.render.call(hNode, props, store!, context!)
@@ -90,7 +91,7 @@ export const updateComponent = function (hNode: HNode<any>) {
                 oldNodes = _splice.apply(
                     newNodes,
                     ([newNodes.indexOf(nodes![nodeOffset]), oldNodesLength] as any[])
-                        .concat(curNodes) as [number, number, ...any[]]
+                        .concat(curNodes) as SpliceNodeArgs
                 );
 
                 nodeOffset += oldNodesLength;
@@ -143,7 +144,6 @@ export const updateComponent = function (hNode: HNode<any>) {
     if (ownerNodes) {
 
         type RestArgs = [number, ...Node[]];
-        type SpliceArgs = [number, number, ...Node[]];
 
         const firstNode = nodes![0],
             restArgs = ([nodes!.length] as RestArgs).concat(newNodes) as RestArgs;
@@ -157,7 +157,7 @@ export const updateComponent = function (hNode: HNode<any>) {
 
             _splice.apply(
                 targetNodes,
-                ([targetNodes.indexOf(firstNode)] as SpliceArgs).concat(restArgs) as SpliceArgs
+                ([targetNodes.indexOf(firstNode)] as SpliceNodeArgs).concat(restArgs) as SpliceNodeArgs
             );
 
             target = target.owner;

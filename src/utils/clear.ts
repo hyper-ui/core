@@ -1,5 +1,5 @@
 import { expired } from "../core/ticker";
-import { HNode } from "../core/HNode";
+import { HNode, ElementProps } from "../core/HNode";
 import { _console } from "./refCache";
 import { isHNode } from "./helpers";
 
@@ -21,7 +21,7 @@ export const clear = function (hNode: HNode<any>) {
 
     } else {
 
-        const { ref } = hNode.props;
+        const { ref } = hNode.props as ElementProps;
         if (ref) {
             ref();
         }

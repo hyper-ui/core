@@ -7,18 +7,25 @@ type AssertArray<T> = T extends any[] ? T : never;
 type MapOf<T> = Map<keyof T, Pick<T, keyof T>>;
 
 export interface Store<T extends object = any> {
+
     map: MapOf<T>;
+
     bind(hNode: HNode<any>, subscriptions: Array<keyof T>): this;
+
     get<K extends keyof T>(key: K): T[K] | undefined;
     set<K extends keyof T>(key: K, value: T[K], force?: boolean): this;
     setter<K extends keyof T>(key: K, force?: boolean): (value: T[K]) => void;
+
     toggle(key: keyof T): this;
+
     inc(key: keyof T, addition?: any): this;
+
     push<K extends keyof T>(key: K, ...items: AssertArray<T[K]>): this;
     unshift<K extends keyof T>(key: K, ...items: AssertArray<T[K]>): this;
     slice(key: keyof T, start: number, end: number): this;
     splice<K extends keyof T>(key: K, start: number, deleteCount?: number): this;
     splice<K extends keyof T>(key: K, start: number, deleteCount: number, ...items: AssertArray<T[K]>): this;
+
 }
 
 export const createStore = function <T extends object = any>(): Store<T> {

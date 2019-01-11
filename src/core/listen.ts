@@ -1,6 +1,6 @@
 import { EventRecord } from "./HNode";
 
-export const listenerPrefix = 'on';
+export const LISTENER_PREFIX = 'on';
 
 const CAPTURE = 'Captrue',
     NONPASSIVE = 'Nonpassive',
@@ -13,13 +13,13 @@ export const listen = function (node: HTMLElement, event: string, listener: Even
         once = false;
 
     for (let i = 0; i < 3; i++) {
-        if (!capture && event.endsWith(CAPTURE)) {
+        if (event.endsWith(CAPTURE)) {
             capture = true;
             event = event.slice(0, -7);
-        } else if (passive && event.endsWith(NONPASSIVE)) {
+        } else if (event.endsWith(NONPASSIVE)) {
             passive = false;
             event = event.slice(0, -10);
-        } else if (!once && event.endsWith(ONCE)) {
+        } else if (event.endsWith(ONCE)) {
             once = true;
             event = event.slice(0, -4);
         }

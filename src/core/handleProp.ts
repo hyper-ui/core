@@ -1,13 +1,12 @@
 import { propHandlers } from "./propHandlers";
-import { listen, listenerPrefix } from "./listen";
+import { listen, LISTENER_PREFIX } from "./listen";
 import { HNode } from "./HNode";
 
 export const handleProp = function (
     element: HTMLElement, hNode: HNode<any>, key: string, newValue: unknown, oldValue?: unknown
 ) {
 
-    const handler = propHandlers.get(key),
-        { events } = hNode;
+    const handler = propHandlers.get(key);
 
     if (handler) {
 
@@ -15,9 +14,11 @@ export const handleProp = function (
 
     } else {
 
-        if (key.startsWith(listenerPrefix)) {
+        if (key.startsWith(LISTENER_PREFIX)) {
 
-            const record = events!.get(key);
+            const { events } = hNode,
+                record = events!.get(key);
+
             if (record) {
                 element.removeEventListener(record[0], record[1], record[2]);
             }
@@ -27,8 +28,7 @@ export const handleProp = function (
         } else if (key in element) {
 
             try {
-                // @ts-ignore
-                element[key] = newValue;
+                (element as any)[key] = newValue;
             } catch {
                 element.setAttribute(key, newValue as string);
             }

@@ -18,9 +18,9 @@ const ticker = function () {
     willTick = false;
 
     const deadline = Date.now() + HUI.frameLimit;
-    let i: number;
 
-    let cur: HNode<any> | undefined;
+    let cur: HNode<any> | undefined,
+        i: number;
 
     for (i = 0; i < expired.length; i++) {
 
