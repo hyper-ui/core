@@ -9,11 +9,14 @@ const Greeting = HUI.define<GreetingProps, {}, TestContext>('Greeting', {
     },
     render(props, store, context) {
         return (
-            <HUI.Fragment>
+            <div id="greeting">
 
                 <h1>
                     Hello,
-                <span style={`color: ${context.get('greeting-color')}`}>{context.get('target')}!</span>
+                    <span style={`color: ${context.get('greeting-color')}`}>
+                        {context.get('target')}
+                        !
+                    </span>
                 </h1>
 
                 <button onclick={() => {
@@ -35,7 +38,7 @@ const Greeting = HUI.define<GreetingProps, {}, TestContext>('Greeting', {
                 <Timer />
                 <br />
 
-            </HUI.Fragment>
+            </div>
         );
     }
 });

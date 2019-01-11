@@ -14,7 +14,8 @@ const ThrowTest = HUI.define<{}, ThrowTestStore, {}>('ThrowTest', {
             return (
                 <div>
                     <button onclick={() => {
-                        store.set('msg', prompt('Say sth.') || '(undefined)');
+                        const msg = prompt('Say sth.');
+                        store.set('msg', msg ? `"${msg}"` : '(undefined)');
                     }}>throw sth.</button>
                 </div>
             );
@@ -24,7 +25,7 @@ const ThrowTest = HUI.define<{}, ThrowTestStore, {}>('ThrowTest', {
     catch(err) {
         return (
             <div>
-                <p>I caught you: "{err}"</p>
+                <p>I caught you: {err}</p>
             </div>
         );
     }

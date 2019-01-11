@@ -2,7 +2,7 @@ interface ThrowerProps {
     msg: string;
 }
 
-const Thrower = HUI.define<ThrowerProps>('Thrower', {
+const Thrower = HUI.define<ThrowerProps, {}, {}>('Thrower', {
     render(props) {
         throw props.msg;
     }

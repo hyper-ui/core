@@ -13,9 +13,7 @@ const Timer = HUI.define<TimerProps, TimerStore, {}>('Timer', {
 
     init(props, store) {
         store.set('time', props.start || 0);
-        store.set('timer', setInterval(() => {
-            store.inc('time');
-        }, 1000));
+        store.set('timer', setInterval(store.inc, 1000, 'time'));
     },
 
     render(props, store) {

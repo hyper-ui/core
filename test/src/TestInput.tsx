@@ -24,7 +24,9 @@ const TestInput = HUI.define<TestInputProps, TestInputStore, {}>('TestInput', {
                 <input
                     ref={store.setter('input')}
                     value={props.children[0]}
-                    oninput={() => store.set('value', (store.get('input') as HTMLInputElement).value)}
+                    oninput={() => {
+                        store.set('value', (store.get('input') as HTMLInputElement).value);
+                    }}
                 />
                 <p>{store.get('value')}</p>
             </HUI.Fragment>

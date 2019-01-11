@@ -14,10 +14,11 @@ const Dialog = HUI.define<{}, DialogStore, {}>('Dialog', {
         return (
             <HUI.Fragment>
                 <button onclick={() => { store.toggle('on'); }}>Toggle dialog</button>
-                {store.get('on') &&
+                {store.get('on') && (
                     <HUI.Portal>
                         <p attr={{ style: 'color: blue;' }}>[Dialog window]</p>
-                    </HUI.Portal>}
+                    </HUI.Portal>
+                )}
             </HUI.Fragment>
         );
     }

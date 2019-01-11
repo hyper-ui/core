@@ -57,14 +57,14 @@ HUI.render(
         <hr />
 
         <HUI.Portal parent={document.getElementById('portal')!}>
-            Portal Timer 0:
+            Portal timer at the beginning:
             <br />
             <Timer />
             <br />
         </HUI.Portal>
 
         <HUI.Portal>
-            Portal Timer 1:
+            Portal timer before dialog:
             <br />
             <Timer />
             <br />

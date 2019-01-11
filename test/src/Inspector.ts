@@ -5,15 +5,15 @@ const summarize = (obj: unknown): any =>
     (Array.isArray(obj) ? obj.map(summarize) : obj);
 
 interface InspectorProps {
-    children: unknown[];
+    children: unknown;
 }
 
 const Inspector = HUI.define<InspectorProps, {}, {}>('Inspector', {
 
     render(props) {
-        HUI.defer(() => {
-            root = summarize(this);
-        });
+        HUI.defer((self) => {
+            root = summarize(self);
+        }, this);
         return props.children;
     },
 
