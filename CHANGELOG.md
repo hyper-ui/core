@@ -1,3 +1,9 @@
+## 0.9.0 - 2019-01-12
+
+- Add `propHandlers-prop`
+- Add store setter cache
+- Improve type declarations
+
 ## 0.8.0 - 2019-01-11
 
 - Improve `Store` APIs
