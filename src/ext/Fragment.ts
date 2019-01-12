@@ -2,7 +2,7 @@ import { define } from "../core/registry";
 import { _document, _Symbol } from "../utils/refCache";
 
 export interface FragmentProps {
-    children: unknown[];
+    children: unknown;
 }
 
 export const fragmentSymbol = define<FragmentProps, {}, {}>('HUI.Fragment', {

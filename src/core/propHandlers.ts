@@ -3,15 +3,23 @@ import { HNode } from "./HNode";
 import { updateChildren } from "./updateChildren";
 
 export type PropHandler<T = unknown> =
-    (element: HTMLElement, newValue: T, oldValue: T | undefined, hNode: HNode<any>) => void;
+    (element: Element, newValue: T, oldValue: T | undefined, hNode: HNode<any>) => void;
 
-export type RefCallback<T extends HTMLElement = HTMLElement> = (node?: T) => void;
+export type RefCallback<T extends Element = Element> = (node?: T) => void;
 
-export interface AttributeMap {
+export interface Attributes {
     [key: string]: string;
 }
 
-export const noCmpProps = ['children'];
+export interface EleProps<T extends Element = Element> {
+    xmlns?: string;
+    style?: string | { [key: string]: string };
+    class?: string | any[];
+    ref?: RefCallback<T>;
+    attr?: Attributes;
+    prop?: Partial<T>;
+    [key: string]: unknown;
+}
 
 export const propHandlers = new _Map<string, PropHandler<any>>([
 
@@ -20,11 +28,12 @@ export const propHandlers = new _Map<string, PropHandler<any>>([
     }],
 
     ['style', function (element, style) {
+        type HTMLElementOrSVG = HTMLElement | SVGSVGElement;
         if (style && typeof style === 'object') {
-            _assign(element.style, style);
+            _assign((element as HTMLElementOrSVG).style, style);
         } else {
             try {
-                (element.style as any) = style;
+                ((element as HTMLElementOrSVG).style as any) = style;
             } catch {
                 element.setAttribute('style', style);
             }
@@ -34,18 +43,24 @@ export const propHandlers = new _Map<string, PropHandler<any>>([
     ['class', function (element, classes) {
         element.setAttribute(
             'class',
-            _isArray(classes) ? (classes as any[]).filter(_Boolean).join(' ') : classes
+            _isArray(classes) ?
+                classes.filter(_Boolean).join(' ') :
+                classes
         );
     }],
 
-    ['ref', function (element, ref: RefCallback) {
-        ref(element);
+    ['ref', function (element, callback: RefCallback) {
+        callback(element);
     }],
 
-    ['attr', function (element, attributes: AttributeMap) {
+    ['attr', function (element, attributes: Attributes) {
         _keys(attributes).forEach(key => {
             element.setAttribute(key, attributes[key]);
         });
+    }],
+
+    ['prop', function (element, properties: Partial<HTMLElement>) {
+        _assign(element, properties);
     }]
 
 ]);

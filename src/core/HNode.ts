@@ -1,24 +1,23 @@
 import { Store, createStore } from "./Store";
 import { _document, _isArray, _keys, _Infinity, _Map } from "../utils/refCache";
-import { RefCallback, AttributeMap } from "./propHandlers";
 import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
 import { handleError } from "./handleError";
+import { EleProps } from "./propHandlers";
 
-export interface ElementProps<T extends HTMLElement = HTMLElement> {
-    xmlns?: string;
-    style?: string | { [key: string]: string };
-    class?: string | any[];
-    ref?: RefCallback<T>;
-    attr?: AttributeMap;
-    [key: string]: unknown;
-}
+export type ArrayWrapped<T> = T extends any[] ? T : [T];
 
-export type HProps<P extends object = ElementProps> = P & {
-    children: unknown[];
-};
+export type HProps<P extends object = EleProps> = Required<{
+    [K in keyof P]: K extends 'children' ?
+    /**/P extends { children: any } ?
+    /******/ArrayWrapped<P['children']> :
+    /******/P extends { children?: any } ?
+    /**********/ArrayWrapped<P['children']> | undefined :
+    /**********/unknown[] :
+    /**/P[K];
+}>;
 
-export interface HDesc<P extends object = ElementProps, S extends object = any, C extends object = any> {
+export interface HDesc<P extends object = EleProps, S extends object = any, C extends object = any> {
     state?: Array<keyof S>;
     context?: Array<keyof C>;
     init?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
@@ -30,7 +29,7 @@ export interface HDesc<P extends object = ElementProps, S extends object = any, 
 export type EventRecord = [string, EventListener, boolean | AddEventListenerOptions];
 export type EventMap = Map<string, EventRecord>;
 
-export interface HNode<P extends object = ElementProps, S extends object = any, C extends object = any> {
+export interface HNode<P extends object = EleProps, S extends object = any, C extends object = any> {
     isHNode: true;
     type: unknown;
     desc?: HDesc<P, S, C>;

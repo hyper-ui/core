@@ -1,13 +1,11 @@
 import { HNode, toNodes } from "./HNode";
-import { toArr, toFrag, isHNode, replaceNodes, inherit } from "../utils/helpers";
+import { toArr, toFrag, isHNode, replaceNodes, inherit, SpliceArgs } from "../utils/helpers";
 import { _splice, _Infinity, _keys, _push, _indexOf, _null, _undefined } from "../utils/refCache";
 import { HUI } from "./HUI";
 import { patch } from "./patch";
 import { handleError } from "./handleError";
 import { clear } from "../utils/clear";
 import { mark } from "./ticker";
-
-type SpliceNodeArgs = [number, number, ...Node[]];
 
 export const updateComponent = function (hNode: HNode<any>) {
 
@@ -67,7 +65,7 @@ export const updateComponent = function (hNode: HNode<any>) {
                                 inherit(cur, old);
 
                                 return patch(
-                                    oldNodes[0] as HTMLElement,
+                                    oldNodes[0] as Element,
                                     cur,
                                     curProps,
                                     oldProps,
@@ -91,7 +89,7 @@ export const updateComponent = function (hNode: HNode<any>) {
                 oldNodes = _splice.apply(
                     newNodes,
                     ([newNodes.indexOf(nodes![nodeOffset]), oldNodesLength] as any[])
-                        .concat(curNodes) as SpliceNodeArgs
+                        .concat(curNodes) as SpliceArgs<Node>
                 );
 
                 nodeOffset += oldNodesLength;
@@ -157,7 +155,7 @@ export const updateComponent = function (hNode: HNode<any>) {
 
             _splice.apply(
                 targetNodes,
-                ([targetNodes.indexOf(firstNode)] as SpliceNodeArgs).concat(restArgs) as SpliceNodeArgs
+                ([targetNodes.indexOf(firstNode)] as SpliceArgs<Node>).concat(restArgs) as SpliceArgs<Node>
             );
 
             target = target.owner;

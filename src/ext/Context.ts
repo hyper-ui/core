@@ -4,7 +4,7 @@ import { define } from "../core/registry";
 export interface ContextProps {
     key: any;
     value: any;
-    children?: unknown[];
+    children?: unknown;
 }
 
 export const contextSymbol = define<ContextProps, {}, any>('HUI.Context', {

@@ -3,7 +3,7 @@ interface TestInputProps {
 }
 
 interface TestInputStore {
-    input?: HTMLElement;
+    input?: HTMLInputElement;
     value: string;
 }
 
@@ -23,9 +23,9 @@ const TestInput = HUI.define<TestInputProps, TestInputStore, {}>('TestInput', {
             <HUI.Fragment>
                 <input
                     ref={store.setter('input')}
-                    value={props.children[0]}
+                    prop={{ value: props.children[0] }}
                     oninput={() => {
-                        store.set('value', (store.get('input') as HTMLInputElement).value);
+                        store.set('value', store.get('input')!.value);
                     }}
                 />
                 <p>{store.get('value')}</p>

@@ -1,7 +1,8 @@
 import { expired } from "../core/ticker";
-import { HNode, ElementProps } from "../core/HNode";
+import { HNode } from "../core/HNode";
 import { _console } from "./refCache";
 import { isHNode } from "./helpers";
+import { EleProps } from "../core/propHandlers";
 
 export const clear = function (hNode: HNode<any>) {
 
@@ -21,7 +22,7 @@ export const clear = function (hNode: HNode<any>) {
 
     } else {
 
-        const { ref } = hNode.props as ElementProps;
+        const { ref } = hNode.props as EleProps;
         if (ref) {
             ref();
         }

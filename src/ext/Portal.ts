@@ -8,7 +8,7 @@ import { HUI } from "../core/HUI";
 
 export interface PortalProps {
     parent?: Node;
-    children?: unknown[];
+    children?: unknown;
 }
 
 export interface PortalStore {

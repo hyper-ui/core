@@ -1,4 +1,4 @@
-import { HNode, ElementProps, toNodes } from "./HNode";
+import { HNode, toNodes } from "./HNode";
 import { render } from "./render";
 import { isHNode, replaceNodes, inherit, toFrag } from "../utils/helpers";
 import { patch } from "./patch";
@@ -6,9 +6,10 @@ import { _keys } from "../utils/refCache";
 import { clear } from "../utils/clear";
 import { HUI } from "./HUI";
 import { mark } from "./ticker";
+import { EleProps } from "./propHandlers";
 
 export const updateChildren = function (
-    element: Element, hNode: HNode<ElementProps>, newChildren: unknown[], oldChildren: unknown[]
+    element: Element, hNode: HNode<EleProps>, newChildren: unknown[], oldChildren: unknown[]
 ) {
 
     const { childNodes } = element,
@@ -55,7 +56,7 @@ export const updateChildren = function (
                             nodeOffset++;
 
                             return patch(
-                                newNodes[0] as HTMLElement,
+                                newNodes[0] as Element,
                                 newChild,
                                 newProps,
                                 oldProps,

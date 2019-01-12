@@ -1,10 +1,11 @@
 import { HUI } from "./HUI";
 import { HNode } from "./HNode";
 import { handleProp } from "./handleProp";
-import { noCmpProps } from "./propHandlers";
+
+export const noCmpProps = ['children'];
 
 export function patch(
-    node: HTMLElement, hNode: HNode<any>, curProps: any, oldProps: any, curPropKeys: string[]
+    node: Element, hNode: HNode<any>, curProps: any, oldProps: any, curPropKeys: string[]
 ) {
 
     let curProp, oldProp;

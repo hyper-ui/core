@@ -1,5 +1,6 @@
 import { _isArray, _document, _is, _keys, _Node, _console } from "./refCache";
-import { HNode, ElementProps } from "../core/HNode";
+import { HNode } from "../core/HNode";
+import { EleProps } from "../core/propHandlers";
 
 export const toArr = <T>(a: T): T extends any[] ? T : [T] =>
     (_isArray(a) ? a : [a]) as T extends any[] ? T : [T];
@@ -22,7 +23,7 @@ export const replaceNodes = function (ownerNode: Node, oldNodes: Node[], newNode
     });
 };
 
-export const inherit = function (target: HNode<ElementProps>, source: HNode<ElementProps>) {
+export const inherit = function (target: HNode<EleProps>, source: HNode<EleProps>) {
 
     target.nodes = source.nodes;
     target.owner = source.owner;
@@ -37,3 +38,5 @@ export const inherit = function (target: HNode<ElementProps>, source: HNode<Elem
     }
 
 };
+
+export type SpliceArgs<T = any> = [number, number, ...T[]];

@@ -141,32 +141,38 @@ This is also a store object but each component instance under the same [`HUI.ren
 
 ## HUI.propHandlers
 
-This is a map which stores custom node prop handlers. There are some built-in handlers as well:
+This is a map which stores custom element prop handlers. There are some built-in handlers as well:
 
-### propHandler-children
+### propHandlers-children
 
 This handler compares and updates the child nodes.
 
-### propHandler-style
+### propHandlers-style
 
 The style handler handles style for you so that you can use either strings or objects to describe styles.
 
-### propHandler-class
+### propHandlers-class
 
 This handler deals with class names and enables you to pass either a simple string or an array as the class list.
 
-### propHandler-attr
+### propHandlers-attr
 
 With this handler, you can specify some attributes that will be set by calling the `setAttribute` method on the node.
 
-### propHandler-ref
+### propHandlers-prop
 
-This is a very special prop which you can use to get the real DOM node. You need to pass a callback as the value of this prop to receive the node. For example:
+This handler lets you directly assign some properties of the node.
+
+### propHandlers-ref
+
+This is a very special prop which you can use to get the real DOM node. You need to pass a callback as the value of this prop to receive the reference. For example:
 
 ```jsx
 // Create an input element and get it
 <input ref={inputEle => console.log(inputEle)} />
 ```
+
+Please note that the callback will be called with `undefined` when the element is destroyed, so be careful if your callback uses the reference directly.
 
 ## HUI.noCmpProps
 
@@ -304,7 +310,7 @@ HUI.define('DialogWindow', {
     state: ['on'],
     // Initializing callback
     init: function (props, store) {
-        // Set the default state
+        // Set default state
         store.set('on', false);
     },
     render: function (props, store) {
@@ -312,7 +318,7 @@ HUI.define('DialogWindow', {
             <HUI.Fragment>
                 {/* A toggle button */}
                 <button onclick={() => store.toggle('on')}>Toggle dialog</button>
-                {/* a paragraph somewhere else if the state `on` is true */}
+                {/* a paragraph somewhere else if state `on` is true */}
                 {store.get('on') && (
                     <HUI.Portal>
                         <p style="color: blue;">[Dialog window]</p>
@@ -324,7 +330,7 @@ HUI.define('DialogWindow', {
 });
 ```
 
-### PortalProps.node
+### PortalProps.parent
 
 By default, the children of the portal will be appended to `document.body`, but you can also directly specify a container node.
 

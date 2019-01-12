@@ -2,9 +2,12 @@ import { _Map, _splice } from "../utils/refCache";
 import { HNode } from "./HNode";
 import { mark } from "./ticker";
 import { HUI } from "./HUI";
+import { SpliceArgs } from "../utils/helpers";
 
 type AssertArray<T> = T extends any[] ? T : never;
 type MapOf<T> = Map<keyof T, Pick<T, keyof T>>;
+
+type Setter<T = unknown> = (value: T) => void;
 
 export interface Store<T extends object = any> {
 
@@ -14,7 +17,7 @@ export interface Store<T extends object = any> {
 
     get<K extends keyof T>(key: K): T[K] | undefined;
     set<K extends keyof T>(key: K, value: T[K], force?: boolean): this;
-    setter<K extends keyof T>(key: K, force?: boolean): (value: T[K]) => void;
+    setter<K extends keyof T>(key: K, force?: boolean): Setter<T[K]>;
 
     toggle(key: keyof T): this;
 
@@ -30,8 +33,11 @@ export interface Store<T extends object = any> {
 
 export const createStore = function <T extends object = any>(): Store<T> {
 
+    type SetterRecord = [Setter | undefined, Setter | undefined];
+
     const map = new _Map<keyof T, any>(),
-        bindingMap = new _Map<keyof T, Array<HNode<any>>>();
+        bindingMap = new _Map<keyof T, Array<HNode<any>>>(),
+        setterMap = new _Map<keyof T, SetterRecord>();
 
     const store: Store<T> = {
 
@@ -73,9 +79,34 @@ export const createStore = function <T extends object = any>(): Store<T> {
         },
 
         setter: function store_setter(key, force) {
-            return function (value) {
-                store.set(key, value, force);
-            };
+
+            const index = +!force;
+
+            if (setterMap.has(key)) {
+
+                const setters = setterMap.get(key)!,
+                    setter = setters[index];
+
+                if (setter) {
+                    return setter;
+                } else {
+                    return setters[index] = function setter(value: any) {
+                        store.set(key, value, force);
+                    };
+                }
+
+            } else {
+
+                const setters = new Array<Setter>();
+
+                setterMap.set(key, setters as SetterRecord);
+
+                return setters[index] = function setter(value: any) {
+                    store.set(key, value, force);
+                };
+
+            }
+
         },
 
         toggle: function store_toggle(key) {
@@ -100,7 +131,7 @@ export const createStore = function <T extends object = any>(): Store<T> {
 
         splice: function store_splice(key: keyof T, start: number, deleteCount: number, ...items: any[]) {
             const arr = (store.get(key) as unknown as any[]).slice();
-            _splice.apply(arr, [start, deleteCount].concat(items) as [number, number, ...any[]]);
+            _splice.apply(arr, [start, deleteCount].concat(items) as SpliceArgs);
             return store.set(key, arr as any);
         }
 

@@ -6,7 +6,7 @@ const CAPTURE = 'Captrue',
     NONPASSIVE = 'Nonpassive',
     ONCE = 'Once';
 
-export const listen = function (node: HTMLElement, event: string, listener: EventListener): EventRecord {
+export const listen = function (node: Element, event: string, listener: EventListener): EventRecord {
 
     let capture = false,
         passive = true,

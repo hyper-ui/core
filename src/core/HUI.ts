@@ -1,16 +1,17 @@
-import { HNode, HProps, ElementProps } from "./HNode";
+import { HNode, HProps } from "./HNode";
 import { registry, define, HType } from "./registry";
 import { _assign, _Infinity } from "../utils/refCache";
 import { createStore } from "./Store";
 import { render } from "./render";
-import { propHandlers, noCmpProps } from "./propHandlers";
+import { propHandlers, EleProps } from "./propHandlers";
 import { portalSymbol } from "../ext/Portal";
 import { contextSymbol } from "../ext/Context";
 import { defer } from "./ticker";
 import { cmp } from "../utils/cmp";
 import { fragmentSymbol } from "../ext/Fragment";
+import { noCmpProps } from "./patch";
 
-export const HUI = <P extends object = ElementProps, S extends object = any, C extends object = any>(
+export const HUI = <P extends object = EleProps, S extends object = any, C extends object = any>(
     type: HType<P, S, C> | string, props?: P | null, ...children: unknown[]
 ): HNode<P, S, C> => ({
     isHNode: true,

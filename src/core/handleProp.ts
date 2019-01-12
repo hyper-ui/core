@@ -3,7 +3,7 @@ import { listen, LISTENER_PREFIX } from "./listen";
 import { HNode } from "./HNode";
 
 export const handleProp = function (
-    element: HTMLElement, hNode: HNode<any>, key: string, newValue: unknown, oldValue?: unknown
+    element: Element, hNode: HNode<any>, key: string, newValue: unknown, oldValue?: unknown
 ) {
 
     const handler = propHandlers.get(key);

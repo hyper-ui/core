@@ -5,7 +5,7 @@ interface GreetingProps {
 const Greeting = HUI.define<GreetingProps, {}, TestContext>('Greeting', {
     context: ['target'],
     init(props, store, context) {
-        context.set('target', props.children);
+        context.set('target', props.children[0]);
     },
     render(props, store, context) {
         return (
@@ -52,7 +52,7 @@ const ShowTarget = HUI.define<{}, {}, TestContext>('ShowTarget', {
 
 interface RefTestStore {
     msg: string;
-    ref?: HTMLElement;
+    ref?: HTMLParagraphElement;
 }
 
 const RefTest = HUI.define<{}, RefTestStore, {}>('RefTest', {
