@@ -9,7 +9,7 @@
 - [Hello World](#hello-world)
 - [Links](#links)
 - [Env Requirements](#env-requirements)
-- [TODO Example](#example)
+- [TODO Example](#todo-example)
 
 ## Features
 
@@ -32,14 +32,15 @@ You can just easily include it and start writing the code of you app because it 
 1. Use npm to install it as a dependency:
 
     ```bash
-    npm i @hyper-ui/core
+    npm install @hyper-ui/core
     ```
 
 2. Import the default export from the lib:
 
     ```js
+    // es2015+
     import HUI from "hyper-ui";
-    // or
+    // es5
     const HUI = require("hyper-ui");
     ```
 
@@ -83,7 +84,7 @@ HUI.render(
 - [JSX Usage](JSX.md)
 - [API Reference](API.md)
 - [Changelog](CHANGELOG.md)
-- [License](LICENSE) (MIT)
+- [License (MIT)](LICENSE)
 
 ## Env Requirements
 
@@ -96,7 +97,7 @@ This lib depends on some features such as `Map`, `Symbol`, `array.includes` and 
 <script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/hpolyfill@latest/dist/index.js"></script>
 ```
 
-## Example
+## TODO Example
 
 Here is a TODO app example:
 
