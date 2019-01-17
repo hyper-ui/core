@@ -8,26 +8,26 @@ Here is the API reference. (This doc uses some JSX code. If you feel hard to und
 function HUI(type: any, properties?: object, ...children: any[]): HNode;
 ```
 
-This is the default export of the lib, and the only global exported by the lib if you include the UMD module in your HTML file. You can call this to create virtual nodes (called `HNode` in this lib). This is also used as the JSX factory function.
+This is the default export of this lib, or the only global exported if you include the UMD module in your HTML file. You can call this to create virtual nodes(called `HNode`s in this lib). This is also used as the JSX factory function.
 
 ### type
 
-The first argument is either a string or a symbol telling the type of the virtual node (quite like element tags in HTML). If the type has been [`define`](#define)d as a custom component, then what the [`render`](#descrender) method of the description returns will be rendered. Otherwise, it is used to specify the tag of the element which will be rendered.
+The first argument should be either a string or a symbol telling the type of the virtual node (quite like element tags in HTML). If the type has been [`define`](#define)d as a custom component, then what the [`render`](#descrender) method of the description returns will be rendered. Otherwise, it is used to specify the tag of the element which will be rendered.
 
 ### properties
 
-The second argument is an optional object representing the properties of the node (like element attributes). If the node is a custom component, then it will receive the props. Or, the props will be treated as the attributes of the element. For the latter, each prop will be set as is unless a corresponding handler is in [`propHandlers`](#huiprophandlers) or its name starts with `on`:
+The second argument is an optional object representing the properties of the node (like element attributes). If the node is a custom component, then it will receive the props. Or, the props will be treated as the attributes of the element. For the latter, each prop will be set as is unless a corresponding handler is set in [`propHandlers`](#huiprophandlers) or its name starts with `on`:
 
-Any prop whose name starts with `on` will be considered as an event listener. A valid event listener prop name is: `on`+`event`(+`option`), where `option` can be one or some of `Captrue`, `Nonpassive` and `Once` which stand for the listening options. For instance, `onclick` means a simple `click` event listener, and `ontouchstartOnceNonpassive` means a one-off and nonpassive `touchstart` one.
+Any prop whose name starts with `on` will be considered as an event listener. A valid event listener prop name is: `on`+`event`(+`option`), where `option` can be one or some of `Captrue`, `Nonpassive` and `Once` which stand for the listening options. For instance, `onclick` means a simple `click` event listener, and `ontouchstartOnceNonpassive` means a one-off and nonpassive `touchstart` event listener.
 
 ### children
 
-Other arguments will be rendered as the children of the element or passed to the component as `props.children`.
+Other arguments will be rendered as the children of the element or passed to the component as [`props.children`](#props).
 
 ## HUI.render
 
 ```ts
-function render(src: any,renderOptions?: RenderOptions): void;
+function render(src: any, renderOptions?: RenderOptions): void;
 ```
 
 This method renders `src` into real DOM node(s).
@@ -54,15 +54,15 @@ This optional option tells the owner virtual node. You may need this to link vir
 
 ### renderOptions.context
 
-This is an optional option which can be a store object representing the initial context. (You may not need this parameter in most cases because you can use [`HUI.Context`](#huicontext) instead. If you do want to pass an initial context store, use [`HUI.createStore`](#huicreatestore) to create one.)
+This is an optional option which can be a store object representing the initial context. (You may not need this parameter in most cases because you can use [`HUI.Context`](#huicontext) to set context value pairs instead. If you do want to pass an initial context store, use [`HUI.createStore`](#huicreatestore) to create one.)
 
 ### rendering rules
 
-It is true that you can render anything, but there are still some rendering rules:
+Here are the rendering rules:
 
-- `HNode`s will be rendered as described in [`type`](#type) explanation at `HUI` section;
+- `HNode`s will be rendered according to what their `render` methods return;
 - Strings and numbers will be rendered as text nodes;
-- Arrays will be rendered as their elements;
+- Arrays will be rendered according to their elements;
 - Other things will be rendered as empty text nodes.
 
 ## HUI.define
@@ -71,7 +71,7 @@ It is true that you can render anything, but there are still some rendering rule
 function define(name: any, desc: object): symbol;
 ```
 
-This method lets you define a custom component. It returns a unique symbol standing for the component. You should pass the returned symbol to `HUI` calls as the first argument to create such components.
+This method lets you define custom components. It returns a unique symbol standing for the components. You should pass the returned symbol to `HUI` calls as the first argument to create such components.
 
 ### name
 
@@ -83,11 +83,11 @@ This is an object which stands for the description of the component. It can have
 
 #### desc.state
 
-This is an array which contains some keys of the store of the component. When any stored value matching one of the keys in this array changes, the component will be updated.
+This is an array which contains some keys of the store of the component. When any stored value matching one of the given keys changes, the component will be updated.
 
 #### desc.context
 
-This is an array which contains some keys of the context. When any context value matching one of the keys in this array changes, the component will be updated.
+This is an array which contains some keys of the context. When any context value matching one of the given keys changes, the component will be updated.
 
 #### desc.init
 
@@ -95,7 +95,7 @@ This is an array which contains some keys of the context. When any context value
 function init(this: HNode, props: object, store: Store, context: Store): void;
 ```
 
-This property is an optional function. It will be called before the first paint of the component to initialize the component (e.g. store some initial values or fetch some data for the component).
+This property is an optional function. It will be called before the first render of the component to initialize the component. (e.g. store some initial values or fetch some data for the component.)
 
 #### desc.render
 
@@ -103,7 +103,7 @@ This property is an optional function. It will be called before the first paint 
 function render(this: HNode, props: object, store: Store, context: Store): any;
 ```
 
-This property is required and returns what to be rendered.
+This property is required and returns what to be rendered. Please remember that this method must be pure. That is, given the same arguments, it should return the same result. It mustn't do anything except giving out rendering results according to the given arguments.
 
 #### desc.clear
 
@@ -111,7 +111,7 @@ This property is required and returns what to be rendered.
 function clear(this: HNode, props: object, store: Store, context: Store): void;
 ```
 
-This property is an optional function. It will be called when the component will be destroyed to do some clear things (e.g. clear the timers set in `init` or cancel unfinished data fetching started in `init`).
+This property is an optional function. It will be called when the component will be destroyed to do some clearing things. (e.g. clear the timers set in `init` or cancel unfinished data fetching started in `init`.)
 
 #### desc.catch
 
@@ -119,7 +119,7 @@ This property is an optional function. It will be called when the component will
 function catch(this: HNode, err: any, props: object, store: Store, context: Store): any;
 ```
 
-This property is an optional function. It will be called when something goes wrong with the component. The first argument will be the error. In addition, what it returns will be rendered so that you can show some error messages. (Errors in `clear` will be printed in console but not be passed to this method.)
+This property is an optional function. It will be called when something goes wrong with the component. The first argument will be the error. In addition, what it returns will be rendered so that you can show some error messages. (Errors in `clear` will be printed in console instead of being passed to this method.)
 
 #### arguments explanation
 
@@ -129,31 +129,31 @@ The `this` pointers will be bound to the virtual node instance.
 
 ##### props
 
-This stands for received props. (There will always be a prop called `children` representing received children.)
+This stands for received props. (There will always be a prop called `children` which is any array representing received children.)
 
 ##### store
 
-This is a [store object](#huicreatestore) and each component instance will have one. You can use it to save some values (e.g. states). If a value changes and its key is in the [`state`](#descstate) array, then the component will be updated.
+This is a [store object](#huicreatestore) and each component instance will have one. You can use it to save some value pairs(e.g. states). If a value changes and its key is in the [`state`](#descstate) array, then the component will be updated.
 
 ##### context
 
-This is also a store object but each component instance under the same [`HUI.render`](#huirender) call will have a linked context. That is, this is like a global store.
+This is also a store object but each component instance under the same [`HUI.render`](#huirender) call will have the same one. That is, this is like a global store which can be used to store some global value pairs.
 
 ## HUI.propHandlers
 
-This is a map which stores custom element prop handlers. There are some built-in handlers as well:
+This is a map which stores custom prop handlers for elements. There are some built-in handlers as well:
 
 ### propHandlers-children
 
-This handler compares and updates the child nodes.
+This handler compares and updates child nodes of elements.
 
 ### propHandlers-style
 
-The style handler handles style for you so that you can use either strings or objects to describe styles. Please note that if you pass an object to describe styles, you should write style names in camel case(e.g.`textAlign`).
+The style handler handles style for you so that you can use either strings or objects to describe styles. Please note that if you pass an object to describe styles, you should write style names in camel case. (e.g. `textAlign` instead of `text-align`)
 
 ### propHandlers-class
 
-This handler deals with class names and enables you to pass either a simple string or an array as the class list.
+This handler deals with class names and enables you to pass either a simple string or an array as the class name list.
 
 ### propHandlers-attr
 
@@ -165,18 +165,18 @@ This handler lets you directly assign some properties of the node.
 
 ### propHandlers-ref
 
-This is a very special prop which you can use to get the real DOM node. You need to pass a callback as the value of this prop to receive the reference. For example:
+This is a very special prop which you can use to get the real DOM node. You need to pass a callback to receive the reference. For example:
 
 ```jsx
-// Create an input element and get it
+// The input element will be printed in console
 <input ref={inputEle => console.log(inputEle)} />
 ```
 
-Please note that the callback will be called with `undefined` when the element is destroyed, so be careful if your callback uses the reference directly.
+Please note that the callback will receive `undefined` when the element is destroyed, so be careful if your callback uses the reference directly.
 
 ## HUI.noCmpProps
 
-This is an array of strings telling the props that don't need comparing. (That is, any prop whose key is in this array will be always considered changed.)
+This is an array of strings telling the prop names that don't need comparing. (That is, any prop whose key is in this array will be always considered changed in comparing process.)
 
 ## HUI.createStore
 
@@ -271,22 +271,22 @@ One use case is doing DOM manipulations after the DOM objects are completely rea
 
 ```jsx
 // Define a component which renders an auto-focused input
-HUI.define('AutofocusedInput', {
+const AutofocusedInput = HUI.define('AutofocusedInput', {
     render: function (props, store) {
         // Defer the DOM manipulations
         HUI.defer(function () {
-            // The input element is in the document now.
+            // The input element is in the document now
             store.get('input').focus();
         });
         // Render an input and stores its reference in the store
-        return <input ref={store.setter('input')} />
+        return <input ref={store.setter('input')} />;
     }
 });
 ```
 
 ## HUI.Fragment
 
-This is a symbol standing for `fragment`s which make it easier for you to render several things without adding an extra wrapper. They are especially useful in `JSX` usage, e.g.:
+This is a symbol standing for `fragment`s which make it easier for you to render several things without adding an extra wrapper. They are usually useful in `JSX` usage, e.g.:
 
 ```jsx
 render(props) {
@@ -332,11 +332,11 @@ HUI.define('DialogWindow', {
 
 ### PortalProps.parent
 
-By default, the children of the portal will be appended to `document.body`, but you can also directly specify a container node.
+By default, the children of the portal will be appended to `document.body`, but you can also specify a custom container node.
 
 ## HUI.Context
 
-This symbol stands for `context`s. `Context`s enable you to easily set context values out of components. A `context` component accepts a `key` prop and a `value` prop. For example,
+This symbol stands for `context`s. `Context`s enable you to easily set context value pairs out of components. A `context` component accepts a `key` prop and a `value` prop. For example,
 
 ```js
 // Set the context value `foo` to 'bar'

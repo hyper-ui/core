@@ -35,20 +35,13 @@ As introduced at the beginning, JSX just brings an XML-like syntax sugar to Java
 ### Extra syntax
 
 1. Any tag can be self-closed if it doesn't have child nodes.
-2. Expressions can be inserted by wrapping them with braces.
-3. A tag name starting with an uppercase letter will be considered a custom identifier.
-4. The value of an attribute whose value is omitted will be `true`.
-
-### Example
-
-1. Self-close:
 
     ```jsx
     const emptyContainer = <div class="container" />;
     const appWithoutChildren = <App foo="bar" />;
     ```
 
-2. Expressions:
+2. Expressions can be inserted by wrapping them with braces.
 
     ```jsx
     const dynamicParagraph = <p>Time: {Date.now()}</p>;
@@ -58,18 +51,22 @@ As introduced at the beginning, JSX just brings an XML-like syntax sugar to Java
     }} />;
     ```
 
-3. Custom identifiers:
+3. A tag name starting with an uppercase letter will be considered a custom identifier.
 
     ```jsx
     import MyComponent from "MyComponent";
     const myComponent = <MyComponent />;
     ```
 
-4. Default value:
+4. The value of an attribute whose value is omitted will be `true`. So,
 
     ```jsx
     const input = <input autofocused />;
-    // equals to
+    ```
+
+    equals to
+
+    ```jsx
     const input = <input autofocused={true} />;
     ```
 
