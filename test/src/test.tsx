@@ -7,73 +7,77 @@ interface TestContext {
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-HUI.render(
+HUI.render<TestContext>(
+    (
 
-    <Inspector>
+        <Inspector>
 
-        <HUI.Context key="greeting-color" value="blue" />
+            <Greeting>world</Greeting>
 
-        <Greeting>world</Greeting>
+            <hr />
 
-        <hr />
+            Global Timer:<br />
+            <Timer start={100} />
 
-        Global Timer:<br />
-        <Timer start={100} />
+            <hr />
 
-        <hr />
+            <ShowTarget />
 
-        <ShowTarget />
+            <hr />
 
-        <hr />
+            <ThrowTest />
 
-        <ThrowTest />
+            <CatchTest />
 
-        <CatchTest />
+            <hr />
 
-        <hr />
+            <p>SVG test:</p>
 
-        <p>SVG test:</p>
+            <svg xmlns={SVG_NS} width="100" height="100" style={{ 'box-shadow': '0 0 10px #999' }}>
+                <path
+                    xmlns={SVG_NS}
+                    d="M 10 40 C 20 80 80 80 90 40"
+                    stroke="#f00"
+                    stroke-width="2"
+                    fill="none"
+                />
+            </svg>
 
-        <svg xmlns={SVG_NS} width="100" height="100" style={{ 'box-shadow': '0 0 10px #999' }}>
-            <path
-                xmlns={SVG_NS}
-                d="M 10 40 C 20 80 80 80 90 40"
-                stroke="#f00"
-                stroke-width="2"
-                fill="none"
-            />
-        </svg>
+            <hr />
 
-        <hr />
-
-        <TestInput>
-            I should be auto-focused!
+            <TestInput>
+                I should be auto-focused!
         </TestInput>
 
-        <hr />
+            <hr />
 
-        <p class={['p', false, 'red']}>{['I should be red!']}</p>
+            <p class={['p', false, 'red']}>{['I should be red!']}</p>
 
-        <hr />
+            <hr />
 
-        <HUI.Portal parent={document.getElementById('portal')!}>
-            Portal timer at the beginning:
+            <HUI.Portal parent={document.getElementById('portal')!}>
+                Portal timer at the beginning:
             <br />
-            <Timer />
+                <Timer />
+                <br />
+            </HUI.Portal>
+
+            <HUI.Portal>
+                Portal timer before dialog:
             <br />
-        </HUI.Portal>
+                <Timer />
+                <br />
+            </HUI.Portal>
 
-        <HUI.Portal>
-            Portal timer before dialog:
-            <br />
-            <Timer />
-            <br />
-        </HUI.Portal>
+            <Dialog />
 
-        <Dialog />
+            <hr />
 
-        <hr />
+        </Inspector>
 
-    </Inspector>
-
+    ), {
+        defaultContext: {
+            'greeting-color': 'blue'
+        }
+    }
 );

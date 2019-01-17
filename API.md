@@ -54,7 +54,11 @@ This optional option tells the owner virtual node. You may need this to link vir
 
 ### renderOptions.context
 
-This is an optional option which can be a store object representing the initial context. (You may not need this parameter in most cases because you can use [`HUI.Context`](#huicontext) to set context value pairs instead. If you do want to pass an initial context store, use [`HUI.createStore`](#huicreatestore) to create one.)
+This is an optional option which can be a [store object](#store) representing the initial context. (You may not need this parameter in most cases because you can use [`renderOptions.defaultContext`](renderoptionsdefaultcontext) to set initial context value pairs.)
+
+### renderOptions.defaultContext
+
+This is an optional object that represents default context value pairs.
 
 ### rendering rules
 
@@ -218,6 +222,14 @@ function setter(key: any, force?: boolean): (value: any) => void;
 
 This method returns a setter for the given key. You can pass a force update flag to it as well, which will later be passed to the `set` method. One use case is passing a store setter as a `ref` prop.
 
+### store.setSome
+
+```ts
+function setSome (pairs: object, force?: boolean): this;
+```
+
+This method enables you to set multiple value pairs together. It invokes `store.set` internally with the given `force` flag.
+
 ### store.toggle
 
 ```ts
@@ -341,17 +353,6 @@ HUI.define('DialogWindow', {
 ### PortalProps.parent
 
 By default, the children of the portal will be appended to `document.body`, but you can also specify a custom container node.
-
-## HUI.Context
-
-This symbol stands for `context`s. `Context`s enable you to easily set context value pairs out of components. A `context` component accepts a `key` prop and a `value` prop. For example,
-
-```js
-// Set the context value `foo` to 'bar'
-<HUI.Context key="foo" value="bar" />
-```
-
-In addition, it renders its children if there's any.
 
 ## HUI.tick
 

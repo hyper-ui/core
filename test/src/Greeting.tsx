@@ -15,8 +15,8 @@ const Greeting = HUI.define<GreetingProps, {}, TestContext>('Greeting', {
                     Hello,
                     <span style={`color: ${context.get('greeting-color')}`}>
                         {context.get('target')}
-                        !
                     </span>
+                    !
                 </h1>
 
                 <button onclick={() => {

@@ -1,4 +1,4 @@
-import { _Map, _splice } from "../utils/refCache";
+import { _Map, _splice, _keys } from "../utils/refCache";
 import { HNode } from "./HNode";
 import { mark } from "../ticker/ticker";
 import { HUI } from "./HUI";
@@ -18,6 +18,7 @@ export interface Store<T extends object = any> {
     get<K extends keyof T>(key: K): T[K] | undefined;
     set<K extends keyof T>(key: K, value: T[K], force?: boolean): this;
     setter<K extends keyof T>(key: K, force?: boolean): Setter<T[K]>;
+    setSome(pairs: Partial<T>, forces?: boolean): this;
 
     toggle(key: keyof T): this;
 
@@ -107,6 +108,13 @@ export const createStore = function <T extends object = any>(): Store<T> {
 
             }
 
+        },
+
+        setSome: function store_setSome(pairs, force) {
+            _keys(pairs).forEach(key => {
+                store.set(key as keyof T, (pairs as any)[key], force);
+            });
+            return this;
         },
 
         toggle: function store_toggle(key) {

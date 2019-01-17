@@ -5,7 +5,6 @@ import { createStore } from "./Store";
 import { render } from "./render";
 import { propHandlers, EleProps } from "./propHandlers";
 import { portalSymbol } from "../ext/Portal";
-import { contextSymbol } from "../ext/Context";
 import { defer } from "../ticker/ticker";
 import { cmp } from "../utils/cmp";
 import { fragmentSymbol } from "../ext/Fragment";
@@ -39,7 +38,6 @@ HUI.frameLimit = 15;
 HUI.defer = defer;
 
 HUI.Portal = portalSymbol;
-HUI.Context = contextSymbol;
 HUI.Fragment = fragmentSymbol;
 
 HUI.cmp = cmp;

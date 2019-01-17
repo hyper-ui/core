@@ -1,22 +1,27 @@
 import { toNodes, HNode } from "./HNode";
 import { _document, _assign, _from } from "../utils/refCache";
-import { Store, createStore } from "./Store";
+import { createStore, Store } from "./Store";
 import { toFrag } from "../utils/helpers";
 import { DeferCallback, reqTick } from "../ticker/ticker";
 
 export const renderCallbacks = new Array<DeferCallback<[]>>();
 
-export interface RenderOptions {
+export interface RenderOptions<C extends object = any> {
     clear?: boolean;
-    context?: Store;
+    context?: Store<C>;
+    defaultContext?: Partial<C>;
     parent?: Node;
-    owner?: HNode<any>;
+    owner?: HNode<any, any, C>;
     sync?: boolean;
 }
 
-export const render = function (src: any, options: RenderOptions = {}) {
+export const render = function <C extends object = any>(src: any, options: RenderOptions<C> = {}) {
 
-    const { parent = _document.body, context = createStore(), clear, owner } = options;
+    const { parent = _document.body, clear, owner, context = createStore(), defaultContext } = options;
+
+    if (defaultContext) {
+        context.setSome(defaultContext);
+    }
 
     if (options.sync) {
 
@@ -31,7 +36,7 @@ export const render = function (src: any, options: RenderOptions = {}) {
     } else {
 
         renderCallbacks.push(() => {
-            render(src, { parent, owner, context, clear, sync: true });
+            render(src, { parent, owner, clear, context, sync: true });
         });
 
         reqTick();
