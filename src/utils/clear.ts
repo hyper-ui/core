@@ -1,4 +1,4 @@
-import { expired } from "../core/ticker";
+import { expired } from "../ticker/ticker";
 import { HNode } from "../core/HNode";
 import { _console } from "./refCache";
 import { isHNode } from "./helpers";

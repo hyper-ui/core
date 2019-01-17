@@ -2,10 +2,9 @@
 const TODO = HUI.define('TODO', {
     // Define the state
     state: ['items'],
-    // Define the initializer
-    init: function (props, store) {
-        // Initialize the item list
-        store.set('items', []);
+    // Define the default state
+    defaultStore: {
+        items: []
     },
     // Define the renderer
     render: function (props, store) {

@@ -1,6 +1,6 @@
 import { _Map, _splice } from "../utils/refCache";
 import { HNode } from "./HNode";
-import { mark } from "./ticker";
+import { mark } from "../ticker/ticker";
 import { HUI } from "./HUI";
 import { SpliceArgs } from "../utils/helpers";
 

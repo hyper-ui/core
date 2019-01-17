@@ -1,6 +1,6 @@
-import { HUI } from "./HUI";
-import { HNode } from "./HNode";
-import { handleProp } from "./handleProp";
+import { HUI } from "../core/HUI";
+import { HNode } from "../core/HNode";
+import { handleProp } from "../core/handleProp";
 
 export const noCmpProps = ['children'];
 

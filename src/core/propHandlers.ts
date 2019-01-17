@@ -1,6 +1,6 @@
 import { _isArray, _keys, _assign, _Boolean, _Map } from "../utils/refCache";
 import { HNode } from "./HNode";
-import { updateChildren } from "./updateChildren";
+import { updateChildren } from "../ticker/updateChildren";
 
 export type PropHandler<T = unknown> =
     (element: Element, newValue: T, oldValue: T | undefined, hNode: HNode<any>) => void;

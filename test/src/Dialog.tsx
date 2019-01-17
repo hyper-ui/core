@@ -6,8 +6,8 @@ const Dialog = HUI.define<{}, DialogStore, {}>('Dialog', {
 
     state: ['on'],
 
-    init(props, store) {
-        store.set('on', true);
+    defaultStore: {
+        on: true
     },
 
     render(props, store) {

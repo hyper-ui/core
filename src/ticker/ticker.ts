@@ -1,8 +1,8 @@
-import { HNode } from "./HNode";
+import { HNode } from "../core/HNode";
 import { _undefined, _splice } from "../utils/refCache";
-import { HUI } from "./HUI";
+import { HUI } from "../core/HUI";
 import { updateComponent } from "./updateComponent";
-import { renderCallbacks } from "./render";
+import { renderCallbacks } from "../core/render";
 
 export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
 

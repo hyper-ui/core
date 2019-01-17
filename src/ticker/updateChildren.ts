@@ -1,12 +1,12 @@
-import { HNode, toNodes } from "./HNode";
-import { render } from "./render";
+import { HNode, toNodes } from "../core/HNode";
+import { render } from "../core/render";
 import { isHNode, replaceNodes, inherit, toFrag } from "../utils/helpers";
 import { patch } from "./patch";
 import { _keys } from "../utils/refCache";
 import { clear } from "../utils/clear";
-import { HUI } from "./HUI";
+import { HUI } from "../core/HUI";
 import { mark } from "./ticker";
-import { EleProps } from "./propHandlers";
+import { EleProps } from "../core/propHandlers";
 
 export const updateChildren = function (
     element: Element, hNode: HNode<EleProps>, newChildren: unknown[], oldChildren: unknown[]

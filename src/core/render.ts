@@ -2,7 +2,7 @@ import { toNodes, HNode } from "./HNode";
 import { _document, _assign, _from } from "../utils/refCache";
 import { Store, createStore } from "./Store";
 import { toFrag } from "../utils/helpers";
-import { DeferCallback, reqTick } from "./ticker";
+import { DeferCallback, reqTick } from "../ticker/ticker";
 
 export const renderCallbacks = new Array<DeferCallback<[]>>();
 

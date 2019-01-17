@@ -1,5 +1,5 @@
 import { HNode } from "./HNode";
-import { mark } from "./ticker";
+import { mark } from "../ticker/ticker";
 
 export const handleError = function (err: unknown, hNode: HNode<any>) {
 

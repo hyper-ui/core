@@ -4,6 +4,7 @@ import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
 import { handleError } from "./handleError";
 import { EleProps } from "./propHandlers";
+import { initComponent } from "./initComponent";
 
 export type ArrayWrapped<T> = T extends any[] ? T : [T];
 
@@ -18,6 +19,8 @@ export type HProps<P extends object = EleProps> = Required<{
 }>;
 
 export interface HDesc<P extends object = EleProps, S extends object = any, C extends object = any> {
+    defaultProps?: Partial<P>;
+    defaultStore?: Partial<S>;
     state?: Array<keyof S>;
     context?: Array<keyof C>;
     init?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
@@ -65,34 +68,24 @@ export const toNodes = function (
 
         } else if (isHNode(src)) {
 
-            const { type, desc, props } = src;
+            const { type, desc } = src;
 
             src.ownerNode = ownerNode;
             src.owner = owner;
 
             if (desc) {
 
-                const store = src.store = createStore();
-                if (desc.state) {
-                    src.store.bind(src, desc.state);
-                }
-
-                src.context = context;
-                if (desc.context) {
-                    context.bind(src, desc.context);
-                }
+                const store = createStore();
 
                 try {
 
                     src.active = false;
 
-                    if (desc.init) {
-                        desc.init.call(src, props, store, context);
-                    }
+                    initComponent(src, store, context);
 
                     return src.nodes = toNodes(
                         src.output = toArr(
-                            desc.render.call(src, props, store, context)
+                            desc.render.call(src, src.props, store, context)
                         ).flat(_Infinity),
                         context,
                         ownerNode,
@@ -104,7 +97,7 @@ export const toNodes = function (
                     if (desc.catch) {
                         return src.nodes = toNodes(
                             src.output = toArr(
-                                desc.catch.call(src, err, props, store, context)
+                                desc.catch.call(src, err, src.props, store, context)
                             ).flat(_Infinity),
                             context,
                             ownerNode,
@@ -119,6 +112,8 @@ export const toNodes = function (
                 }
 
             } else {
+
+                const { props } = src;
 
                 src.events = new _Map();
 

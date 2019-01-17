@@ -81,6 +81,14 @@ This should be a readable name used to identify the component.
 
 This is an object which stands for the description of the component. It can have following properties:
 
+#### desc.defaultProps
+
+This is an optional object telling the default props which will be merged with received props.
+
+#### desc.defaultStore
+
+This is an optional object which represents default store value pairs.
+
 #### desc.state
 
 This is an array which contains some keys of the store of the component. When any stored value matching one of the given keys changes, the component will be updated.

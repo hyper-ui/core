@@ -1,9 +1,9 @@
-import { HNode, toNodes } from "./HNode";
+import { HNode, toNodes } from "../core/HNode";
 import { toArr, toFrag, isHNode, replaceNodes, inherit, SpliceArgs } from "../utils/helpers";
 import { _splice, _Infinity, _keys, _push, _indexOf, _null, _undefined } from "../utils/refCache";
-import { HUI } from "./HUI";
+import { HUI } from "../core/HUI";
 import { patch } from "./patch";
-import { handleError } from "./handleError";
+import { handleError } from "../core/handleError";
 import { clear } from "../utils/clear";
 import { mark } from "./ticker";
 
