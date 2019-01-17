@@ -58,42 +58,13 @@ You can just easily include it and start writing the code of you app because it 
 
 ## Hello World
 
-```html
-<!-- index.html -->
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
-    <title>hyper-ui example</title>
-    <style type="text/css">
-        /* Set the style of the heading which will be added later */
-        #heading {
-            text-align: center;
-        }
-    </style>
-</head>
-
-<body>
-    <!-- Import the lib -->
-    <script type="text/javascript" crossorigin="anonymous"
-        src="https://cdn.jsdelivr.net/npm/hyper-ui@latest/dist/hyper-ui.umd.min.js"></script>
-    <!-- and your code -->
-    <script type="text/javascript" src="./index.js"></script>
-</body>
-
-</html>
-```
-
 ```js
-/* index.js */
 // Define a component called `Greeting`
 const Greeting = HUI.define('Greeting', {
     // Define the `render` method
     render: function (props) {
-        // Render a simple heading: h1#heading
-        return HUI('h1', { id: 'heading' }, [
+        // Render a simple heading
+        return HUI('h1', { style: { textAlign: 'center' } }, [
             'Hello,',
             props.target,
             '!'
@@ -102,7 +73,7 @@ const Greeting = HUI.define('Greeting', {
 });
 // Render the app
 HUI.render(
-    // Create a greeting
+    // Create a greeting instance
     HUI(Greeting, { target: 'world' })
 );
 ```
@@ -116,7 +87,7 @@ HUI.render(
 
 ## Env Requirements
 
-This lib depends on some features such as `Map`, `Symbol`, `array.includes` and so on. So, if you want to use it in some old browsers, consider including some polyfills. For instance, include [`hpolyfill`](https://github.com/huang2002/hpolyfill/) in your HTML:
+This lib depends on some features such as `Map`, `Symbol`, `array.includes` and so on. So, if you want to use it in some old browsers, consider including some polyfills. For instance, include [`hpolyfill`](https://github.com/huang2002/hpolyfill/) by putting one of the following script tags in your HTML: (it should be put before the script tag of this lib)
 
 ```html
 <!-- via jsdelivr -->
@@ -129,95 +100,68 @@ This lib depends on some features such as `Map`, `Symbol`, `array.includes` and 
 
 Here is a TODO app example:
 
-```html
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
-    <title>TODO</title>
-</head>
-
-<body>
-    <!-- Load the lib -->
-    <script src="../dist/hyper-ui.umd.js"></script>
-    <!-- Create the app -->
-    <script type="text/javascript">
-        // Define the app
-        const TODO = HUI.define('TODO', {
-            // Define the state
-            state: ['items'],
-            // Define the initializer
-            init: function (props, store) {
-                // Initialize the item list
-                store.set('items', []);
-            },
-            // Define the renderer
-            render: function (props, store) {
-                return [
-                    // Render a form
-                    HUI('form', {
-                        // Handle the submit event
-                        onsubmit: function (e) {
-                            e.preventDefault();
-                            // Get the input element and its value
-                            var input = store.get('input'),
-                                content = input.value;
-                            // Validate the input data
-                            if (content) {
-                                // Add this item
-                                store.push('items', content);
-                                // Clear the input
-                                input.value = '';
-                            } else {
-                                // Hint the user to input something
-                                input.focus();
-                            }
+```js
+// Define the app
+const TODO = HUI.define('TODO', {
+    // Define the state
+    state: ['items'],
+    // Define the initializer
+    init: function (props, store) {
+        // Initialize the item list
+        store.set('items', []);
+    },
+    // Define the renderer
+    render: function (props, store) {
+        // Render multiple elements
+        return [
+            // a form
+            HUI('form',
+                {
+                    onsubmit: function (e) {
+                        e.preventDefault();
+                        // Get the input element and its value
+                        var input = store.get('input'),
+                            content = input.value;
+                        // Validate the data and handle it
+                        if (content) {
+                            // Add this item
+                            store.push('items', content);
+                            // Clear the input
+                            input.value = '';
+                        } else {
+                            // Hint the user to input something
+                            input.focus();
                         }
-                    }, [
-                        // content input
-                        HUI('input', {
-                            ref: store.setter('input'),
-                            placeholder: 'content'
-                        }),
-                        // submit button
-                        HUI('input', {
-                            attr: {
-                                type: 'submit',
-                                value: 'Add'
-                            }
-                        })
-                    ]),
-                    // Render an unordered list
-                    HUI('ul', {}, store.get('items').map(function (item, i) {
-                        // list item
-                        return HUI('li', null, [
-                            // content
-                            HUI('span', { style: 'margin-right: 1em;' }, item),
-                            // deleting link
-                            HUI('a', {
-                                href: 'javascript:;',
-                                // Handle the click event
-                                onclick: function () {
-                                    // Delete the item
-                                    store.splice('items', i, 1);
-                                }
-                            }, 'Del')
-                        ]);
-                    }))
-                ];
-            }
-        });
-        // Render
-        HUI.render([
-            // Render a heading
-            HUI('h1', null, 'TODO'),
-            // Render the app
-            HUI(TODO)
-        ]);
-    </script>
-</body>
-
-</html>
+                    }
+                }, [
+                    // content input
+                    HUI('input', { ref: store.setter('input'), placeholder: 'content' }),
+                    // submit button
+                    HUI('input', { attr: { type: 'submit', value: 'Add' } })
+                ]
+            ),
+            // an unordered list
+            HUI('ul', {}, store.get('items').map(function (item, i) {
+                // list item
+                return HUI('li', null, [
+                    // content
+                    HUI('span', { style: { marginRight: '1em' } }, item),
+                    // deleting link
+                    HUI('a', {
+                        href: 'javascript:;',
+                        onclick: function () {
+                            // Delete the item
+                            store.splice('items', i, 1);
+                        }
+                    }, 'Del')
+                ]);
+            }))
+        ];
+    }
+});
+// Render a heading and the app
+HUI.render([
+    HUI('h1', null, 'TODO'),
+    HUI(TODO)
+]);
 ```

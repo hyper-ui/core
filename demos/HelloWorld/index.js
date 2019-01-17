@@ -1,10 +1,9 @@
-/* index.js */
 // Define a component called `Greeting`
 const Greeting = HUI.define('Greeting', {
     // Define the `render` method
     render: function (props) {
-        // Render a simple heading: h1#heading
-        return HUI('h1', { id: 'heading' }, [
+        // Render a simple heading
+        return HUI('h1', { style: { textAlign: 'center' } }, [
             'Hello,',
             props.target,
             '!'
@@ -13,6 +12,6 @@ const Greeting = HUI.define('Greeting', {
 });
 // Render the app
 HUI.render(
-    // Create a greeting
+    // Create a greeting instance
     HUI(Greeting, { target: 'world' })
 );

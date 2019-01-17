@@ -149,7 +149,7 @@ This handler compares and updates the child nodes.
 
 ### propHandlers-style
 
-The style handler handles style for you so that you can use either strings or objects to describe styles.
+The style handler handles style for you so that you can use either strings or objects to describe styles. Please note that if you pass an object to describe styles, you should write style names in camel case(e.g.`textAlign`).
 
 ### propHandlers-class
 
