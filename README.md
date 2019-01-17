@@ -15,7 +15,7 @@
 
 ### Lightweight
 
-This lib is rather lightweight. The size of the file which you need to include is less than 10KB!
+This lib is rather lightweight. The size of this core package which you need to include is less than 10KB!
 
 ### Declarative
 
@@ -32,7 +32,7 @@ You can just easily include it and start writing the code of you app because it 
 1. Use npm to install it as a dependency:
 
     ```bash
-    npm i hyper-ui
+    npm i @hyper-ui/core
     ```
 
 2. Import the default export from the lib:
@@ -49,9 +49,9 @@ You can just easily include it and start writing the code of you app because it 
 
     ```html
     <!-- via jsdelivr -->
-    <script type="text/javascript" crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/hyper-ui@latest/dist/hyper-ui.umd.min.js"></script>
+    <script type="text/javascript" crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@hyper-ui/core@latest/dist/hyper-ui.core.umd.min.js"></script>
     <!-- or via unpkg -->
-    <script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/hyper-ui@latest/dist/hyper-ui.umd.min.js"></script>
+    <script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/@hyper-ui/core@latest/dist/hyper-ui.core.umd.min.js"></script>
     ```
 
 2. Access the APIs via the `HUI` global.

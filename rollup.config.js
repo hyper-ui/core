@@ -7,7 +7,7 @@ export default [
         input,
         output: {
             format: 'esm',
-            file: 'dist/hyper-ui.js'
+            file: 'dist/hyper-ui.core.js'
         }
     },
     {
@@ -18,7 +18,7 @@ export default [
         output: {
             format: 'umd',
             name: 'HUI',
-            file: 'dist/hyper-ui.umd.js'
+            file: 'dist/hyper-ui.core.umd.js'
         }
     }
 ];

@@ -1,3 +1,14 @@
+## 0.10.0 - 2019-01-17
+
+- Move to `@hyper-ui/core`
+- Remove `HUI.Context`
+- Add `store.setSome()`
+- Add `desc.defaultProps` & `desc.defaultStore`
+- Add `RenderOptions.defaultContext`
+- Add interable support to `cmp()`
+- Improve some internals
+- Improve the docs
+
 ## 0.9.0 - 2019-01-12
 
 - Add `propHandlers-prop`
