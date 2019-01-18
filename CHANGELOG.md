@@ -1,3 +1,9 @@
+## 0.11.0 - 2019-01-18
+
+- Add handler APIs
+- Improve the docs
+- Improve some internals
+
 ## 0.10.0 - 2019-01-17
 
 - Move to `@hyper-ui/core`
