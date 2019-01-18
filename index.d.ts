@@ -1,11 +1,7 @@
 import HUI from "./typings/index";
-import { HNode, HDesc } from "./typings/core/HNode";
-import { Store } from "./typings/core/Store";
-import { RefCallback, EleProps } from "./typings/core/propHandlers";
+import { EleProps } from "./typings/core/propHandlers";
 
 export as namespace HUI;
-
-
 
 declare global {
 
