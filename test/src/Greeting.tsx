@@ -2,7 +2,7 @@ interface GreetingProps {
     children: string;
 }
 
-const Greeting = HUI.define<GreetingProps, {}, TestContext>('Greeting', {
+const Greeting = HUI.define<GreetingProps, {}, TestContext, {}, TestContextHandlers>('Greeting', {
     context: ['target'],
     init(props, store, context) {
         context.set('target', props.children[0]);
@@ -22,7 +22,7 @@ const Greeting = HUI.define<GreetingProps, {}, TestContext>('Greeting', {
                 <button onclick={() => {
                     const newTarget = prompt('New target:', context.get('target'));
                     if (newTarget) {
-                        context.set('target', newTarget);
+                        context.trigger('changeTarget', newTarget);
                     }
                 }}>Change target</button>
 

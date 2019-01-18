@@ -5,9 +5,13 @@ interface TestContext {
     'greeting-color': string;
 }
 
+type TestContextHandlers = {
+    changeTarget: (newTarget: string) => string;
+};
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-HUI.render<TestContext>(
+HUI.render<TestContext, TestContextHandlers>(
     (
 
         <Inspector>
@@ -47,7 +51,7 @@ HUI.render<TestContext>(
 
             <TestInput>
                 I should be auto-focused!
-        </TestInput>
+            </TestInput>
 
             <hr />
 
@@ -57,14 +61,14 @@ HUI.render<TestContext>(
 
             <HUI.Portal parent={document.getElementById('portal')!}>
                 Portal timer at the beginning:
-            <br />
+                <br />
                 <Timer />
                 <br />
             </HUI.Portal>
 
             <HUI.Portal>
                 Portal timer before dialog:
-            <br />
+                <br />
                 <Timer />
                 <br />
             </HUI.Portal>
@@ -78,6 +82,12 @@ HUI.render<TestContext>(
     ), {
         defaultContext: {
             'greeting-color': 'blue'
+        },
+        contextHandlers: {
+            changeTarget(newTarget) {
+                this.set('target', newTarget);
+                return newTarget;
+            }
         }
     }
 );

@@ -1,4 +1,4 @@
-import { _Map, _splice, _keys } from "../utils/refCache";
+import { _Map, _splice, _entries } from "../utils/refCache";
 import { HNode } from "./HNode";
 import { mark } from "../ticker/ticker";
 import { HUI } from "./HUI";
@@ -6,12 +6,24 @@ import { SpliceArgs } from "../utils/helpers";
 
 type AssertArray<T> = T extends any[] ? T : never;
 type MapOf<T> = Map<keyof T, Pick<T, keyof T>>;
+type InjectThis<F extends (...args: any[]) => any, T> = (this: T, ...args: Parameters<F>) => ReturnType<F>;
 
-type Setter<T = unknown> = (value: T) => void;
+export type Setter<T = unknown> = (value: T) => void;
+export type SetterRecord = [Setter | undefined, Setter | undefined];
 
-export interface Store<T extends object = any> {
+export interface HandlerMap<T extends object = any> {
+    [name: string]: (this: Store<T, HandlerMap<T>>, ...args: any[]) => any;
+}
 
-    map: MapOf<T>;
+export type Handlers<H extends HandlerMap, T> = { [K in keyof H]: InjectThis<H[K], T> };
+export type PartialHandlers<H extends HandlerMap, T> = { [K in keyof H]?: InjectThis<H[K], T> | null };
+
+export interface Store<T extends object = any, H extends HandlerMap<T> = any> {
+
+    valueMap: MapOf<T>;
+    bindingMap: Map<keyof T, HNode<any>[]>;
+    setterMap: Map<keyof T, SetterRecord>;
+    handlerMap: MapOf<H>;
 
     bind(hNode: HNode<any>, subscriptions: Array<keyof T>): this;
 
@@ -30,19 +42,26 @@ export interface Store<T extends object = any> {
     splice<K extends keyof T>(key: K, start: number, deleteCount?: number): this;
     splice<K extends keyof T>(key: K, start: number, deleteCount: number, ...items: AssertArray<T[K]>): this;
 
+    handle<N extends keyof H>(name: N, handler?: InjectThis<H[N], this> | null): this;
+    handleSome(handlers: PartialHandlers<H, this>): this;
+    getHandler<N extends keyof H>(name: N): InjectThis<H[N], this> | undefined;
+    trigger<N extends keyof H>(name: N, ...args: Parameters<H[N]>): ReturnType<H[N]> | undefined;
+
 }
 
-export const createStore = function <T extends object = any>(): Store<T> {
+export const createStore = function <T extends object = any, H extends HandlerMap<T> = any>(): Store<T, H> {
 
-    type SetterRecord = [Setter | undefined, Setter | undefined];
+    const valueMap = new _Map<keyof T, any>(),
+        bindingMap = new _Map<keyof T, HNode<any>[]>(),
+        setterMap = new _Map<keyof T, SetterRecord>(),
+        handlerMap = new _Map<keyof H, any>();
 
-    const map = new _Map<keyof T, any>(),
-        bindingMap = new _Map<keyof T, Array<HNode<any>>>(),
-        setterMap = new _Map<keyof T, SetterRecord>();
+    const store: Store<T, H> = {
 
-    const store: Store<T> = {
-
-        map,
+        valueMap,
+        bindingMap,
+        setterMap,
+        handlerMap,
 
         bind(hNode, subscriptions) {
             subscriptions.forEach(key => {
@@ -56,14 +75,14 @@ export const createStore = function <T extends object = any>(): Store<T> {
         },
 
         get: function store_get(key) {
-            return map.get(key);
+            return valueMap.get(key);
         },
 
         set: function store_set(key, value, force) {
 
             if (force || !HUI.cmp(value, store.get(key))) {
 
-                map.set(key, value);
+                valueMap.set(key, value);
 
                 if (bindingMap.has(key)) {
                     bindingMap.get(key)!.forEach(hNode => {
@@ -111,8 +130,8 @@ export const createStore = function <T extends object = any>(): Store<T> {
         },
 
         setSome: function store_setSome(pairs, force) {
-            _keys(pairs).forEach(key => {
-                store.set(key as keyof T, (pairs as any)[key], force);
+            _entries(pairs).forEach(pair => {
+                store.set(pair[0] as keyof T, pair[1], force);
             });
             return this;
         },
@@ -141,6 +160,33 @@ export const createStore = function <T extends object = any>(): Store<T> {
             const arr = (store.get(key) as unknown as any[]).slice();
             _splice.apply(arr, [start, deleteCount].concat(items) as SpliceArgs);
             return store.set(key, arr as any);
+        },
+
+        handle: function store_handle(name, handler) {
+            if (handler) {
+                handlerMap.set(name, handler.bind(store));
+            } else {
+                handlerMap.delete(name);
+            }
+            return this;
+        },
+
+        handleSome: function store_handleSome(handlers) {
+            _entries(handlers).forEach(pair => {
+                store.handle(pair[0], pair[1]);
+            });
+            return this;
+        },
+
+        getHandler: function store_getHandler(name) {
+            return handlerMap.get(name) as any;
+        },
+
+        trigger: function store_trigger(name, ...args) {
+            const handler = handlerMap.get(name);
+            if (handler) {
+                return handler.apply(store, args);
+            }
         }
 
     };

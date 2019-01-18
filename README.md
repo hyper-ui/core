@@ -81,8 +81,8 @@ HUI.render(
 
 ## Links
 
-- [JSX Usage](JSX.md)
-- [API Reference](API.md)
+- [JSX Usage](docs/JSX.md)
+- [API Reference](docs/API.md)
 - [Changelog](CHANGELOG.md)
 - [License (MIT)](LICENSE)
 
@@ -104,39 +104,39 @@ Here is a TODO app example:
 ```js
 // define the editor
 const Editor = HUI.define('Editor', {
+    // initializer
+    init(props, store, context) {
+        // set the submission handler
+        store.handle('submit', event => {
+            // prevent default action
+            event.preventDefault();
+            // get the input and its value
+            const input = store.get('input'),
+                content = input.value;
+            // handle submission
+            if (content) {
+                // add the item
+                context.push('items', content);
+                // clear the input
+                input.value = '';
+            } else {
+                // hint the user to type something
+                input.focus();
+            }
+        });
+    },
     // renderer
     render(props, store, context) {
         // render a form with an input and a submit button
-        return HUI('form',
-            {
-                // handle `submit` event
-                onsubmit(event) {
-                    // prevent default action
-                    event.preventDefault();
-                    // get the input and its value
-                    const input = store.get('input'),
-                        content = input.value;
-                    // handle submission
-                    if (content) {
-                        // add the item
-                        context.push('items', content);
-                        // clear the input
-                        input.value = '';
-                    } else {
-                        // hint the user to type something
-                        input.focus();
-                    }
-                }
-            }, [
-                // the input
-                HUI('input', {
-                    ref: store.setter('input'),
-                    placeholder: props.placeholder
-                }),
-                // the submit button
-                HUI('button', { attr: { type: 'submit' } }, 'Add')
-            ]
-        );
+        return HUI('form', { onsubmit: store.getHandler('submit') }, [
+            // the input
+            HUI('input', {
+                ref: store.setter('input'),
+                placeholder: props.placeholder
+            }),
+            // the submit button
+            HUI('button', { attr: { type: 'submit' } }, 'Add')
+        ]);
     }
 });
 // define the item list

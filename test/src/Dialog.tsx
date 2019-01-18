@@ -2,7 +2,11 @@ interface DialogStore {
     on: boolean;
 }
 
-const Dialog = HUI.define<{}, DialogStore, {}>('Dialog', {
+type DialogStoreHandlers = {
+    toggle: () => void;
+}
+
+const Dialog = HUI.define<{}, DialogStore, {}, DialogStoreHandlers>('Dialog', {
 
     state: ['on'],
 
@@ -10,10 +14,16 @@ const Dialog = HUI.define<{}, DialogStore, {}>('Dialog', {
         on: true
     },
 
+    storeHandlers: {
+        toggle() {
+            this.toggle('on');
+        }
+    },
+
     render(props, store) {
         return (
             <HUI.Fragment>
-                <button onclick={() => { store.toggle('on'); }}>Toggle dialog</button>
+                <button onclick={store.getHandler('toggle')}>Toggle dialog</button>
                 {store.get('on') && (
                     <HUI.Portal>
                         <p attr={{ style: 'color: blue;' }}>[Dialog window]</p>

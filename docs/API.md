@@ -12,7 +12,7 @@ This is the default export of this lib, or the only global exported if you inclu
 
 ### type
 
-The first argument should be either a string or a symbol telling the type of the virtual node (quite like element tags in HTML). If the type has been [`define`](#define)d as a custom component, then what the [`render`](#descrender) method of the description returns will be rendered. Otherwise, it is used to specify the tag of the element which will be rendered.
+The first argument should be either a string or a symbol telling the type of the virtual node (quite like element tags in HTML). If the type has been [`defined`](#define) as a custom component, then what the [`render`](#descrender) method of the description returns will be rendered. Otherwise, it is used to specify the tag of the element which will be rendered.
 
 ### properties
 
@@ -60,6 +60,10 @@ This is an optional option which can be a [store object](#store) representing th
 
 This is an optional object that represents default context value pairs.
 
+## renderOptions.contextHandlers
+
+This optional object tells the [handlers](#storehandle) which should be added to the context.
+
 ### rendering rules
 
 Here are the rendering rules:
@@ -92,6 +96,10 @@ This is an optional object telling the default props which will be merged with r
 #### desc.defaultStore
 
 This is an optional object which represents default store value pairs.
+
+#### desc.storeHandlers
+
+This optional object tells the [handlers](#storehandle) which should be added to the store.
 
 #### desc.state
 
@@ -278,6 +286,30 @@ function splice (key: any, start: number, deleteCount: number, ...items: any[]):
 ```
 
 This method deletes some elements of the matching array and if necessary, adds some new items to it. (If there are only two arguments provided, then all the elements since `start` will be deleted.)
+
+### store.handle
+
+```ts
+function handle(name: any, handler?: null | (this: Store, ...args: any[]) => any): this;
+```
+
+This method sets the handler of `name` if `handler` is not falsy, or otherwise deletes it. The `handler` should receive arguments appended to `store.trigger` and handle the action. (The `this` pointer of `handler` will be bound to the store.)
+
+### store.getHandler
+
+```ts
+function getHandler (name: any): undefined | (this: Store, ...args: any[]) => any;
+```
+
+This methods returns the handler of `name`.
+
+### store.trigger
+
+```ts
+function trigger (name: any, ...args: any[]): any;
+```
+
+This method triggers the handler of `name`, passes appended arguments to it, and returns what it returns. (`undefined` will be returned if there is no such a handler.)
 
 ## HUI.defer
 

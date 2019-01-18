@@ -1,10 +1,11 @@
-import { Store, createStore } from "./Store";
-import { _document, _isArray, _keys, _Infinity, _Map } from "../utils/refCache";
+import { Store, createStore, HandlerMap, Handlers } from "./Store";
+import { _document, _isArray, _Infinity, _Map, _entries } from "../utils/refCache";
 import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
 import { handleError } from "./handleError";
 import { EleProps } from "./propHandlers";
 import { initComponent } from "./initComponent";
+import { EventMap } from "./listen";
 
 export type ArrayWrapped<T> = T extends any[] ? T : [T];
 
@@ -18,27 +19,25 @@ export type HProps<P extends object = EleProps> = Required<{
     /**/P[K];
 }>;
 
-export interface HDesc<P extends object = EleProps, S extends object = any, C extends object = any> {
+export interface HDesc<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
     defaultProps?: Partial<P>;
     defaultStore?: Partial<S>;
+    storeHandlers?: Handlers<SH, Store<S>>;
     state?: Array<keyof S>;
     context?: Array<keyof C>;
-    init?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
-    render: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S>, context: Store<C>) => unknown;
-    clear?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S>, context: Store<C>) => void;
-    catch?: (this: HNode<P, S, C>, err: any, props: HProps<P>, store: Store<S>, context: Store<C>) => unknown;
+    init?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => void;
+    render: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => unknown;
+    clear?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => void;
+    catch?: (this: HNode<P, S, C>, err: any, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => unknown;
 }
 
-export type EventRecord = [string, EventListener, boolean | AddEventListenerOptions];
-export type EventMap = Map<string, EventRecord>;
-
-export interface HNode<P extends object = EleProps, S extends object = any, C extends object = any> {
+export interface HNode<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
     isHNode: true;
     type: unknown;
-    desc?: HDesc<P, S, C>;
+    desc?: HDesc<P, S, C, SH, CH>;
     props: HProps<P>;
-    store?: Store<S>;
-    context?: Store<C>;
+    store?: Store<S, SH>;
+    context?: Store<C, CH>;
     owner?: HNode<any>;
     ownerNode?: Node;
     output?: unknown[];
@@ -121,8 +120,8 @@ export const toNodes = function (
                     _document.createElementNS(props.xmlns, type as string) :
                     _document.createElement(type as string);
 
-                _keys(props).forEach(key => {
-                    handleProp(node, src, key, props[key]);
+                _entries(props).forEach(pair => {
+                    handleProp(node, src, pair[0], pair[1]);
                 });
 
                 src.output = [];

@@ -1,4 +1,4 @@
-import { _isArray, _document, _is, _keys, _Node, _console } from "./refCache";
+import { _isArray, _document, _is, _keys, _Node, _console, _hasOwnProperty } from "./refCache";
 import { HNode } from "../core/HNode";
 import { EleProps } from "../core/propHandlers";
 
@@ -40,3 +40,11 @@ export const inherit = function (target: HNode<EleProps>, source: HNode<EleProps
 };
 
 export type SpliceArgs<T = any> = [number, number, ...T[]];
+
+export const supply = function <T extends object = any>(target: T, defaults: T) {
+    _keys(defaults).forEach(key => {
+        if (!_hasOwnProperty.call(target, key)) {
+            (target as any)[key] = (defaults as any)[key];
+        }
+    });
+};

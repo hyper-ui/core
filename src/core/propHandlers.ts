@@ -1,4 +1,4 @@
-import { _isArray, _keys, _assign, _Boolean, _Map } from "../utils/refCache";
+import { _isArray, _assign, _Boolean, _Map, _entries } from "../utils/refCache";
 import { HNode } from "./HNode";
 import { updateChildren } from "../ticker/updateChildren";
 
@@ -7,7 +7,7 @@ export type PropHandler<T = unknown> =
 
 export type RefCallback<T extends Element = Element> = (node?: T) => void;
 
-export interface Attributes {
+export interface AttributeMap {
     [key: string]: string;
 }
 
@@ -16,7 +16,7 @@ export interface EleProps<T extends Element = Element> {
     style?: string | { [key: string]: string };
     class?: string | any[];
     ref?: RefCallback<T>;
-    attr?: Attributes;
+    attr?: AttributeMap;
     prop?: Partial<T>;
     [key: string]: unknown;
 }
@@ -53,9 +53,9 @@ export const propHandlers = new _Map<string, PropHandler<any>>([
         callback(element);
     }],
 
-    ['attr', function (element, attributes: Attributes) {
-        _keys(attributes).forEach(key => {
-            element.setAttribute(key, attributes[key]);
+    ['attr', function (element, attributes: AttributeMap) {
+        _entries(attributes).forEach(pair => {
+            element.setAttribute(pair[0], pair[1]);
         });
     }],
 

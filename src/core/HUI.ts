@@ -12,16 +12,13 @@ import { noCmpProps } from "../ticker/patch";
 
 export const HUI = <P extends object = EleProps, S extends object = any, C extends object = any>(
     type: HType<P, S, C> | string, props?: P | null, ...children: unknown[]
-): HNode<P, S, C> => {
-    const desc = registry.get(type);
-    return {
-        isHNode: true,
-        type,
-        desc,
-        props: _assign({ children: children.flat(_Infinity) }, desc && desc.defaultProps, props) as HProps<P>,
-        active: true
-    };
-};
+): HNode<P, S, C> => ({
+    isHNode: true,
+    type,
+    desc: registry.get(type),
+    props: _assign({ children: children.flat(_Infinity) }, props) as HProps<P>,
+    active: true
+});
 
 HUI.registry = registry;
 HUI.define = define;

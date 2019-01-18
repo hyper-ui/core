@@ -1,4 +1,5 @@
-import { EventRecord } from "./HNode";
+export type EventRecord = [string, EventListener, boolean | AddEventListenerOptions];
+export type EventMap = Map<string, EventRecord>;
 
 export const LISTENER_PREFIX = 'on';
 

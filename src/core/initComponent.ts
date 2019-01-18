@@ -1,11 +1,16 @@
 import { HNode } from "./HNode";
 import { Store } from "./Store";
+import { supply } from "../utils/helpers";
 
 export const initComponent = function (hNode: HNode<any>, store: Store, ctxStore: Store) {
 
     const { props } = hNode,
         desc = hNode.desc!,
-        { defaultStore, state, context, init } = desc;
+        { defaultProps, defaultStore, storeHandlers, state, context, init } = desc;
+
+    if (defaultProps) {
+        supply(props, defaultProps);
+    }
 
     hNode.store = store;
     if (defaultStore) {
@@ -13,6 +18,9 @@ export const initComponent = function (hNode: HNode<any>, store: Store, ctxStore
     }
     if (state) {
         hNode.store.bind(hNode, state);
+    }
+    if (storeHandlers) {
+        store.handleSome(storeHandlers);
     }
 
     hNode.context = ctxStore;

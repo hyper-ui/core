@@ -34,6 +34,7 @@
     "files": [
         "dist",
         "typings",
+        "docs",
         "index.d.ts"
     ],
     "devDependencies": {
