@@ -19,15 +19,16 @@
     },
     "homepage": "https://github.com/huang2002/hyper-ui#readme",
     "keywords": [
+        "hyper-ui",
+        "core",
         "hui",
         "front-end",
         "virtual-dom",
         "vdom",
         "lightweight",
         "UI",
-        "lib",
-        "typescript",
         "jsx",
+        "typescript",
         "tsx",
         "3h"
     ],
