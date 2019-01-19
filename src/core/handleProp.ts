@@ -1,5 +1,5 @@
 import { propHandlers } from "./propHandlers";
-import { listen, LISTENER_PREFIX } from "./listen";
+import { listen, LISTENER_PREFIX } from "./events";
 import { HNode } from "./HNode";
 
 export const handleProp = function (

@@ -15,9 +15,7 @@ export const define = function <
     C extends object = any,
     SH extends HandlerMap<S> = any,
     CH extends HandlerMap<C> = any
->(
-    name: string, desc: HDesc<P, S, C, SH, CH>
-): HType<P, S, C, SH, CH> {
+>(name: string, desc: HDesc<P, S, C, SH, CH>): HType<P, S, C, SH, CH> {
 
     const type = _Symbol(name) as unknown as HType<P, S, C, SH, CH>;
 

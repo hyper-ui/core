@@ -13,10 +13,10 @@ export interface PortalProps {
 
 export interface PortalStore {
     parent: Node;
-    fragment: HNode<FragmentProps, {}, {}>;
+    fragment: HNode<FragmentProps, {}, {}, {}, {}>;
 }
 
-export const portalSymbol = define<PortalProps, PortalStore, {}>('HUI.Portal', {
+export const portalSymbol = define<PortalProps, PortalStore, {}, {}, {}>('HUI.Portal', {
 
     init: function portal_init(props, store) {
         store.set('parent', props.parent || _document.body);

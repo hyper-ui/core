@@ -5,7 +5,7 @@ export interface FragmentProps {
     children: unknown;
 }
 
-export const fragmentSymbol = define<FragmentProps, {}, {}>('HUI.Fragment', {
+export const fragmentSymbol = define<FragmentProps, {}, {}, {}, {}>('HUI.Fragment', {
     render: function fragment_render(props) {
         return props.children;
     }

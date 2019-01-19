@@ -5,9 +5,9 @@ import { handleProp } from "./handleProp";
 import { handleError } from "./handleError";
 import { EleProps } from "./propHandlers";
 import { initComponent } from "./initComponent";
-import { EventMap } from "./listen";
+import { EventMap } from "./events";
 
-export type ArrayWrapped<T> = T extends any[] ? T : [T];
+type ArrayWrapped<T> = T extends any[] ? T : [T];
 
 export type HProps<P extends object = EleProps> = Required<{
     [K in keyof P]: K extends 'children' ?
