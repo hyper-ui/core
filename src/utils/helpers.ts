@@ -11,7 +11,7 @@ export const toFrag = (nodes: Node[]) => nodes.reduce(
 );
 
 export const isHNode = (value: unknown): value is HNode<any> =>
-    value && typeof value === 'object' && (value as any).isHNode;
+    value && isObject(value) && (value as any).isHNode;
 
 export const replaceNodes = function (ownerNode: Node, oldNodes: Node[], newNodes: Node[]) {
     oldNodes.forEach((oldNode, i) => {
@@ -47,4 +47,8 @@ export const supply = function <T extends object = any>(target: T, defaults: T) 
             (target as any)[key] = (defaults as any)[key];
         }
     });
+};
+
+export const isObject = function (value: unknown): value is object {
+    return typeof value === 'object';
 };

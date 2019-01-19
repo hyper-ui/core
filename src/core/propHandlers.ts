@@ -1,6 +1,7 @@
 import { _isArray, _assign, _Boolean, _Map, _entries } from "../utils/refCache";
 import { HNode } from "./HNode";
 import { updateChildren } from "../ticker/updateChildren";
+import { isObject } from "../utils/helpers";
 
 export type PropHandler<T = unknown> =
     (element: Element, newValue: T, oldValue: T | undefined, hNode: HNode<any>) => void;
@@ -29,7 +30,7 @@ export const propHandlers = new _Map<string, PropHandler<any>>([
 
     ['style', function (element, style) {
         type HTMLElementOrSVG = HTMLElement | SVGSVGElement;
-        if (style && typeof style === 'object') {
+        if (style && isObject(style)) {
             _assign((element as HTMLElementOrSVG).style, style);
         } else {
             try {
