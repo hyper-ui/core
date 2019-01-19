@@ -1,3 +1,9 @@
+## 0.12.0 - 2019-01-19
+
+- Move docs to `wiki`
+- Add year range to `LICENSE`
+- Improve some internals
+
 ## 0.11.0 - 2019-01-18
 
 - Add handler APIs
