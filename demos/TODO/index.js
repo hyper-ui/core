@@ -1,58 +1,58 @@
-// define the editor
+// Define the editor
 const Editor = HUI.define('Editor', {
-    // initializer
+    // Initializer
     init(props, store, context) {
-        // set the submission handler
+        // Set the submission handler
         store.handle('submit', event => {
-            // prevent default action
+            // Prevent default action
             event.preventDefault();
-            // get the input and its value
+            // Get the input and its value
             const input = store.get('input'),
                 content = input.value;
-            // handle submission
+            // Handle submission
             if (content) {
-                // add the item
+                // Add the item
                 context.push('items', content);
-                // clear the input
+                // Clear the input
                 input.value = '';
             } else {
-                // hint the user to type something
+                // Hint the user to type something
                 input.focus();
             }
         });
     },
-    // renderer
-    render(props, store, context) {
-        // render a form with an input and a submit button
+    // Renderer
+    render(props, store) {
+        // Render a form with an input and a submit button in it
         return HUI('form', { onsubmit: store.getHandler('submit') }, [
-            // the input
+            // The input
             HUI('input', {
                 ref: store.setter('input'),
                 placeholder: props.placeholder
             }),
-            // the submit button
+            // The submit button
             HUI('button', { attr: { type: 'submit' } }, 'Add')
         ]);
     }
 });
-// define the item list
+// Define the item list
 const ItemList = HUI.define('ItemList', {
-    // required context
+    // Required context
     context: ['items'],
-    // renderer
+    // Renderer
     render(props, store, context) {
-        // render an unordered item list
+        // Render an unordered item list
         return HUI('ul', null, context.get('items').map((content, index) => (
-            // a list item
+            // A list item
             HUI('li', null, [
-                // content
+                // Item content
                 HUI('span', { style: { marginRight: '1em' } }, content),
-                // delete link
+                // Delete link
                 HUI('a', {
                     href: 'javascript:;',
-                    // handle `click` event
+                    // Handle `click` event
                     onclick(event) {
-                        // delete the item
+                        // Delete the item
                         context.splice('items', index, 1);
                     }
                 }, 'Delete')
@@ -60,22 +60,22 @@ const ItemList = HUI.define('ItemList', {
         )));
     }
 });
-// define the app
-const TODOApp = HUI.define('TODOApp', {
-    // renderer
+// Define the app
+const App = HUI.define('App', {
+    // Renderer
     render() {
         return [
-            // heading
+            // Heading
             HUI('h1', null, 'TODO'),
-            // editor
+            // Editor
             HUI(Editor, { placeholder: 'content' }),
-            // item list
+            // Item list
             HUI(ItemList)
         ];
     }
 });
-// render the app
+// Render the app
 HUI.render(
-    HUI(TODOApp),
+    HUI(App),
     { defaultContext: { items: [] } }
 );

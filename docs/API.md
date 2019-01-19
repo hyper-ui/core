@@ -12,7 +12,7 @@ This is the default export of this lib, or the only global exported if you inclu
 
 ### type
 
-The first argument should be either a string or a symbol telling the type of the virtual node (quite like element tags in HTML). If the type has been [`defined`](#define) as a custom component, then what the [`render`](#descrender) method of the description returns will be rendered. Otherwise, it is used to specify the tag of the element which will be rendered.
+The first argument should be either a string or a symbol telling the type of the virtual node (quite like element tags in HTML). If the type has been [defined](#define) as a custom component, then what the [`render`](#descrender) method of the description returns will be rendered. Otherwise, it is used to specify the tag of the element which will be rendered.
 
 ### properties
 
@@ -60,7 +60,7 @@ This is an optional option which can be a [store object](#store) representing th
 
 This is an optional object that represents default context value pairs.
 
-## renderOptions.contextHandlers
+### renderOptions.contextHandlers
 
 This optional object tells the [handlers](#storehandle) which should be added to the context.
 
@@ -145,7 +145,7 @@ This property is an optional function. It will be called when something goes wro
 
 ##### this
 
-The `this` pointers will be bound to the virtual node instance.
+The `this` pointers will be bound to virtual node instances.
 
 ##### props
 

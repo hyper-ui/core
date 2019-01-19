@@ -35,23 +35,30 @@ You can just easily include it and start writing the code of you app because it 
     npm install @hyper-ui/core
     ```
 
-2. Import the default export from the lib:
+2. Import the default export of this lib:
 
     ```js
     // es2015+
-    import HUI from "hyper-ui";
-    // es5
-    const HUI = require("hyper-ui");
+    import HUI from "@hyper-ui/core";
+    // or es5
+    const HUI = require("@hyper-ui/core");
     ```
+
+3. Use it to build your app.
 
 ### CDN
 
 1. Include one of the following script tags in your HTML file: (If you want a specified version, just replace `latest` with that. For more information, visit [www.jsdelivr.com](https://www.jsdelivr.com/) or [unpkg.com](https://unpkg.com/).)
 
+    via jsdelivr:
+
     ```html
-    <!-- via jsdelivr -->
     <script type="text/javascript" crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@hyper-ui/core@latest/dist/hyper-ui.core.umd.min.js"></script>
-    <!-- or via unpkg -->
+    ```
+
+    or via unpkg:
+
+    ```html
     <script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/@hyper-ui/core@latest/dist/hyper-ui.core.umd.min.js"></script>
     ```
 
@@ -90,10 +97,15 @@ HUI.render(
 
 This lib depends on some features such as `Map`, `Symbol`, `array.includes` and so on. So, if you want to use it in some old browsers, consider including some polyfills. For instance, include [`hpolyfill`](https://github.com/huang2002/hpolyfill/) by putting one of the following script tags in your HTML: (it should be put before the script tag of this lib)
 
+via jsdelivr:
+
 ```html
-<!-- via jsdelivr -->
 <script type="text/javascript" crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/hpolyfill@latest/dist/index.js"></script>
-<!-- or via unpkg -->
+```
+
+or via unpkg:
+
+```html
 <script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/hpolyfill@latest/dist/index.js"></script>
 ```
 
@@ -102,61 +114,61 @@ This lib depends on some features such as `Map`, `Symbol`, `array.includes` and 
 Here is a TODO app example:
 
 ```js
-// define the editor
+// Define the editor
 const Editor = HUI.define('Editor', {
-    // initializer
+    // Initializer
     init(props, store, context) {
-        // set the submission handler
+        // Set the submission handler
         store.handle('submit', event => {
-            // prevent default action
+            // Prevent default action
             event.preventDefault();
-            // get the input and its value
+            // Get the input and its value
             const input = store.get('input'),
                 content = input.value;
-            // handle submission
+            // Handle submission
             if (content) {
-                // add the item
+                // Add the item
                 context.push('items', content);
-                // clear the input
+                // Clear the input
                 input.value = '';
             } else {
-                // hint the user to type something
+                // Hint the user to type something
                 input.focus();
             }
         });
     },
-    // renderer
-    render(props, store, context) {
-        // render a form with an input and a submit button
+    // Renderer
+    render(props, store) {
+        // Render a form with an input and a submit button in it
         return HUI('form', { onsubmit: store.getHandler('submit') }, [
-            // the input
+            // The input
             HUI('input', {
                 ref: store.setter('input'),
                 placeholder: props.placeholder
             }),
-            // the submit button
+            // The submit button
             HUI('button', { attr: { type: 'submit' } }, 'Add')
         ]);
     }
 });
-// define the item list
+// Define the item list
 const ItemList = HUI.define('ItemList', {
-    // required context
+    // Required context
     context: ['items'],
-    // renderer
+    // Renderer
     render(props, store, context) {
-        // render an unordered item list
+        // Render an unordered item list
         return HUI('ul', null, context.get('items').map((content, index) => (
-            // a list item
+            // A list item
             HUI('li', null, [
-                // content
+                // Item content
                 HUI('span', { style: { marginRight: '1em' } }, content),
-                // delete link
+                // Delete link
                 HUI('a', {
                     href: 'javascript:;',
-                    // handle `click` event
+                    // Handle `click` event
                     onclick(event) {
-                        // delete the item
+                        // Delete the item
                         context.splice('items', index, 1);
                     }
                 }, 'Delete')
@@ -164,23 +176,23 @@ const ItemList = HUI.define('ItemList', {
         )));
     }
 });
-// define the app
-const TODOApp = HUI.define('TODOApp', {
-    // renderer
+// Define the app
+const App = HUI.define('App', {
+    // Renderer
     render() {
         return [
-            // heading
+            // Heading
             HUI('h1', null, 'TODO'),
-            // editor
+            // Editor
             HUI(Editor, { placeholder: 'content' }),
-            // item list
+            // Item list
             HUI(ItemList)
         ];
     }
 });
-// render the app
+// Render the app
 HUI.render(
-    HUI(TODOApp),
+    HUI(App),
     { defaultContext: { items: [] } }
 );
 ```
