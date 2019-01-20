@@ -13,8 +13,8 @@
 ```js
 // Define a component called `Greeting`
 const Greeting = HUI.define('Greeting', {
-    // Define the `render` method
-    render: function (props) {
+    // Define the renderer
+    render(props) {
         // Render a simple heading
         return HUI('h1', { style: { textAlign: 'center' } }, [
             'Hello,',
