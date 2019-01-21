@@ -104,7 +104,7 @@ export const updateChildren = function (
         renderToDOM(newChildren.slice(oldChildrenCount), {
             parent: element,
             owner: hNode,
-            context: hNode.context!
+            context: hNode.context
         });
     }
 

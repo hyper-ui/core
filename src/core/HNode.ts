@@ -71,6 +71,7 @@ export const toNodeArr = function toNodes(
 
             src.ownerNode = ownerNode;
             src.owner = owner;
+            src.context = context;
 
             if (desc) {
 
@@ -80,7 +81,7 @@ export const toNodeArr = function toNodes(
 
                     src.active = false;
 
-                    initComponent(src, store, context);
+                    initComponent(src, store);
 
                     return src.nodes = toNodeArr(
                         src.output = toArr(

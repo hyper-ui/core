@@ -25,7 +25,9 @@ HUI.render<TestContext, TestContextHandlers>(
 
             <hr />
 
-            <ShowTarget />
+            <p>
+                <ShowTarget />
+            </p>
 
             <hr />
 

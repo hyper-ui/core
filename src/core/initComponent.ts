@@ -2,9 +2,9 @@ import { HNode } from "./HNode";
 import { Store } from "./Store";
 import { supply } from "../utils/helpers";
 
-export const initComponent = function (hNode: HNode<any>, store: Store, ctxStore: Store) {
+export const initComponent = function (hNode: HNode<any>, store: Store) {
 
-    const { props } = hNode,
+    const { props, context: ctxStore } = hNode,
         desc = hNode.desc!,
         { defaultProps, defaultStore, storeHandlers, state, context, init } = desc;
 
@@ -23,13 +23,12 @@ export const initComponent = function (hNode: HNode<any>, store: Store, ctxStore
         store.handleSome(storeHandlers);
     }
 
-    hNode.context = ctxStore;
     if (context) {
-        ctxStore.bind(hNode, context);
+        ctxStore!.bind(hNode, context);
     }
 
     if (init) {
-        init.call(hNode, props, store, ctxStore);
+        init.call(hNode, props, store, ctxStore!);
     }
 
 };

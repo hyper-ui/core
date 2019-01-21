@@ -46,7 +46,7 @@ const Greeting = HUI.define<GreetingProps, {}, TestContext, {}, TestContextHandl
 const ShowTarget = HUI.define<{}, {}, TestContext>('ShowTarget', {
     context: ['target'],
     render(props, store, context) {
-        return <p>context.target: {context.get('target')}</p>;
+        return `context.target: ${context.get('target')}`;
     }
 });
 
