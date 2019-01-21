@@ -1,3 +1,8 @@
+### 0.13.1 - 2019-01-21
+
+- Improve type declarations
+- Fix context inheritance
+
 ## 0.13.0 - 2019-01-21
 
 - Improve handler type declarations
