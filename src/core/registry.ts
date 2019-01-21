@@ -1,16 +1,15 @@
 import { HDesc } from "./HNode";
 import { _Map, _Symbol } from "../utils/refCache";
 import { Store, HandlerMap } from "./Store";
-import { EleProps } from "./propHandlers";
 
-export interface HType<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
+export interface HType<P extends object = any, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
     (props: P, store: Store<S, SH>, context: Store<C, CH>): any;
 };
 
 export const registry = new _Map<HType<any> | string, HDesc<any>>();
 
 export const define = function <
-    P extends object = EleProps,
+    P extends object = any,
     S extends object = any,
     C extends object = any,
     SH extends HandlerMap<S> = any,

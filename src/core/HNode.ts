@@ -9,7 +9,7 @@ import { EventMap } from "./events";
 
 type ArrayWrapped<T> = T extends any[] ? T : [T];
 
-export type HProps<P extends object = EleProps> = Required<{
+export type HProps<P extends object = any> = Required<{
     [K in keyof P]: K extends 'children' ?
     /**/P extends { children: any } ?
     /******/ArrayWrapped<P['children']> :
@@ -19,7 +19,7 @@ export type HProps<P extends object = EleProps> = Required<{
     /**/P[K];
 }> & ('children' extends keyof P ? {} : { children: unknown[] });
 
-export interface HDesc<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
+export interface HDesc<P extends object = any, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
     defaultProps?: Partial<P>;
     defaultStore?: Partial<S>;
     storeHandlers?: PartialHandlers<SH, Store<S>>;
