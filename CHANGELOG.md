@@ -1,3 +1,8 @@
+### 0.12.1 - 2019-01-21
+
+- Improve the type declaration of `props.children`
+- Improve some internals
+
 ## 0.12.0 - 2019-01-19
 
 - Move docs to `wiki`

@@ -1,7 +1,7 @@
 {
     "name": "@hyper-ui/core",
     "description": "A lightweight front-end UI lib.",
-    "version": "0.12.0",
+    "version": "0.12.1",
     "main": "dist/hyper-ui.umd.min.js",
     "module": "dist/hyper-ui.min.js",
     "types": "index.d.ts",
