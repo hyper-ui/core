@@ -1,5 +1,5 @@
-import { HNode, toNodes } from "../core/HNode";
-import { render } from "../core/render";
+import { HNode, toNodeArr } from "../core/HNode";
+import { renderToDOM } from "../core/render";
 import { isHNode, replaceNodes, inherit, toFrag } from "../utils/helpers";
 import { patch } from "./patch";
 import { _keys } from "../utils/refCache";
@@ -77,7 +77,7 @@ export const updateChildren = function (
                 oldNodes = childNodes.length ? [childNodes[nodeOffset]] : [];
             }
 
-            nodeOffset += (newNodes = toNodes(newChild, hNode.context!, element, hNode)).length;
+            nodeOffset += (newNodes = toNodeArr(newChild, hNode.context!, element, hNode)).length;
 
             if (oldNodes.length) {
                 replaceNodes(element, oldNodes, newNodes);
@@ -101,7 +101,7 @@ export const updateChildren = function (
     });
 
     if (oldChildrenCount < newChildren.length) {
-        render(newChildren.slice(oldChildrenCount), {
+        renderToDOM(newChildren.slice(oldChildrenCount), {
             parent: element,
             owner: hNode,
             context: hNode.context!

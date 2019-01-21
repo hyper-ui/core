@@ -1,4 +1,4 @@
-import { render } from "../core/render";
+import { renderToDOM } from "../core/render";
 import { define } from "../core/registry";
 import { _document, _Symbol, _null } from "../utils/refCache";
 import { clear } from "../utils/clear";
@@ -24,7 +24,7 @@ export const portalSymbol = define<PortalProps, PortalStore, {}, {}, {}>('HUI.Po
     },
 
     render: function portal_render(props, store, context) {
-        render(store.get('fragment'), {
+        renderToDOM(store.get('fragment'), {
             parent: store.get('parent'),
             owner: this,
             context

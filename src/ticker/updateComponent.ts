@@ -1,4 +1,4 @@
-import { HNode, toNodes } from "../core/HNode";
+import { HNode, toNodeArr } from "../core/HNode";
 import { toArr, toFrag, isHNode, replaceNodes, inherit, SpliceArgs } from "../utils/helpers";
 import { _splice, _Infinity, _keys, _push, _indexOf, _null, _undefined } from "../utils/refCache";
 import { HUI } from "../core/HUI";
@@ -84,7 +84,7 @@ export const updateComponent = function (hNode: HNode<any>) {
                     return;
                 }
 
-                curNodes = toNodes(cur, context!, ownerNode!, hNode);
+                curNodes = toNodeArr(cur, context!, ownerNode!, hNode);
 
                 oldNodes = _splice.apply(
                     newNodes,
@@ -104,7 +104,7 @@ export const updateComponent = function (hNode: HNode<any>) {
                         _null;
                 }
 
-                _push.apply(newNodes, curNodes = toNodes(cur, context!, ownerNode!, hNode));
+                _push.apply(newNodes, curNodes = toNodeArr(cur, context!, ownerNode!, hNode));
 
                 ownerNode!.insertBefore(toFrag(curNodes), nextNode);
 
@@ -116,7 +116,7 @@ export const updateComponent = function (hNode: HNode<any>) {
 
         if (desc!.catch) {
 
-            newNodes = toNodes(
+            newNodes = toNodeArr(
                 hNode.output = toArr(desc!.catch!.call(hNode, err, props, store!, context!)),
                 context!,
                 ownerNode!,

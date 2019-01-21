@@ -1,4 +1,4 @@
-import { Store, createStore, HandlerMap, Handlers } from "./Store";
+import { Store, createStore, HandlerMap, PartialHandlers } from "./Store";
 import { _document, _isArray, _Infinity, _Map, _entries } from "../utils/refCache";
 import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
@@ -22,7 +22,7 @@ export type HProps<P extends object = EleProps> = Required<{
 export interface HDesc<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
     defaultProps?: Partial<P>;
     defaultStore?: Partial<S>;
-    storeHandlers?: Handlers<SH, Store<S>>;
+    storeHandlers?: PartialHandlers<SH, Store<S>>;
     state?: Array<keyof S>;
     context?: Array<keyof C>;
     init?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => void;
@@ -47,7 +47,7 @@ export interface HNode<P extends object = EleProps, S extends object = any, C ex
     error?: unknown;
 }
 
-export const toNodes = function (
+export const toNodeArr = function toNodes(
     src: unknown, context: Store, ownerNode: Node, owner?: HNode<any>
 ): Node[] {
 
@@ -63,7 +63,7 @@ export const toNodes = function (
 
         if (_isArray(src) && src.length) {
 
-            return src.flat(_Infinity).map(s => toNodes(s, context, ownerNode, owner)).flat();
+            return src.flat(_Infinity).map(s => toNodeArr(s, context, ownerNode, owner)).flat();
 
         } else if (isHNode(src)) {
 
@@ -82,7 +82,7 @@ export const toNodes = function (
 
                     initComponent(src, store, context);
 
-                    return src.nodes = toNodes(
+                    return src.nodes = toNodeArr(
                         src.output = toArr(
                             desc.render.call(src, src.props, store, context)
                         ).flat(_Infinity),
@@ -94,7 +94,7 @@ export const toNodes = function (
                 } catch (err) {
 
                     if (desc.catch) {
-                        return src.nodes = toNodes(
+                        return src.nodes = toNodeArr(
                             src.output = toArr(
                                 desc.catch.call(src, err, src.props, store, context)
                             ).flat(_Infinity),
@@ -116,18 +116,18 @@ export const toNodes = function (
 
                 src.events = new _Map();
 
-                const node = props.xmlns ?
+                const element = props.xmlns ?
                     _document.createElementNS(props.xmlns, type as string) :
                     _document.createElement(type as string);
 
                 _entries(props).forEach(pair => {
-                    handleProp(node, src, pair[0], pair[1]);
+                    handleProp(element, src, pair[0], pair[1]);
                 });
 
                 src.output = [];
-                src.nodes = [node];
+                src.nodes = [element];
 
-                return [node];
+                return [element];
 
             }
         }

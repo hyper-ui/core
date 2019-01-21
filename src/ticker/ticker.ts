@@ -1,5 +1,5 @@
 import { HNode } from "../core/HNode";
-import { _undefined, _splice } from "../utils/refCache";
+import { _undefined, _splice, _now } from "../utils/refCache";
 import { HUI } from "../core/HUI";
 import { updateComponent } from "./updateComponent";
 import { renderCallbacks } from "../core/render";
@@ -17,7 +17,7 @@ const ticker = function () {
 
     willTick = false;
 
-    const deadline = Date.now() + HUI.frameLimit;
+    const deadline = _now() + HUI.frameLimit;
 
     let cur: HNode<any> | undefined,
         i: number;
@@ -39,7 +39,7 @@ const ticker = function () {
             throw err;
         }
 
-        if (Date.now() >= deadline) {
+        if (_now() >= deadline) {
             expired.splice(0, i + 1);
             return tick();
         }
@@ -52,7 +52,7 @@ const ticker = function () {
 
         preDeferCallbacks[i]();
 
-        if (Date.now() >= deadline) {
+        if (_now() >= deadline) {
             preDeferCallbacks.splice(0, i + 1);
             return tick();
         }
@@ -65,7 +65,7 @@ const ticker = function () {
 
         renderCallbacks[i]();
 
-        if (Date.now() >= deadline) {
+        if (_now() >= deadline) {
             renderCallbacks.splice(0, i + 1);
             return tick();
         }
@@ -78,7 +78,7 @@ const ticker = function () {
 
         deferCallbacks[i]();
 
-        if (Date.now() >= deadline) {
+        if (_now() >= deadline) {
             deferCallbacks.splice(0, i + 1);
             return tick();
         }

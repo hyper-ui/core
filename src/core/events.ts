@@ -7,7 +7,7 @@ const CAPTURE = 'Captrue',
     NONPASSIVE = 'Nonpassive',
     ONCE = 'Once';
 
-export const listen = function (node: Element, event: string, listener: EventListener): EventRecord {
+export const listen = function (element: Element, event: string, listener: EventListener): EventRecord {
 
     let capture = false,
         passive = true,
@@ -28,7 +28,7 @@ export const listen = function (node: Element, event: string, listener: EventLis
 
     const options = (capture || !passive || once) && { capture, passive, once };
 
-    node.addEventListener(event, listener, options);
+    element.addEventListener(event, listener, options);
 
     return [event, listener, options];
 

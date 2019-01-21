@@ -6,7 +6,7 @@ import { isObject } from "../utils/helpers";
 export type PropHandler<T = unknown> =
     (element: Element, newValue: T, oldValue: T | undefined, hNode: HNode<any>) => void;
 
-export type RefCallback<T extends Element = Element> = (node?: T) => void;
+export type RefCallback<T extends Element = Element> = (element?: T) => void;
 
 export interface AttributeMap {
     [key: string]: string;

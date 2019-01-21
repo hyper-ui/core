@@ -15,7 +15,6 @@ export interface HandlerMap<T extends object = any> {
     [name: string]: (this: Store<T, HandlerMap<T>>, ...args: any[]) => any;
 }
 
-export type Handlers<H extends HandlerMap, T> = { [K in keyof H]: InjectThis<H[K], T> };
 export type PartialHandlers<H extends HandlerMap, T> = { [K in keyof H]?: InjectThis<H[K], T> | null };
 
 export interface Store<T extends object = any, H extends HandlerMap<T> = any> {
@@ -63,7 +62,7 @@ export const createStore = function <T extends object = any, H extends HandlerMa
         setterMap,
         handlerMap,
 
-        bind(hNode, subscriptions) {
+        bind: function store_bind(hNode, subscriptions) {
             subscriptions.forEach(key => {
                 if (bindingMap.has(key)) {
                     bindingMap.get(key)!.push(hNode);

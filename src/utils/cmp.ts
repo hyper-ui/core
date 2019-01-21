@@ -2,7 +2,7 @@ import { _is, _isArray, _Node, _keys, SYMBOL_ITERATOR, _from, _toString } from "
 import { HNode } from "../core/HNode";
 import { isObject } from "./helpers";
 
-export const cmp = function (a: unknown, b: unknown): boolean {
+export const cmp = function compare(a: unknown, b: unknown): boolean {
 
     if (_is(a, b)) {
         return true;

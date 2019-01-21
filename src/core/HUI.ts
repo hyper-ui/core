@@ -1,8 +1,8 @@
 import { HNode, HProps } from "./HNode";
 import { registry, define, HType } from "./registry";
-import { _assign, _Infinity } from "../utils/refCache";
+import { _assign, _Infinity, _requestAnimationFrame } from "../utils/refCache";
 import { createStore } from "./Store";
-import { render } from "./render";
+import { renderToDOM } from "./render";
 import { propHandlers, EleProps } from "./propHandlers";
 import { portalSymbol } from "../ext/Portal";
 import { defer } from "../ticker/ticker";
@@ -28,9 +28,9 @@ HUI.createStore = createStore;
 HUI.propHandlers = propHandlers;
 HUI.noCmpProps = noCmpProps;
 
-HUI.render = render;
+HUI.render = renderToDOM;
 
-HUI.tick = function (callback: () => void) { requestAnimationFrame(callback); };
+HUI.tick = function (callback: () => void) { _requestAnimationFrame(callback); };
 HUI.frameLimit = 15;
 HUI.defer = defer;
 
