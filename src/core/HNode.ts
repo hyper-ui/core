@@ -17,7 +17,7 @@ export type HProps<P extends object = EleProps> = Required<{
     /**********/ArrayWrapped<P['children']> | undefined :
     /**********/unknown[] :
     /**/P[K];
-}>;
+}> & ('children' extends keyof P ? {} : { children: unknown[] });
 
 export interface HDesc<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
     defaultProps?: Partial<P>;
