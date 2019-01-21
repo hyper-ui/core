@@ -3,7 +3,7 @@ const fs = require('fs'),
 
 const DIST_DIR = 'dist';
 
-console.log('# dist info\n');
+console.log(`# dist info (v${require('./package.json').version})\n`);
 
 fs.readdirSync(DIST_DIR).forEach(fileName => {
 
