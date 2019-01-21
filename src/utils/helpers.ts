@@ -1,6 +1,5 @@
 import { _isArray, _document, _is, _keys, _Node, _console, _hasOwnProperty } from "./refCache";
 import { HNode } from "../core/HNode";
-import { EleProps } from "../core/propHandlers";
 
 export const toArr = <T>(a: T): T extends any[] ? T : [T] =>
     (_isArray(a) ? a : [a]) as T extends any[] ? T : [T];
@@ -11,7 +10,7 @@ export const toFrag = (nodes: Node[]) => nodes.reduce(
 );
 
 export const isHNode = (value: unknown): value is HNode<any> =>
-    value && isObject(value) && (value as any).isHNode;
+    value && isObject(value) && (value as HNode<any>).isHNode;
 
 export const replaceNodes = function (ownerNode: Node, oldNodes: Node[], newNodes: Node[]) {
     oldNodes.forEach((oldNode, i) => {
@@ -23,7 +22,7 @@ export const replaceNodes = function (ownerNode: Node, oldNodes: Node[], newNode
     });
 };
 
-export const inherit = function (target: HNode<EleProps>, source: HNode<EleProps>) {
+export const inherit = function (target: HNode<any>, source: HNode<any>) {
 
     target.nodes = source.nodes;
     target.owner = source.owner;
@@ -49,6 +48,4 @@ export const supply = function <T extends object = any>(target: T, defaults: T) 
     });
 };
 
-export const isObject = function (value: unknown): value is object {
-    return typeof value === 'object';
-};
+export const isObject = (value: unknown): value is object => typeof value === 'object';
