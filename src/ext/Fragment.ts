@@ -1,5 +1,4 @@
 import { define } from "../core/registry";
-import { _document, _Symbol } from "../utils/refCache";
 
 export interface FragmentProps {
     children: unknown;

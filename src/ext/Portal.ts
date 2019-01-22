@@ -1,6 +1,6 @@
 import { renderToDOM } from "../core/render";
 import { define } from "../core/registry";
-import { _document, _Symbol, _null } from "../utils/refCache";
+import { _document, _null } from "../utils/refCache";
 import { clear } from "../utils/clear";
 import { HNode } from "../core/HNode";
 import { FragmentProps } from "./Fragment";

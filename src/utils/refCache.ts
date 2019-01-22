@@ -1,4 +1,5 @@
 export const _document = document,
+    _createTextNode = _document.createTextNode.bind(_document),
     _Object = Object,
     _Array = Array,
     _String = String,

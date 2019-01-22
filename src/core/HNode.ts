@@ -1,5 +1,5 @@
 import { Store, createStore, HandlerMap, PartialHandlers } from "./Store";
-import { _document, _isArray, _Infinity, _Map, _entries } from "../utils/refCache";
+import { _document, _isArray, _Infinity, _Map, _entries, _createTextNode } from "../utils/refCache";
 import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
 import { handleError } from "./handleError";
@@ -54,9 +54,9 @@ export const toNodeArr = function toNodes(
     const srcType = typeof src;
 
     if (srcType === 'string') {
-        return [_document.createTextNode(src as string)];
+        return [_createTextNode(src as string)];
     } else if (srcType === 'number') {
-        return [_document.createTextNode(String(src))];
+        return [_createTextNode(String(src))];
     }
 
     if (src) {
@@ -135,6 +135,6 @@ export const toNodeArr = function toNodes(
 
     }
 
-    return [_document.createTextNode('')];
+    return [_createTextNode('')];
 
 };
