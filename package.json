@@ -13,11 +13,11 @@
     },
     "license": "MIT",
     "author": "3h",
-    "repository": "huang2002/hyper-ui",
+    "repository": "hyper-ui/core",
     "bugs": {
-        "url": "https://github.com/huang2002/hyper-ui/issues"
+        "url": "https://github.com/hyper-ui/core/issues"
     },
-    "homepage": "https://github.com/huang2002/hyper-ui#readme",
+    "homepage": "https://github.com/hyper-ui/core/wiki",
     "keywords": [
         "hyper-ui",
         "core",
@@ -39,9 +39,9 @@
     ],
     "devDependencies": {
         "@babel/core": "^7.2.2",
-        "@babel/preset-env": "^7.2.3",
-        "rollup": "^1.1.0",
-        "rollup-plugin-babel": "^4.3.1",
+        "@babel/preset-env": "^7.3.1",
+        "rollup": "^1.1.2",
+        "rollup-plugin-babel": "^4.3.2",
         "terser": "^3.14.1",
         "typescript": "^3.2.4"
     }
