@@ -2,7 +2,7 @@ import { toNodeArr, HNode } from "./HNode";
 import { _document, _assign, _from } from "../utils/refCache";
 import { createStore, Store, HandlerMap, PartialHandlers } from "./Store";
 import { toFrag } from "../utils/helpers";
-import { DeferCallback, reqTick } from "../ticker/ticker";
+import { DeferCallback, reqTick, willTick } from "../ticker/ticker";
 
 export const renderCallbacks = new Array<DeferCallback<[]>>();
 
@@ -47,7 +47,9 @@ export const renderToDOM = function render<C extends object = any, H extends Han
             renderToDOM(src, { parent, owner, clear, context, sync: true });
         });
 
-        reqTick();
+        if (!willTick) {
+            reqTick();
+        }
 
     }
 

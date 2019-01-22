@@ -32,19 +32,19 @@ export interface HDesc<P extends object = any, S extends object = any, C extends
 }
 
 export interface HNode<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
-    isHNode: true;
+    isHN: true;
     type: unknown;
     desc?: HDesc<P, S, C, SH, CH>;
     props: HProps<P>;
-    store?: Store<S, SH>;
-    context?: Store<C, CH>;
+    sto?: Store<S, SH>;
+    ctx?: Store<C, CH>;
     owner?: HNode<any>;
-    ownerNode?: Node;
-    output?: unknown[];
+    ownNode?: Node;
+    out?: unknown[];
     nodes?: Node[];
     active: boolean;
-    events?: EventMap;
-    error?: unknown;
+    evMap?: EventMap;
+    err?: unknown;
 }
 
 export const toNodeArr = function toNodes(
@@ -69,9 +69,9 @@ export const toNodeArr = function toNodes(
 
             const { type, desc } = src;
 
-            src.ownerNode = ownerNode;
+            src.ownNode = ownerNode;
             src.owner = owner;
-            src.context = context;
+            src.ctx = context;
 
             if (desc) {
 
@@ -84,7 +84,7 @@ export const toNodeArr = function toNodes(
                     initComponent(src, store);
 
                     return src.nodes = toNodeArr(
-                        src.output = toArr(
+                        src.out = toArr(
                             desc.render.call(src, src.props, store, context)
                         ).flat(_Infinity),
                         context,
@@ -96,7 +96,7 @@ export const toNodeArr = function toNodes(
 
                     if (desc.catch) {
                         return src.nodes = toNodeArr(
-                            src.output = toArr(
+                            src.out = toArr(
                                 desc.catch.call(src, err, src.props, store, context)
                             ).flat(_Infinity),
                             context,
@@ -115,7 +115,7 @@ export const toNodeArr = function toNodes(
 
                 const { props } = src;
 
-                src.events = new _Map();
+                src.evMap = new _Map();
 
                 const element = props.xmlns ?
                     _document.createElementNS(props.xmlns, type as string) :
@@ -125,7 +125,7 @@ export const toNodeArr = function toNodes(
                     handleProp(element, src, pair[0], pair[1]);
                 });
 
-                src.output = [];
+                src.out = [];
                 src.nodes = [element];
 
                 return [element];

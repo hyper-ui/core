@@ -1,7 +1,7 @@
 import { HNode } from "./HNode";
 import { mark } from "../ticker/ticker";
 
-export const handleError = function (err: unknown, hNode: HNode<any>) {
+export const handleError = function handleErr(err: unknown, hNode: HNode<any>) {
 
     let { owner } = hNode,
         desc;
@@ -12,7 +12,7 @@ export const handleError = function (err: unknown, hNode: HNode<any>) {
             owner = owner.owner;
         }
 
-        owner.error = err;
+        owner.err = err;
 
         mark(owner);
 

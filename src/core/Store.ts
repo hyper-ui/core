@@ -48,7 +48,9 @@ export interface Store<T extends object = any, H extends HandlerMap<T> = any> {
 
 }
 
-export const createStore = function <T extends object = any, H extends HandlerMap<T> = any>(): Store<T, H> {
+export const createStore = function crtSto<
+    T extends object = any, H extends HandlerMap<T> = any
+>(): Store<T, H> {
 
     const valueMap = new _Map<keyof T, any>(),
         bindingMap = new _Map<keyof T, HNode<any>[]>(),
@@ -62,7 +64,7 @@ export const createStore = function <T extends object = any, H extends HandlerMa
         setterMap,
         handlerMap,
 
-        bind: function store_bind(hNode, subscriptions) {
+        bind: function s_bind(hNode, subscriptions) {
             subscriptions.forEach(key => {
                 if (bindingMap.has(key)) {
                     bindingMap.get(key)!.push(hNode);
@@ -73,11 +75,11 @@ export const createStore = function <T extends object = any, H extends HandlerMa
             return this;
         },
 
-        get: function store_get(key) {
+        get: function s_get(key) {
             return valueMap.get(key);
         },
 
-        set: function store_set(key, value, force) {
+        set: function s_set(key, value, force) {
 
             if (force || !HUI.cmp(value, store.get(key))) {
 
@@ -97,7 +99,7 @@ export const createStore = function <T extends object = any, H extends HandlerMa
 
         },
 
-        setter: function store_setter(key, force) {
+        setter: function s_setter(key, force) {
 
             const index = +!force;
 
@@ -128,40 +130,40 @@ export const createStore = function <T extends object = any, H extends HandlerMa
 
         },
 
-        setSome: function store_setSome(pairs, force) {
+        setSome: function s_setSome(pairs, force) {
             _entries(pairs).forEach(pair => {
                 store.set(pair[0] as keyof T, pair[1], force);
             });
             return this;
         },
 
-        toggle: function store_toggle(key) {
+        toggle: function s_toggle(key) {
             return store.set(key, !store.get(key) as any);
         },
 
-        inc: function store_inc(key, addition = 1) {
+        inc: function s_inc(key, addition = 1) {
             return store.set(key, store.get(key) + addition);
         },
 
-        push: function store_push(key, ...items) {
+        push: function s_push(key, ...items) {
             return store.set(key, (store.get(key) as unknown as any[]).concat(items) as any);
         },
 
-        unshift: function store_unshift(key, ...items) {
+        unshift: function s_unshift(key, ...items) {
             return store.set(key, items.concat(store.get(key)) as any);
         },
 
-        slice: function store_slice(key, start, end) {
+        slice: function s_slice(key, start, end) {
             return store.set(key, (store.get(key) as unknown as any[]).slice(start, end) as any);
         },
 
-        splice: function store_splice(key: keyof T, start: number, deleteCount: number, ...items: any[]) {
+        splice: function s_splice(key: keyof T, start: number, deleteCount: number, ...items: any[]) {
             const arr = (store.get(key) as unknown as any[]).slice();
             _splice.apply(arr, [start, deleteCount].concat(items) as SpliceArgs);
             return store.set(key, arr as any);
         },
 
-        handle: function store_handle(name, handler) {
+        handle: function s_handle(name, handler) {
             if (handler) {
                 handlerMap.set(name, handler.bind(store));
             } else {
@@ -170,18 +172,18 @@ export const createStore = function <T extends object = any, H extends HandlerMa
             return this;
         },
 
-        handleSome: function store_handleSome(handlers) {
+        handleSome: function s_handleSome(handlers) {
             _entries(handlers).forEach(pair => {
                 store.handle(pair[0], pair[1]);
             });
             return this;
         },
 
-        getHandler: function store_getHandler(name) {
+        getHandler: function s_getHandler(name) {
             return handlerMap.get(name) as any;
         },
 
-        trigger: function store_trigger(name, ...args) {
+        trigger: function s_trigger(name, ...args) {
             const handler = handlerMap.get(name);
             if (handler) {
                 return handler.apply(store, args);

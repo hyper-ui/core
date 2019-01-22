@@ -24,11 +24,13 @@ export interface EleProps<T extends Element = Element> {
 
 export const propHandlers = new _Map<string, PropHandler<any>>([
 
-    ['children', function (element, newChildren: unknown[], oldChildren: unknown[] | undefined, hNode) {
+    ['children', function chdHandler(
+        element, newChildren: unknown[], oldChildren: unknown[] | undefined, hNode
+    ) {
         updateChildren(element, hNode, newChildren, oldChildren || []);
     }],
 
-    ['style', function (element, style) {
+    ['style', function styHandler(element, style) {
         type HTMLElementOrSVG = HTMLElement | SVGSVGElement;
         if (style && isObject(style)) {
             _assign((element as HTMLElementOrSVG).style, style);
@@ -41,7 +43,7 @@ export const propHandlers = new _Map<string, PropHandler<any>>([
         }
     }],
 
-    ['class', function (element, classes) {
+    ['class', function clsHandler(element, classes) {
         element.setAttribute(
             'class',
             _isArray(classes) ?
@@ -50,17 +52,17 @@ export const propHandlers = new _Map<string, PropHandler<any>>([
         );
     }],
 
-    ['ref', function (element, callback: RefCallback) {
+    ['ref', function refHandler(element, callback: RefCallback) {
         callback(element);
     }],
 
-    ['attr', function (element, attributes: AttributeMap) {
+    ['attr', function attrHandler(element, attributes: AttributeMap) {
         _entries(attributes).forEach(pair => {
             element.setAttribute(pair[0], pair[1]);
         });
     }],
 
-    ['prop', function (element, properties: Partial<HTMLElement>) {
+    ['prop', function propHandler(element, properties: Partial<HTMLElement>) {
         _assign(element, properties);
     }]
 

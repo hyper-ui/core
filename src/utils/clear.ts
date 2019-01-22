@@ -2,11 +2,10 @@ import { expired } from "../ticker/ticker";
 import { HNode } from "../core/HNode";
 import { _console } from "./refCache";
 import { isHNode } from "./helpers";
-import { EleProps } from "../core/propHandlers";
 
-export const clear = function (hNode: HNode<any>) {
+export const clear = function clr(hNode: HNode<any>) {
 
-    const { desc, output } = hNode;
+    const { desc, out: output, props } = hNode;
 
     hNode.active = false;
 
@@ -14,7 +13,7 @@ export const clear = function (hNode: HNode<any>) {
 
         if (desc.clear) {
             try {
-                desc.clear.call(hNode, hNode.props, hNode.store!, hNode.context!);
+                desc.clear.call(hNode, props, hNode.sto!, hNode.ctx!);
             } catch (err) {
                 _console.error(err);
             }
@@ -22,9 +21,8 @@ export const clear = function (hNode: HNode<any>) {
 
     } else {
 
-        const { ref } = hNode.props as EleProps;
-        if (ref) {
-            ref();
+        if (props.ref) {
+            props.ref();
         }
 
     }

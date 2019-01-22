@@ -7,9 +7,9 @@ import { handleError } from "../core/handleError";
 import { clear } from "../utils/clear";
 import { mark } from "./ticker";
 
-export const updateComponent = function (hNode: HNode<any>) {
+export const updateComponent = function updCom(hNode: HNode<any>) {
 
-    const { desc, output, nodes, owner, ownerNode, context, props, store, error } = hNode,
+    const { desc, out: output, nodes, owner, ownNode: ownerNode, ctx: context, props, sto: store, err: error } = hNode,
         outputLength = output!.length,
         ownerNodes = owner && owner.nodes!;
 
@@ -20,7 +20,7 @@ export const updateComponent = function (hNode: HNode<any>) {
         hNode.active = false;
 
         if (error) {
-            hNode.error = _undefined;
+            hNode.err = _undefined;
             throw error;
         }
 
@@ -29,7 +29,7 @@ export const updateComponent = function (hNode: HNode<any>) {
             curNodes: Node[], curProps: any, curPropKeys: string[],
             nodeOffset = 0, nextNode: Node | null;
 
-        (hNode.output = toArr(
+        (hNode.out = toArr(
             desc!.render.call(hNode, props, store!, context!)
         ).flat(_Infinity)).forEach((cur: unknown, i) => {
 
@@ -117,7 +117,7 @@ export const updateComponent = function (hNode: HNode<any>) {
         if (desc!.catch) {
 
             newNodes = toNodeArr(
-                hNode.output = toArr(desc!.catch!.call(hNode, err, props, store!, context!)),
+                hNode.out = toArr(desc!.catch!.call(hNode, err, props, store!, context!)),
                 context!,
                 ownerNode!,
                 hNode

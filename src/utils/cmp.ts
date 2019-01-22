@@ -2,7 +2,7 @@ import { _is, _isArray, _Node, _keys, SYMBOL_ITERATOR, _from, _toString } from "
 import { HNode } from "../core/HNode";
 import { isObject } from "./helpers";
 
-export const cmp = function compare(a: unknown, b: unknown): boolean {
+export const compare = function cmp(a: unknown, b: unknown): boolean {
 
     if (_is(a, b)) {
         return true;
@@ -11,7 +11,7 @@ export const cmp = function compare(a: unknown, b: unknown): boolean {
     if (_isArray(a)) {
         return _isArray(b) &&
             a.length === b.length &&
-            a.every((v, i) => cmp(b[i], v));
+            a.every((v, i) => compare(b[i], v));
     }
 
     if (
@@ -23,13 +23,13 @@ export const cmp = function compare(a: unknown, b: unknown): boolean {
         if ((a as any)[SYMBOL_ITERATOR]) {
 
             return (b as any)[SYMBOL_ITERATOR] &&
-                cmp(_from(a as Iterable<any>), _from(b as Iterable<any>));
+                compare(_from(a as Iterable<any>), _from(b as Iterable<any>));
 
-        } else if ((a as HNode<any>).isHNode) {
+        } else if ((a as HNode<any>).isHN) {
 
-            return (b as HNode<any>).isHNode &&
+            return (b as HNode<any>).isHN &&
                 (a as HNode<any>).type === (b as HNode<any>).type &&
-                cmp((a as HNode<any>).props, (b as HNode<any>).props);
+                compare((a as HNode<any>).props, (b as HNode<any>).props);
 
         } else if (!(a instanceof _Node || b instanceof _Node)) {
 
@@ -37,7 +37,7 @@ export const cmp = function compare(a: unknown, b: unknown): boolean {
                 keysB = _keys(b!);
 
             return keysA.length === keysB.length &&
-                keysA.every(k => keysB.includes(k) && cmp((a as any)[k], (b as any)[k]));
+                keysA.every(k => keysB.includes(k) && compare((a as any)[k], (b as any)[k]));
 
         }
 

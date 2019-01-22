@@ -1,12 +1,6 @@
 export type EventRecord = [string, EventListener, boolean | AddEventListenerOptions];
 export type EventMap = Map<string, EventRecord>;
 
-export const LISTENER_PREFIX = 'on';
-
-const CAPTURE = 'Captrue',
-    NONPASSIVE = 'Nonpassive',
-    ONCE = 'Once';
-
 export const listen = function (element: Element, event: string, listener: EventListener): EventRecord {
 
     let capture = false,
@@ -14,13 +8,13 @@ export const listen = function (element: Element, event: string, listener: Event
         once = false;
 
     for (let i = 0; i < 3; i++) {
-        if (event.endsWith(CAPTURE)) {
+        if (event.endsWith('Capture')) {
             capture = true;
             event = event.slice(0, -7);
-        } else if (event.endsWith(NONPASSIVE)) {
+        } else if (event.endsWith('Nonpassive')) {
             passive = false;
             event = event.slice(0, -10);
-        } else if (event.endsWith(ONCE)) {
+        } else if (event.endsWith('Once')) {
             once = true;
             event = event.slice(0, -4);
         }

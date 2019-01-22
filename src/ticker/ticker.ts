@@ -4,16 +4,15 @@ import { HUI } from "../core/HUI";
 import { updateComponent } from "./updateComponent";
 import { renderCallbacks } from "../core/render";
 
-export type DeferCallback<A extends any[]=any[]> = (...args: A) => void;
+export type DeferCallback<A extends any[]=any[]> = (this: void, ...args: A) => void;
 
 export const expired = new Array<HNode<any> | undefined>();
 
-const deferCallbacks = new Array<DeferCallback>(),
-    preDeferCallbacks = new Array<DeferCallback<[]>>();
+const deferCallbacks = new Array<DeferCallback>();
 
-let willTick = false;
+export let willTick = false;
 
-const ticker = function () {
+const ticker = function frame() {
 
     willTick = false;
 
@@ -41,25 +40,12 @@ const ticker = function () {
 
         if (_now() >= deadline) {
             expired.splice(0, i + 1);
-            return tick();
+            return reqTick();
         }
 
     }
 
     expired.length = 0;
-
-    for (i = 0; i < preDeferCallbacks.length; i++) {
-
-        preDeferCallbacks[i]();
-
-        if (_now() >= deadline) {
-            preDeferCallbacks.splice(0, i + 1);
-            return tick();
-        }
-
-    }
-
-    preDeferCallbacks.length = 0;
 
     for (i = 0; i < renderCallbacks.length; i++) {
 
@@ -67,7 +53,7 @@ const ticker = function () {
 
         if (_now() >= deadline) {
             renderCallbacks.splice(0, i + 1);
-            return tick();
+            return reqTick();
         }
 
     }
@@ -80,7 +66,7 @@ const ticker = function () {
 
         if (_now() >= deadline) {
             deferCallbacks.splice(0, i + 1);
-            return tick();
+            return reqTick();
         }
 
     }
@@ -89,30 +75,28 @@ const ticker = function () {
 
 };
 
-const tick = function () {
+export const reqTick = function () {
     HUI.tick(ticker);
     willTick = true;
 };
 
-export const reqTick = function () {
-    if (!willTick) {
-        tick();
-    }
-};
-
 export const mark = function (hNode: HNode<any>) {
     if (!expired.includes(hNode)) {
-        reqTick();
         expired.push(hNode);
+        if (!willTick) {
+            reqTick();
+        }
     }
 };
 
 export const defer = function <A extends any[]=any[]>(callback: DeferCallback<A>, ...args: A) {
 
     deferCallbacks.push(function () {
-        callback(...args);
+        callback.apply(_undefined, args);
     });
 
-    reqTick();
+    if (!willTick) {
+        reqTick();
+    }
 
 };

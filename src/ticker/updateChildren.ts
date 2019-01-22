@@ -8,7 +8,7 @@ import { HUI } from "../core/HUI";
 import { mark } from "./ticker";
 import { EleProps } from "../core/propHandlers";
 
-export const updateChildren = function (
+export const updateChildren = function updChd(
     element: Element, hNode: HNode<EleProps>, newChildren: unknown[], oldChildren: unknown[]
 ) {
 
@@ -77,7 +77,7 @@ export const updateChildren = function (
                 oldNodes = childNodes.length ? [childNodes[nodeOffset]] : [];
             }
 
-            nodeOffset += (newNodes = toNodeArr(newChild, hNode.context!, element, hNode)).length;
+            nodeOffset += (newNodes = toNodeArr(newChild, hNode.ctx!, element, hNode)).length;
 
             if (oldNodes.length) {
                 replaceNodes(element, oldNodes, newNodes);
@@ -104,7 +104,7 @@ export const updateChildren = function (
         renderToDOM(newChildren.slice(oldChildrenCount), {
             parent: element,
             owner: hNode,
-            context: hNode.context
+            context: hNode.ctx
         });
     }
 

@@ -9,10 +9,11 @@ export const toFrag = (nodes: Node[]) => nodes.reduce(
     _document.createDocumentFragment()
 );
 
-export const isHNode = (value: unknown): value is HNode<any> =>
-    value && isObject(value) && (value as HNode<any>).isHNode;
+export const isHNode = function isHN(value: unknown): value is HNode<any> {
+    return value && isObject(value) && (value as HNode<any>).isHN;
+}
 
-export const replaceNodes = function (ownerNode: Node, oldNodes: Node[], newNodes: Node[]) {
+export const replaceNodes = function replNodes(ownerNode: Node, oldNodes: Node[], newNodes: Node[]) {
     oldNodes.forEach((oldNode, i) => {
         if (i) {
             ownerNode.removeChild(oldNode);
@@ -26,14 +27,14 @@ export const inherit = function (target: HNode<any>, source: HNode<any>) {
 
     target.nodes = source.nodes;
     target.owner = source.owner;
-    target.ownerNode = source.ownerNode;
-    target.context = source.context;
-    target.store = source.store;
+    target.ownNode = source.ownNode;
+    target.ctx = source.ctx;
+    target.sto = source.sto;
 
     if (source.desc) {
-        target.output = source.output;
+        target.out = source.out;
     } else {
-        target.events = source.events;
+        target.evMap = source.evMap;
     }
 
 };
@@ -48,4 +49,6 @@ export const supply = function <T extends object = any>(target: T, defaults: T) 
     });
 };
 
-export const isObject = (value: unknown): value is object => typeof value === 'object';
+export const isObject = function isObj(value: unknown): value is object {
+    return typeof value === 'object';
+};

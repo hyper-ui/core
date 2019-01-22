@@ -3,7 +3,7 @@ import { define } from "../core/registry";
 import { _document, _null } from "../utils/refCache";
 import { clear } from "../utils/clear";
 import { HNode } from "../core/HNode";
-import { FragmentProps } from "./Fragment";
+import { FragmentProps, Fragment } from "./Fragment";
 import { HUI } from "../core/HUI";
 
 export interface PortalProps {
@@ -12,34 +12,34 @@ export interface PortalProps {
 }
 
 export interface PortalStore {
-    parent: Node;
-    fragment: HNode<FragmentProps, {}, {}, {}, {}>;
+    p: Node;
+    f: HNode<FragmentProps, {}, {}, {}, {}>;
 }
 
-export const portalSymbol = define<PortalProps, PortalStore, {}, {}, {}>('HUI.Portal', {
+export const Portal = define<PortalProps, PortalStore, {}, {}, {}>('HUI.Portal', {
 
-    init: function portal_init(props, store) {
-        store.set('parent', props.parent || _document.body);
-        store.set('fragment', HUI(HUI.Fragment, _null, props.children));
+    init: function port_init(props, store) {
+        store.set('p', props.parent || _document.body);
+        store.set('f', HUI(Fragment, _null, props.children));
     },
 
-    render: function portal_render(props, store, context) {
-        renderToDOM(store.get('fragment'), {
-            parent: store.get('parent'),
+    render: function port_render(props, store, context) {
+        renderToDOM(store.get('f'), {
+            parent: store.get('p'),
             owner: this,
             context
         });
     },
 
-    clear: function portal_clear(props, store) {
+    clear: function port_clear(props, store) {
 
-        const fragment = store.get('fragment')!,
-            { ownerNode, nodes } = fragment;
+        const fragment = store.get('f')!,
+            { ownNode, nodes } = fragment;
 
         clear(fragment);
 
         nodes!.forEach(node => {
-            ownerNode!.removeChild(node);
+            ownNode!.removeChild(node);
         });
 
         nodes!.length = 0;

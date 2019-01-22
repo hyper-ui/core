@@ -1,5 +1,5 @@
 import { propHandlers } from "./propHandlers";
-import { listen, LISTENER_PREFIX } from "./events";
+import { listen } from "./events";
 import { HNode } from "./HNode";
 
 export const handleProp = function (
@@ -14,16 +14,16 @@ export const handleProp = function (
 
     } else {
 
-        if (key.startsWith(LISTENER_PREFIX)) {
+        if (key.startsWith('on')) {
 
-            const { events } = hNode,
-                record = events!.get(key);
+            const { evMap } = hNode,
+                record = evMap!.get(key);
 
             if (record) {
                 element.removeEventListener(record[0], record[1], record[2]);
             }
 
-            events!.set(key, listen(element, key.slice(2), newValue as EventListener));
+            evMap!.set(key, listen(element, key.slice(2), newValue as EventListener));
 
         } else if (key in element) {
 

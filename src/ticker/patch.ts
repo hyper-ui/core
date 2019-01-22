@@ -4,7 +4,7 @@ import { handleProp } from "../core/handleProp";
 
 export const noCmpProps = ['children'];
 
-export const patch = function patchElement(
+export const patch = function patchEle(
     element: Element, hNode: HNode<any>, curProps: any, oldProps: any, curPropKeys: string[]
 ) {
 
