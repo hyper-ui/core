@@ -21,7 +21,7 @@ export type HProps<P extends object = any> = {
             )
         )
     ) : (
-        P[K] | undefined
+        P[K]
     );
 } & ('children' extends keyof P ? {} : {
     children: unknown[];
