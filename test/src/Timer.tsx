@@ -11,11 +11,7 @@ type TimerStoreHandlers = {
     setInterval: (interval: number) => any;
 }
 
-interface TimerDefaultProps {
-    start: number;
-}
-
-const Timer = HUI.define<TimerProps, TimerStore, {}, TimerStoreHandlers, {}, TimerDefaultProps>('Timer', {
+const Timer = HUI.define<TimerProps, TimerStore, {}, TimerStoreHandlers, {}>('Timer', {
 
     state: ['time'],
 
@@ -32,7 +28,7 @@ const Timer = HUI.define<TimerProps, TimerStore, {}, TimerStoreHandlers, {}, Tim
     },
 
     init(props, store) {
-        store.set('time', props.start);
+        store.set('time', props.start!);
         store.set('timer', store.trigger('setInterval', 1000));
     },
 

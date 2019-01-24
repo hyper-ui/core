@@ -10,13 +10,13 @@ import { compare } from "../utils/cmp";
 import { Fragment } from "../ext/Fragment";
 import { noCmpProps } from "../ticker/patch";
 
-export const HUI = <P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any, DP extends Partial<P> = {}>(
+export const HUI = <P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any>(
     type: HType<P, S, C, SH, CH> | string, props?: P | null, ...children: unknown[]
-): HNode<P, S, C, SH, CH, DP> => ({
+): HNode<P, S, C, SH, CH> => ({
     isHN: true,
     type,
     desc: registry.get(type),
-    props: _assign({ children: children.flat(_Infinity) }, props) as unknown as HProps<P, DP>,
+    props: _assign({ children: children.flat(_Infinity) }, props) as unknown as HProps<P>,
     active: true
 });
 
