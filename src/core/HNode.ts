@@ -9,33 +9,45 @@ import { EventMap } from "./events";
 
 type ArrayWrapped<T> = T extends any[] ? T : [T];
 
-export type HProps<P extends object = any> = Required<{
-    [K in keyof P]: K extends 'children' ?
-    /**/P extends { children: any } ?
-    /******/ArrayWrapped<P['children']> :
-    /******/P extends { children?: any } ?
-    /**********/ArrayWrapped<P['children']> | undefined :
-    /**********/unknown[] :
-    /**/P[K];
-}> & ('children' extends keyof P ? {} : { children: unknown[] });
+export type HProps<P extends object = any, DP extends Partial<P> = {}> = {
+    [K in keyof P]-?: K extends 'children' ? (
+        P extends { children: any } ? (
+            ArrayWrapped<P['children']>
+        ) : (
+            P extends { children?: any } ? (
+                ArrayWrapped<P['children']> | undefined
+            ) : (
+                unknown[]
+            )
+        )
+    ) : (
+        K extends keyof DP ? (
+            Exclude<P[K], undefined>
+        ) : (
+            P[K] | undefined
+        )
+    );
+} & ('children' extends keyof P ? {} : {
+    children: unknown[];
+});
 
-export interface HDesc<P extends object = any, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
-    defaultProps?: Partial<P>;
+export interface HDesc<P extends object = any, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any, DP extends Partial<P> = {}> {
+    defaultProps?: DP;
     defaultStore?: Partial<S>;
     storeHandlers?: PartialHandlers<SH, Store<S>>;
     state?: Array<keyof S>;
     context?: Array<keyof C>;
-    init?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => void;
-    render: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => unknown;
-    clear?: (this: HNode<P, S, C>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => void;
-    catch?: (this: HNode<P, S, C>, err: any, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => unknown;
+    init?: (this: HNode<P, S, C, SH, CH, DP>, props: HProps<P, DP>, store: Store<S, SH>, context: Store<C, CH>) => void;
+    render: (this: HNode<P, S, C, SH, CH, DP>, props: HProps<P, DP>, store: Store<S, SH>, context: Store<C, CH>) => unknown;
+    clear?: (this: HNode<P, S, C, SH, CH, DP>, props: HProps<P, DP>, store: Store<S, SH>, context: Store<C, CH>) => void;
+    catch?: (this: HNode<P, S, C, SH, CH, DP>, err: any, props: HProps<P, DP>, store: Store<S, SH>, context: Store<C, CH>) => unknown;
 }
 
-export interface HNode<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
+export interface HNode<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any, DP extends Partial<P> = {}> {
     isHN: true;
     type: unknown;
-    desc?: HDesc<P, S, C, SH, CH>;
-    props: HProps<P>;
+    desc?: HDesc<P, S, C, SH, CH, DP>;
+    props: HProps<P, DP>;
     sto?: Store<S, SH>;
     ctx?: Store<C, CH>;
     owner?: HNode<any>;
