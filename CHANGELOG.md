@@ -1,3 +1,7 @@
+### 0.15.1 - 2019-01-24
+
+- Fix type declarations
+
 ## 0.15.0 - 2019-01-24
 
 - Improve the type declaration of props
