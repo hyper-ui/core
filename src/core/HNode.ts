@@ -1,4 +1,4 @@
-import { Store, createStore, HandlerMap, PartialHandlers } from "./Store";
+import { Store, createStore, PartialHandlers, StoreType, StoreHandlers } from "./Store";
 import { _document, _isArray, _Infinity, _Map, _entries, _createTextNode } from "../utils/refCache";
 import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
@@ -27,25 +27,25 @@ export type HProps<P extends object = any> = {
     children: unknown[];
 });
 
-export interface HDesc<P extends object = any, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
+export interface HDesc<P extends object = any, S extends Store = Store, C extends Store = Store> {
     defaultProps?: Partial<P>;
-    defaultStore?: Partial<S>;
-    storeHandlers?: PartialHandlers<SH, Store<S>>;
-    state?: Array<keyof S>;
-    context?: Array<keyof C>;
-    init?: (this: HNode<P, S, C, SH, CH>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => void;
-    render: (this: HNode<P, S, C, SH, CH>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => unknown;
-    clear?: (this: HNode<P, S, C, SH, CH>, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => void;
-    catch?: (this: HNode<P, S, C, SH, CH>, err: any, props: HProps<P>, store: Store<S, SH>, context: Store<C, CH>) => unknown;
+    defaultStore?: Partial<StoreType<S>>;
+    storeHandlers?: PartialHandlers<StoreHandlers<S>, S>;
+    state?: Array<keyof StoreType<S>>;
+    context?: Array<keyof StoreType<C>>;
+    init?: (this: HNode<P, S, C>, props: HProps<P>, store: S, context: C) => void;
+    render: (this: HNode<P, S, C>, props: HProps<P>, store: S, context: C) => unknown;
+    clear?: (this: HNode<P, S, C>, props: HProps<P>, store: S, context: C) => void;
+    catch?: (this: HNode<P, S, C>, err: any, props: HProps<P>, store: S, context: C) => unknown;
 }
 
-export interface HNode<P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any> {
+export interface HNode<P extends object = EleProps, S extends Store = Store, C extends Store = Store> {
     isHN: true;
     type: unknown;
-    desc?: HDesc<P, S, C, SH, CH>;
+    desc?: HDesc<P, S, C>;
     props: HProps<P>;
-    sto?: Store<S, SH>;
-    ctx?: Store<C, CH>;
+    sto?: S;
+    ctx?: C;
     owner?: HNode<any>;
     ownNode?: Node;
     out?: unknown[];

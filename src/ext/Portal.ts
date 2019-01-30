@@ -5,6 +5,7 @@ import { clear } from "../utils/clear";
 import { HNode } from "../core/HNode";
 import { FragmentProps, Fragment } from "./Fragment";
 import { HUI } from "../core/HUI";
+import { Store } from "../core/Store";
 
 export interface PortalProps {
     parent?: Node;
@@ -13,10 +14,10 @@ export interface PortalProps {
 
 export interface PortalStore {
     p: Node;
-    f: HNode<FragmentProps, {}, {}, {}, {}>;
+    f: HNode<FragmentProps, Store<{}>, Store<{}>>;
 }
 
-export const Portal = define<PortalProps, PortalStore, {}, {}, {}>('HUI.Portal', {
+export const Portal = define<PortalProps, Store<PortalStore>, Store<{}>>('HUI.Portal', {
 
     init: function port_init(props, store) {
         store.set('p', props.parent || _document.body);

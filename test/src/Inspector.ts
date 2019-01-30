@@ -8,7 +8,7 @@ interface InspectorProps {
     children: unknown;
 }
 
-const Inspector = HUI.define<InspectorProps, {}, {}>('Inspector', {
+const Inspector = HUI.define<InspectorProps, HUI.Store<{}>, HUI.Store<{}>>('Inspector', {
 
     render(props) {
         HUI.defer((self) => {

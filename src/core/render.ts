@@ -1,27 +1,27 @@
 import { toNodeArr, HNode } from "./HNode";
 import { _document, _assign, _from } from "../utils/refCache";
-import { createStore, Store, HandlerMap, PartialHandlers } from "./Store";
+import { createStore, Store, PartialHandlers, StoreType, StoreHandlers } from "./Store";
 import { toFrag } from "../utils/helpers";
 import { DeferCallback, reqTick, willTick } from "../ticker/ticker";
 
 export const renderCallbacks = new Array<DeferCallback<[]>>();
 
-export interface RenderOptions<C extends object = any, H extends HandlerMap<C> = any> {
+export interface RenderOptions<C extends Store = Store> {
     clear?: boolean;
-    context?: Store<C, H>;
-    defaultContext?: Partial<C>;
-    contextHandlers?: PartialHandlers<H, Store<C, H>>;
+    context?: C;
+    defaultContext?: Partial<StoreType<C>>;
+    contextHandlers?: PartialHandlers<StoreHandlers<C>, C>;
     parent?: Node;
-    owner?: HNode<any, any, C>;
+    owner?: HNode<any>;
     sync?: boolean;
 }
 
-export const renderToDOM = function render<C extends object = any, H extends HandlerMap<C> = any>(
-    src: any, options: RenderOptions<C, H> = {}
+export const renderToDOM = function render<C extends Store = Store>(
+    src: any, options: RenderOptions<C> = {}
 ) {
 
     const { parent = _document.body,
-        clear, owner, context = createStore<C, H>(),
+        clear, owner, context = createStore<StoreType<C>, StoreHandlers<C>>() as C,
         defaultContext, contextHandlers } = options;
 
     if (defaultContext) {

@@ -7,7 +7,7 @@ interface TestInputStore {
     value: string;
 }
 
-const TestInput = HUI.define<TestInputProps, TestInputStore, {}>('TestInput', {
+const TestInput = HUI.define<TestInputProps, HUI.Store<TestInputStore>, HUI.Store<{}>>('TestInput', {
 
     state: ['value'],
 

@@ -9,7 +9,7 @@ type MapOf<T> = Map<keyof T, Pick<T, keyof T>>;
 type InjectThis<F extends (...args: any[]) => any, T> = (this: T, ...args: Parameters<F>) => ReturnType<F>;
 
 export type Setter<T = unknown> = (value: T) => void;
-export type SetterRecord = [Setter | undefined, Setter | undefined];
+export type SetterRecord<T = unknown> = [Setter<T> | undefined, Setter<T> | undefined];
 
 export interface HandlerMap<T extends object = any> {
     [name: string]: (this: Store<T, HandlerMap<T>>, ...args: any[]) => any;
@@ -17,11 +17,14 @@ export interface HandlerMap<T extends object = any> {
 
 export type PartialHandlers<H extends HandlerMap, T> = { [K in keyof H]?: InjectThis<H[K], T> | null };
 
+export type StoreType<S> = S extends Store<infer T> ? T : never;
+export type StoreHandlers<S> = S extends Store<any, infer H> ? H : never;
+
 export interface Store<T extends object = any, H extends HandlerMap<T> = any> {
 
     valueMap: MapOf<T>;
     bindingMap: Map<keyof T, HNode<any>[]>;
-    setterMap: Map<keyof T, SetterRecord>;
+    setterMap: Map<keyof T, SetterRecord<any>>;
     handlerMap: MapOf<H>;
 
     bind(hNode: HNode<any>, subscriptions: Array<keyof T>): this;
@@ -54,7 +57,7 @@ export const createStore = function crtSto<
 
     const valueMap = new _Map<keyof T, any>(),
         bindingMap = new _Map<keyof T, HNode<any>[]>(),
-        setterMap = new _Map<keyof T, SetterRecord>(),
+        setterMap = new _Map<keyof T, SetterRecord<any>>(),
         handlerMap = new _Map<keyof H, any>();
 
     const store: Store<T, H> = {
@@ -120,7 +123,7 @@ export const createStore = function crtSto<
 
                 const setters = new Array<Setter>();
 
-                setterMap.set(key, setters as SetterRecord);
+                setterMap.set(key, setters as SetterRecord<any>);
 
                 return setters[index] = function setter(value: any) {
                     store.set(key, value, force);

@@ -1,17 +1,15 @@
 /// <reference types="../.." />
 
-interface TestContext {
+type TestContext = HUI.Store<{
     target: string;
     'greeting-color': string;
-}
-
-type TestContextHandlers = {
+}, {
     changeTarget: (newTarget: string) => string;
-};
+}>;
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-HUI.render<TestContext, TestContextHandlers>(
+HUI.render<TestContext>(
     (
 
         <Inspector>

@@ -2,7 +2,7 @@ interface ThrowTestStore {
     msg: string;
 }
 
-const ThrowTest = HUI.define<{}, ThrowTestStore, {}>('ThrowTest', {
+const ThrowTest = HUI.define<{}, HUI.Store<ThrowTestStore>, HUI.Store<{}>>('ThrowTest', {
 
     state: ['msg'],
 

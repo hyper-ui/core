@@ -6,7 +6,7 @@ type DialogStoreHandlers = {
     toggle: () => void;
 }
 
-const Dialog = HUI.define<{}, DialogStore, {}, DialogStoreHandlers>('Dialog', {
+const Dialog = HUI.define<{}, HUI.Store<DialogStore, DialogStoreHandlers>, HUI.Store<{}>>('Dialog', {
 
     state: ['on'],
 

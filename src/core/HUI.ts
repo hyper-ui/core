@@ -1,22 +1,23 @@
-import { HNode, HProps } from "./HNode";
-import { registry, define, HType } from "./registry";
+import { HProps as _HProps, HDesc as _HDesc, HNode as _HNode } from "./HNode";
+import { registry, define, HType as _HType } from "./registry";
 import { _assign, _Infinity, _requestAnimationFrame } from "../utils/refCache";
-import { createStore, HandlerMap } from "./Store";
-import { renderToDOM } from "./render";
-import { propHandlers, EleProps } from "./propHandlers";
-import { Portal } from "../ext/Portal";
+import { Store as _Store, createStore, HandlerMap as _HandlerMap, Setter as _Setter, SetterRecord as _SetterRecord, StoreType as _StoreType, StoreHandlers as _StoreHandlers, PartialHandlers as _PartialHandlers } from "./Store";
+import { RenderOptions as _RenderOptions, renderToDOM } from "./render";
+import { propHandlers, EleProps as _EleProps, PropHandler as _PropHandler, RefCallback as _RefCallback, AttributeMap as _AttributeMap } from "./propHandlers";
+import { EventRecord as _EventRecord, EventMap as _EventMap } from "./events";
+import { Portal, PortalProps as _PortalProps, PortalStore as _PortalStore } from "../ext/Portal";
+import { Fragment, FragmentProps as _FragmentProps } from "../ext/Fragment";
 import { defer } from "../ticker/ticker";
 import { compare } from "../utils/cmp";
-import { Fragment } from "../ext/Fragment";
 import { noCmpProps } from "../ticker/patch";
 
-export const HUI = <P extends object = EleProps, S extends object = any, C extends object = any, SH extends HandlerMap<S> = any, CH extends HandlerMap<C> = any>(
-    type: HType<P, S, C, SH, CH> | string, props?: P | null, ...children: unknown[]
-): HNode<P, S, C, SH, CH> => ({
+export const HUI = <P extends object = _EleProps, S extends _Store = _Store, C extends _Store = _Store>(
+    type: _HType<P, S, C> | string, props?: P | null, ...children: unknown[]
+): _HNode<P, S, C> => ({
     isHN: true,
     type,
-    desc: registry.get(type),
-    props: _assign({ children: children.flat(_Infinity) }, props) as unknown as HProps<P>,
+    desc: registry.get(type as any),
+    props: _assign({ children: children.flat(_Infinity) }, props) as unknown as _HProps<P>,
     active: true
 });
 
@@ -38,3 +39,33 @@ HUI.Portal = Portal;
 HUI.Fragment = Fragment;
 
 HUI.cmp = compare;
+
+export namespace HUI {
+
+    export type HProps<P extends object = any> = _HProps<P>;
+    export type HDesc<P extends object = any, S extends _Store = _Store, C extends _Store = _Store> = _HDesc<P, S, C>;
+    export type HNode<P extends object = any, S extends _Store = _Store, C extends _Store = _Store> = _HNode<P, S, C>;
+
+    export type HType<P extends object = any, S extends _Store = _Store, C extends _Store = _Store> = _HType<P, S, C>;
+
+    export type Store<T extends object = any, H extends _HandlerMap = any> = _Store<T, H>;
+    export type HandlerMap<T extends object = any> = _HandlerMap<T>;
+    export type Setter<T = unknown> = _Setter<T>;
+    export type SetterRecord<T = unknown> = _SetterRecord<T>;
+
+    export type RenderOptions<C extends Store = Store> = _RenderOptions<C>;
+
+    export type EleProps<T extends Element = Element> = _EleProps<T>;
+    export type PropHandler<T = unknown> = _PropHandler<T>;
+    export type RefCallback<T extends Element = Element> = _RefCallback<T>;
+    export type AttributeMap = _AttributeMap;
+
+    export type EventRecord = _EventRecord;
+    export type EventMap = _EventMap;
+
+    export type FragmentProps = _FragmentProps;
+
+    export type PortalProps = _PortalProps;
+    export type PortalStore = _PortalStore;
+
+}

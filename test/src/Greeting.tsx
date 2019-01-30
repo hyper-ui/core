@@ -2,7 +2,7 @@ interface GreetingProps {
     children: string;
 }
 
-const Greeting = HUI.define<GreetingProps, {}, TestContext, {}, TestContextHandlers>('Greeting', {
+const Greeting = HUI.define<GreetingProps, HUI.Store<{}>, TestContext>('Greeting', {
     context: ['target'],
     init(props, store, context) {
         context.set('target', props.children[0]);
@@ -43,7 +43,7 @@ const Greeting = HUI.define<GreetingProps, {}, TestContext, {}, TestContextHandl
     }
 });
 
-const ShowTarget = HUI.define<{}, {}, TestContext>('ShowTarget', {
+const ShowTarget = HUI.define<{}, HUI.Store<{}>, TestContext>('ShowTarget', {
     context: ['target'],
     render(props, store, context) {
         return `context.target: ${context.get('target')}`;
@@ -55,7 +55,7 @@ interface RefTestStore {
     ref?: HTMLParagraphElement;
 }
 
-const RefTest = HUI.define<{}, RefTestStore, {}>('RefTest', {
+const RefTest = HUI.define<{}, HUI.Store<RefTestStore>, HUI.Store<{}>>('RefTest', {
 
     state: ['msg'],
 
