@@ -1,7 +1,7 @@
 import { HProps as _HProps, HDesc as _HDesc, HNode as _HNode } from "./HNode";
 import { registry, define, HType as _HType } from "./registry";
 import { _assign, _Infinity, _requestAnimationFrame } from "../utils/refCache";
-import { Store as _Store, createStore, HandlerMap as _HandlerMap, Setter as _Setter, SetterRecord as _SetterRecord, StoreType as _StoreType, StoreHandlers as _StoreHandlers, PartialHandlers as _PartialHandlers } from "./Store";
+import { Store as _Store, createStore, HandlerMap as _HandlerMap, Setter as _Setter, SetterRecord as _SetterRecord, StoreType as _StoreType, StoreHandlers as _StoreHandlers, PartialHandlers as _PartialHandlers, EmptyStore as _EmptyStore } from "./Store";
 import { RenderOptions as _RenderOptions, renderToDOM } from "./render";
 import { propHandlers, EleProps as _EleProps, PropHandler as _PropHandler, RefCallback as _RefCallback, AttributeMap as _AttributeMap } from "./propHandlers";
 import { EventRecord as _EventRecord, EventMap as _EventMap } from "./events";
@@ -52,6 +52,7 @@ export namespace HUI {
     export type HandlerMap<T extends object = any> = _HandlerMap<T>;
     export type Setter<T = unknown> = _Setter<T>;
     export type SetterRecord<T = unknown> = _SetterRecord<T>;
+    export type EmptyStore = _EmptyStore;
 
     export type RenderOptions<C extends Store = Store> = _RenderOptions<C>;
 

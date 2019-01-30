@@ -11,7 +11,7 @@ type TimerStoreHandlers = {
     setInterval: (interval: number) => any;
 }
 
-const Timer = HUI.define<TimerProps, HUI.Store<TimerStore, TimerStoreHandlers>, HUI.Store<{}>>('Timer', {
+const Timer = HUI.define<TimerProps, HUI.Store<TimerStore, TimerStoreHandlers>, HUI.EmptyStore>('Timer', {
 
     state: ['time'],
 

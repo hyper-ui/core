@@ -2,13 +2,13 @@ interface ThrowerProps {
     msg: string;
 }
 
-const Thrower = HUI.define<ThrowerProps, HUI.Store<{}>, HUI.Store<{}>>('Thrower', {
+const Thrower = HUI.define<ThrowerProps, HUI.EmptyStore, HUI.EmptyStore>('Thrower', {
     render(props) {
         throw props.msg;
     }
 });
 
-const CatchTest = HUI.define<{}, HUI.Store<{}>, HUI.Store<{}>>('CatchTest', {
+const CatchTest = HUI.define<{}, HUI.EmptyStore, HUI.EmptyStore>('CatchTest', {
 
     render() {
         return (

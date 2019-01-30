@@ -20,6 +20,8 @@ export type PartialHandlers<H extends HandlerMap, T> = { [K in keyof H]?: Inject
 export type StoreType<S> = S extends Store<infer T> ? T : never;
 export type StoreHandlers<S> = S extends Store<any, infer H> ? H : never;
 
+export type EmptyStore = Store<{}>;
+
 export interface Store<T extends object = any, H extends HandlerMap<T> = any> {
 
     valueMap: MapOf<T>;
