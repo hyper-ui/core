@@ -14,7 +14,7 @@ export const define = function <P extends object = any, S extends Store = Store,
 
     const type = _Symbol(name) as unknown as HType<P, S, C>;
 
-    registry.set(type as any, desc as any);
+    registry.set(type as HType, desc as HDesc);
 
     return type;
 

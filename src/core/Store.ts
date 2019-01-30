@@ -42,7 +42,7 @@ export interface Store<T extends object = any, H extends HandlerMap<T> = any> {
 
     push<K extends keyof T>(key: K, ...items: AssertArray<T[K]>): this;
     unshift<K extends keyof T>(key: K, ...items: AssertArray<T[K]>): this;
-    slice(key: keyof T, start: number, end: number): this;
+    slice(key: keyof T, start: number, end?: number): this;
     splice<K extends keyof T>(key: K, start: number, deleteCount?: number): this;
     splice<K extends keyof T>(key: K, start: number, deleteCount: number, ...items: AssertArray<T[K]>): this;
 
@@ -143,7 +143,7 @@ export const createStore = function crtSto<
         },
 
         toggle: function s_toggle(key) {
-            return store.set(key, !store.get(key) as any);
+            return store.set(key, !store.get(key) as unknown as T[keyof T]);
         },
 
         inc: function s_inc(key, addition = 1) {
@@ -151,21 +151,21 @@ export const createStore = function crtSto<
         },
 
         push: function s_push(key, ...items) {
-            return store.set(key, (store.get(key) as unknown as any[]).concat(items) as any);
+            return store.set(key, (store.get(key) as unknown as any[]).concat(items) as unknown as T[keyof T]);
         },
 
         unshift: function s_unshift(key, ...items) {
-            return store.set(key, items.concat(store.get(key)) as any);
+            return store.set(key, items.concat(store.get(key)) as unknown as T[keyof T]);
         },
 
         slice: function s_slice(key, start, end) {
-            return store.set(key, (store.get(key) as unknown as any[]).slice(start, end) as any);
+            return store.set(key, (store.get(key) as unknown as any[]).slice(start, end) as unknown as T[keyof T]);
         },
 
         splice: function s_splice(key: keyof T, start: number, deleteCount: number, ...items: any[]) {
             const arr = (store.get(key) as unknown as any[]).slice();
             _splice.apply(arr, [start, deleteCount].concat(items) as SpliceArgs);
-            return store.set(key, arr as any);
+            return store.set(key, arr as unknown as T[keyof T]);
         },
 
         handle: function s_handle(name, handler) {

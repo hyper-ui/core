@@ -16,7 +16,7 @@ export const HUI = <P extends object = _EleProps, S extends _Store = _Store, C e
 ): _HNode<P, S, C> => ({
     isHN: true,
     type,
-    desc: registry.get(type as any),
+    desc: registry.get(type as _HType),
     props: _assign({ children: children.flat(_Infinity) }, props) as unknown as _HProps<P>,
     active: true
 });
