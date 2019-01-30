@@ -1,3 +1,10 @@
+## 0.16.0 - 2019-01-30
+
+- Add type exports
+- Add `EmptyStore` type
+- Improve type declarations
+- Fix file names in `package.json`
+
 ### 0.15.2 - 2019-01-24
 
 - Fix the type declaration of props
