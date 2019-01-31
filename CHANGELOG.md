@@ -1,3 +1,8 @@
+## 0.17.0 - 2019-01-31
+
+- Add `effects` API
+- Improve type declarations
+
 ## 0.16.0 - 2019-01-30
 
 - Add type exports
