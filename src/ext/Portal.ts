@@ -19,32 +19,39 @@ export interface PortalStore {
 
 export const Portal = define<PortalProps, Store<PortalStore>, EmptyStore>('HUI.Portal', {
 
-    init: function port_init(props, store) {
-        store.set('p', props.parent || _document.body);
-        store.set('f', HUI(Fragment, _null, props.children));
-    },
+    effects: [
+        function ptl_eff(props, store) {
 
-    render: function port_render(props, store, context) {
+            const { parent = _document.body } = props,
+                fragment = HUI(Fragment, _null, props.children);
+
+            store.set('p', parent);
+            store.set('f', fragment);
+
+            return function ptl_clr() {
+
+                const { ownNode, nodes } = fragment;
+
+                clear(fragment);
+
+                nodes!.forEach(node => {
+                    ownNode!.removeChild(node);
+                });
+
+                nodes!.length = 0;
+
+            };
+
+        }
+    ],
+
+
+    render: function ptl_render(props, store, context) {
         renderToDOM(store.get('f'), {
             parent: store.get('p'),
             owner: this,
             context
         });
-    },
-
-    clear: function port_clear(props, store) {
-
-        const fragment = store.get('f')!,
-            { ownNode, nodes } = fragment;
-
-        clear(fragment);
-
-        nodes!.forEach(node => {
-            ownNode!.removeChild(node);
-        });
-
-        nodes!.length = 0;
-
     }
 
 });

@@ -27,15 +27,22 @@ export type HProps<P extends object = any> = {
     children: unknown[];
 });
 
+export type HCallback<P extends object = any, S extends Store = Store, C extends Store = Store, T = unknown> =
+    (this: HNode<P, S, C>, props: HProps<P>, store: S, context: C) => T;
+
+export type EffectCallback<P extends object = any, S extends Store = Store, C extends Store = Store> =
+    HCallback<P, S, C, HCallback<P, S, C, void> | void>;
+
 export interface HDesc<P extends object = any, S extends Store = Store, C extends Store = Store> {
     defaultProps?: Partial<P>;
     defaultStore?: Partial<StoreType<S>>;
     storeHandlers?: PartialHandlers<StoreHandlers<S>, S>;
+    effects?: EffectCallback<P, S, C>[];
     state?: Array<keyof StoreType<S>>;
     context?: Array<keyof StoreType<C>>;
-    init?: (this: HNode<P, S, C>, props: HProps<P>, store: S, context: C) => void;
-    render: (this: HNode<P, S, C>, props: HProps<P>, store: S, context: C) => unknown;
-    clear?: (this: HNode<P, S, C>, props: HProps<P>, store: S, context: C) => void;
+    init?: HCallback<P, S, C, void>;
+    render: HCallback<P, S, C, unknown>;
+    clear?: HCallback<P, S, C, void>;
     catch?: (this: HNode<P, S, C>, err: any, props: HProps<P>, store: S, context: C) => unknown;
 }
 
@@ -52,6 +59,7 @@ export interface HNode<P extends object = EleProps, S extends Store = Store, C e
     nodes?: Node[];
     active: boolean;
     evMap?: EventMap;
+    eff?: HCallback<P, S, C, void>[];
     err?: unknown;
 }
 

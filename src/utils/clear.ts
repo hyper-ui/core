@@ -11,12 +11,22 @@ export const clear = function clr(hNode: HNode<any>) {
 
     if (desc) {
 
-        if (desc.clear) {
-            try {
-                desc.clear.call(hNode, props, hNode.sto!, hNode.ctx!);
-            } catch (err) {
-                _console.error(err);
+        const { sto, ctx } = hNode;
+
+        try {
+
+            if (hNode.eff) {
+                hNode.eff.forEach(effCanceller => {
+                    effCanceller.call(hNode, props, sto!, ctx!);
+                });
             }
+
+            if (desc.clear) {
+                desc.clear.call(hNode, props, sto!, ctx!);
+            }
+
+        } catch (err) {
+            _console.error(err);
         }
 
     } else {

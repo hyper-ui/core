@@ -1,4 +1,4 @@
-import { HProps as _HProps, HDesc as _HDesc, HNode as _HNode } from "./HNode";
+import { HProps as _HProps, HDesc as _HDesc, HNode as _HNode, HCallback as _HCallback, EffectCallback as _EffectCallback } from "./HNode";
 import { registry, define, HType as _HType } from "./registry";
 import { _assign, _Infinity, _requestAnimationFrame } from "../utils/refCache";
 import { Store as _Store, createStore, HandlerMap as _HandlerMap, Setter as _Setter, SetterRecord as _SetterRecord, StoreType as _StoreType, StoreHandlers as _StoreHandlers, PartialHandlers as _PartialHandlers, EmptyStore as _EmptyStore } from "./Store";
@@ -43,6 +43,8 @@ HUI.cmp = compare;
 export namespace HUI {
 
     export type HProps<P extends object = any> = _HProps<P>;
+    export type HCallback<P extends object = any, S extends _Store = _Store, C extends _Store = _Store, T = unknown> = _HCallback<P, S, C, T>;
+    export type EffectCallback<P extends object = any, S extends _Store = _Store, C extends _Store = _Store> = _EffectCallback<P, S, C>;
     export type HDesc<P extends object = any, S extends _Store = _Store, C extends _Store = _Store> = _HDesc<P, S, C>;
     export type HNode<P extends object = any, S extends _Store = _Store, C extends _Store = _Store> = _HNode<P, S, C>;
 

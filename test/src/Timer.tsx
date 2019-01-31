@@ -4,7 +4,6 @@ interface TimerProps {
 
 interface TimerStore {
     time: number;
-    timer: any;
 }
 
 type TimerStoreHandlers = {
@@ -19,17 +18,24 @@ const Timer = HUI.define<TimerProps, HUI.Store<TimerStore, TimerStoreHandlers>, 
         start: 0
     },
 
+    effects: [
+        function (props, store) {
+            const timer = store.trigger('setInterval', 1000);
+            return () => {
+                clearInterval(timer);
+            };
+        }
+    ],
+
     storeHandlers: {
         setInterval(interval) {
             const timer = setInterval(this.inc, interval, 'time');
-            this.set('timer', timer);
             return timer;
         }
     },
 
     init(props, store) {
         store.set('time', props.start!);
-        store.set('timer', store.trigger('setInterval', 1000));
     },
 
     render(props, store) {
@@ -38,10 +44,6 @@ const Timer = HUI.define<TimerProps, HUI.Store<TimerStore, TimerStoreHandlers>, 
                 Time: <span>{store.get('time')}</span>
             </HUI.Fragment>
         );
-    },
-
-    clear(props, store) {
-        clearInterval(store.get('timer'));
     }
 
 });
