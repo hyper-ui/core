@@ -1,5 +1,5 @@
 import { toNodeArr, HNode } from "./HNode";
-import { _document, _assign, _from } from "../utils/refCache";
+import { _document, _assign, _from, _create, _null } from "../utils/refCache";
 import { createStore, Store, StoreType, StoreHandlers, HandlerMap } from "./Store";
 import { toFrag } from "../utils/helpers";
 import { DeferCallback, reqTick, willTick } from "../ticker/ticker";
@@ -17,7 +17,7 @@ export interface RenderOptions<C extends Store = Store> {
 }
 
 export const renderToDOM = function render<C extends Store = Store>(
-    src: any, options: RenderOptions<C> = {}
+    src: any, options: RenderOptions<C> = _create(_null)
 ) {
 
     const { parent = _document.body,
