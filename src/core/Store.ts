@@ -6,28 +6,33 @@ import { SpliceArgs } from "../utils/helpers";
 
 type AssertArray<T> = T extends any[] ? T : never;
 type MapOf<T> = Map<keyof T, Pick<T, keyof T>>;
-type InjectThis<F extends (...args: any[]) => any, T> = (this: T, ...args: Parameters<F>) => ReturnType<F>;
 
 export type Setter<T = unknown> = (value: T) => void;
 export type SetterRecord<T = unknown> = [Setter<T> | undefined, Setter<T> | undefined];
 
-export interface HandlerMap<T extends object = any> {
-    [name: string]: (this: Store<T, HandlerMap<T>>, ...args: any[]) => any;
-}
+export type HandlerMap<T extends object =any, H extends object = any> = {
+    [K in keyof H]: H[K] extends (this: Store<T, H>, ...args: infer A) => any ? (
+        H[K] extends (this: Store<T, H>, ...args: A) => infer R ? (
+            (this: Store<T, H>, ...args: A) => R
+        ) : (
+            never
+        )
+    ) : (
+        never
+    );
+};
 
-export type PartialHandlers<H extends HandlerMap, T> = { [K in keyof H]?: InjectThis<H[K], T> | null };
+export type StoreType<S extends Store> = S extends Store<infer T> ? T : never;
+export type StoreHandlers<S extends Store> = S extends Store<any, infer H> ? H : never;
 
-export type StoreType<S> = S extends Store<infer T> ? T : never;
-export type StoreHandlers<S> = S extends Store<any, infer H> ? H : never;
+export type EmptyStore = Store<{}, {}>;
 
-export type EmptyStore = Store<{}>;
-
-export interface Store<T extends object = any, H extends HandlerMap<T> = any> {
+export interface Store<T extends object = any, H extends object = any> {
 
     valueMap: MapOf<T>;
     bindingMap: Map<keyof T, HNode<any>[]>;
     setterMap: Map<keyof T, SetterRecord<any>>;
-    handlerMap: MapOf<H>;
+    handlerMap: MapOf<HandlerMap<T, H>>;
 
     bind(hNode: HNode<any>, subscriptions: Array<keyof T>): this;
 
@@ -46,21 +51,21 @@ export interface Store<T extends object = any, H extends HandlerMap<T> = any> {
     splice<K extends keyof T>(key: K, start: number, deleteCount?: number): this;
     splice<K extends keyof T>(key: K, start: number, deleteCount: number, ...items: AssertArray<T[K]>): this;
 
-    handle<N extends keyof H>(name: N, handler?: InjectThis<H[N], this> | null): this;
-    handleSome(handlers: PartialHandlers<H, this>): this;
-    getHandler<N extends keyof H>(name: N): InjectThis<H[N], this> | undefined;
-    trigger<N extends keyof H>(name: N, ...args: Parameters<H[N]>): ReturnType<H[N]> | undefined;
+    handle<N extends keyof HandlerMap<T, H>>(name: N, handler?: HandlerMap<T, H>[N]): this;
+    handleSome(handlers: Partial<HandlerMap<T, H>>): this;
+    getHandler<N extends keyof HandlerMap<T, H>>(name: N): HandlerMap<T, H>[N] | undefined;
+    trigger<N extends keyof HandlerMap<T, H>>(name: N, ...args: Parameters<HandlerMap<T, H>[N]>): ReturnType<HandlerMap<T, H>[N]> | undefined;
 
 }
 
 export const createStore = function crtSto<
-    T extends object = any, H extends HandlerMap<T> = any
+    T extends object = any, H extends object = any
 >(): Store<T, H> {
 
     const valueMap = new _Map<keyof T, any>(),
         bindingMap = new _Map<keyof T, HNode<any>[]>(),
         setterMap = new _Map<keyof T, SetterRecord<any>>(),
-        handlerMap = new _Map<keyof H, any>();
+        handlerMap = new _Map<keyof HandlerMap<T, H>, any>();
 
     const store: Store<T, H> = {
 
@@ -179,13 +184,13 @@ export const createStore = function crtSto<
 
         handleSome: function s_handleSome(handlers) {
             _entries(handlers).forEach(pair => {
-                store.handle(pair[0], pair[1]);
+                store.handle(pair[0] as keyof H, pair[1]);
             });
             return this;
         },
 
         getHandler: function s_getHandler(name) {
-            return handlerMap.get(name) as any;
+            return handlerMap.get(name);
         },
 
         trigger: function s_trigger(name, ...args) {

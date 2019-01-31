@@ -1,7 +1,7 @@
 import { HProps as _HProps, HDesc as _HDesc, HNode as _HNode, HCallback as _HCallback, EffectCallback as _EffectCallback } from "./HNode";
 import { registry, define, HType as _HType } from "./registry";
 import { _assign, _Infinity, _requestAnimationFrame } from "../utils/refCache";
-import { Store as _Store, createStore, HandlerMap as _HandlerMap, Setter as _Setter, SetterRecord as _SetterRecord, StoreType as _StoreType, StoreHandlers as _StoreHandlers, PartialHandlers as _PartialHandlers, EmptyStore as _EmptyStore } from "./Store";
+import { Store as _Store, createStore, HandlerMap as _HandlerMap, Setter as _Setter, SetterRecord as _SetterRecord, StoreType as _StoreType, StoreHandlers as _StoreHandlers, EmptyStore as _EmptyStore } from "./Store";
 import { RenderOptions as _RenderOptions, renderToDOM } from "./render";
 import { propHandlers, EleProps as _EleProps, PropHandler as _PropHandler, RefCallback as _RefCallback, AttributeMap as _AttributeMap } from "./propHandlers";
 import { EventRecord as _EventRecord, EventMap as _EventMap } from "./events";
@@ -50,8 +50,9 @@ export namespace HUI {
 
     export type HType<P extends object = any, S extends _Store = _Store, C extends _Store = _Store> = _HType<P, S, C>;
 
-    export type Store<T extends object = any, H extends _HandlerMap = any> = _Store<T, H>;
-    export type HandlerMap<T extends object = any> = _HandlerMap<T>;
+    export type Store<T extends object = any, H extends object = any> = _Store<T, H>;
+    export type StoreHandlers<S extends _Store = _Store> = _StoreHandlers<S>;
+    export type HandlerMap<T extends object = any, H extends object = any> = _HandlerMap<T, H>;
     export type Setter<T = unknown> = _Setter<T>;
     export type SetterRecord<T = unknown> = _SetterRecord<T>;
     export type EmptyStore = _EmptyStore;

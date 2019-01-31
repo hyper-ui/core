@@ -1,4 +1,4 @@
-import { HNode, HCallback, HProps } from "./HNode";
+import { HNode, HProps } from "./HNode";
 import { Store } from "./Store";
 import { supply } from "../utils/helpers";
 import { _Boolean } from "../utils/refCache";
@@ -33,7 +33,7 @@ export const initComponent = function initCom<P extends object = any, S extends 
     }
 
     if (effects) {
-        hNode.eff = effects.map(effect => effect.call(hNode, props, store, ctx!)).filter(_Boolean) as HCallback<P, S, C, void>[];
+        hNode.eff = effects.map(effect => effect.call(hNode, props, store, ctx!)).filter(_Boolean) as (() => void)[];
     }
 
 };

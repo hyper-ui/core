@@ -2,7 +2,7 @@ interface DialogStore {
     on: boolean;
 }
 
-type DialogStoreHandlers = {
+interface DialogStoreHandlers {
     toggle: () => void;
 }
 

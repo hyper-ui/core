@@ -1,4 +1,4 @@
-import { Store, createStore, PartialHandlers, StoreType, StoreHandlers } from "./Store";
+import { Store, createStore, StoreType, StoreHandlers, HandlerMap } from "./Store";
 import { _document, _isArray, _Infinity, _Map, _entries, _createTextNode } from "../utils/refCache";
 import { toArr, isHNode } from "../utils/helpers";
 import { handleProp } from "./handleProp";
@@ -31,12 +31,12 @@ export type HCallback<P extends object = any, S extends Store = Store, C extends
     (this: HNode<P, S, C>, props: HProps<P>, store: S, context: C) => T;
 
 export type EffectCallback<P extends object = any, S extends Store = Store, C extends Store = Store> =
-    HCallback<P, S, C, HCallback<P, S, C, void> | void>;
+    HCallback<P, S, C, (() => void) | void>;
 
 export interface HDesc<P extends object = any, S extends Store = Store, C extends Store = Store> {
     defaultProps?: Partial<P>;
     defaultStore?: Partial<StoreType<S>>;
-    storeHandlers?: PartialHandlers<StoreHandlers<S>, S>;
+    storeHandlers?: Partial<HandlerMap<StoreType<S>, StoreHandlers<S>>>;
     effects?: EffectCallback<P, S, C>[];
     state?: Array<keyof StoreType<S>>;
     context?: Array<keyof StoreType<C>>;
@@ -59,7 +59,7 @@ export interface HNode<P extends object = EleProps, S extends Store = Store, C e
     nodes?: Node[];
     active: boolean;
     evMap?: EventMap;
-    eff?: HCallback<P, S, C, void>[];
+    eff?: (() => void)[];
     err?: unknown;
 }
 

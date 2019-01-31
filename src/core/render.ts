@@ -1,6 +1,6 @@
 import { toNodeArr, HNode } from "./HNode";
 import { _document, _assign, _from } from "../utils/refCache";
-import { createStore, Store, PartialHandlers, StoreType, StoreHandlers } from "./Store";
+import { createStore, Store, StoreType, StoreHandlers, HandlerMap } from "./Store";
 import { toFrag } from "../utils/helpers";
 import { DeferCallback, reqTick, willTick } from "../ticker/ticker";
 
@@ -10,7 +10,7 @@ export interface RenderOptions<C extends Store = Store> {
     clear?: boolean;
     context?: C;
     defaultContext?: Partial<StoreType<C>>;
-    contextHandlers?: PartialHandlers<StoreHandlers<C>, C>;
+    contextHandlers?: Partial<HandlerMap<StoreType<C>, StoreHandlers<C>>>;
     parent?: Node;
     owner?: HNode<any>;
     sync?: boolean;

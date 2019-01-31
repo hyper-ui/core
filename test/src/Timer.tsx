@@ -6,7 +6,7 @@ interface TimerStore {
     time: number;
 }
 
-type TimerStoreHandlers = {
+interface TimerStoreHandlers {
     setInterval: (interval: number) => any;
 }
 

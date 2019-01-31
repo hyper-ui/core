@@ -17,7 +17,7 @@ export const clear = function clr(hNode: HNode<any>) {
 
             if (hNode.eff) {
                 hNode.eff.forEach(effCanceller => {
-                    effCanceller.call(hNode, props, sto!, ctx!);
+                    effCanceller();
                 });
             }
 
