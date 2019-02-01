@@ -89,9 +89,11 @@ export const updateChildren = function updChd(
 
             if (isHNode(oldChild)) {
                 clear(oldChild);
+                oldNodes = oldChild.nodes!;
                 oldChild.nodes!.forEach(node => {
                     element.removeChild(node);
                 });
+                oldChild.nodes!.length = 0;
             } else if (childNodes.length) {
                 element.removeChild(childNodes[nodeOffset++]);
             }

@@ -9,8 +9,8 @@ import { mark } from "./ticker";
 
 export const updateComponent = function updCom(hNode: HNode<any>) {
 
-    const { desc, out: output, nodes, owner, ownNode: ownerNode, ctx: context, props, sto: store, err: error } = hNode,
-        outputLength = output!.length,
+    const { desc, out, nodes, owner, ownNode, ctx, props, sto, err } = hNode,
+        outLength = out!.length,
         ownerNodes = owner && owner.nodes!;
 
     let newNodes = ([] as Node[]).concat(nodes!);
@@ -19,23 +19,24 @@ export const updateComponent = function updCom(hNode: HNode<any>) {
 
         hNode.active = false;
 
-        if (error) {
+        if (err) {
             hNode.err = _undefined;
-            throw error;
+            throw err;
         }
 
-        const ownerNodeNodes = ownerNode!.childNodes;
+        const ownerNodeNodes = ownNode!.childNodes;
         let old: unknown, oldProps: any, oldNodes: Node[], oldNodesLength: number,
             curNodes: Node[], curProps: any, curPropKeys: string[],
-            nodeOffset = 0, nextNode: Node | null;
+            nodeOffset = 0, nextNodeIndex: number, nextNode: Node | null;
 
-        (hNode.out = toArr(
-            desc!.render.call(hNode, props, store!, context!)
-        ).flat(_Infinity)).forEach((cur: unknown, i) => {
+        const newOut = hNode.out = toArr(desc!.render.call(hNode, props, sto!, ctx!)).flat(_Infinity),
+            newOutLength = newOut.length;
 
-            if (i < outputLength) {
+        newOut.forEach((cur: unknown, i) => {
 
-                old = output![i];
+            if (i < outLength) {
+
+                old = out![i];
                 oldNodesLength = 1;
 
                 if (isHNode(old)) {
@@ -84,7 +85,7 @@ export const updateComponent = function updCom(hNode: HNode<any>) {
                     return;
                 }
 
-                curNodes = toNodeArr(cur, context!, ownerNode!, hNode);
+                curNodes = toNodeArr(cur, ctx!, ownNode!, hNode);
 
                 oldNodes = _splice.apply(
                     newNodes,
@@ -94,38 +95,48 @@ export const updateComponent = function updCom(hNode: HNode<any>) {
 
                 nodeOffset += oldNodesLength;
 
-                replaceNodes(ownerNode!, oldNodes, curNodes);
+                replaceNodes(ownNode!, oldNodes, curNodes);
 
             } else {
 
-                if (i === outputLength) {
-                    nextNode =
-                        ownerNodeNodes[_indexOf.call(ownerNodeNodes, newNodes![newNodes!.length - 1]) + 1] ||
-                        _null;
+                if (i === outLength) {
+                    nextNodeIndex = _indexOf.call(ownerNodeNodes, newNodes![newNodes!.length - 1]) + 1;
+                    nextNode = ownerNodeNodes[nextNodeIndex] || _null;
                 }
 
-                _push.apply(newNodes, curNodes = toNodeArr(cur, context!, ownerNode!, hNode));
+                _push.apply(newNodes, curNodes = toNodeArr(cur, ctx!, ownNode!, hNode));
 
-                ownerNode!.insertBefore(toFrag(curNodes), nextNode);
+                ownNode!.insertBefore(toFrag(curNodes), nextNode);
 
             }
 
         });
+
+        if (outLength > newOutLength) {
+            out!.slice(newOutLength).forEach(extra => {
+                if (isHNode(extra)) {
+                    clear(extra);
+                }
+            });
+            newNodes.splice(nodeOffset).forEach(extraNode => {
+                ownNode!.removeChild(extraNode);
+            });
+        }
 
     } catch (err) {
 
         if (desc!.catch) {
 
             newNodes = toNodeArr(
-                hNode.out = toArr(desc!.catch!.call(hNode, err, props, store!, context!)),
-                context!,
-                ownerNode!,
+                hNode.out = toArr(desc!.catch!.call(hNode, err, props, sto!, ctx!)),
+                ctx!,
+                ownNode!,
                 hNode
             );
 
-            replaceNodes(ownerNode!, nodes!, newNodes);
+            replaceNodes(ownNode!, nodes!, newNodes);
 
-            output!.forEach(child => {
+            out!.forEach(child => {
                 if (isHNode(child)) {
                     clear(child);
                 }
