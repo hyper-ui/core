@@ -12,14 +12,14 @@ export const handleError = function handleErr(err: unknown, hNode: HNode<any>) {
             owner = owner.owner;
         }
 
-        owner.err = err;
-
-        mark(owner);
-
-    } else {
-
-        throw err;
+        if (owner.desc) {
+            owner.err = err;
+            mark(owner);
+            return;
+        }
 
     }
+
+    throw err;
 
 };
