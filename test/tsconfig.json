@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es5",
     "module": "none",
     "jsx": "react",
+    "lib": [
+      "dom",
+      "es2015",
+      "es2016"
+    ],
     "jsxFactory": "HUI",
     "outFile": "./test.js",
     "rootDir": "./src",

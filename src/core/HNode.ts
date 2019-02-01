@@ -79,7 +79,7 @@ export const toNodeArr = function toNodes(
 
         if (_isArray(src) && src.length) {
 
-            return src.flat(_Infinity).map(s => toNodeArr(s, context, ownerNode, owner)).flat();
+            return src.flat(_Infinity).flatMap(s => toNodeArr(s, context, ownerNode, owner));
 
         } else if (isHNode(src)) {
 
