@@ -1,3 +1,8 @@
+### 0.17.1 - 2019-02-01
+
+- Fix error passing
+- Fix old output removing
+
 ## 0.17.0 - 2019-01-31
 
 - Add `effects` API
