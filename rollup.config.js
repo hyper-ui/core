@@ -5,13 +5,6 @@ const input = 'raw/index.js';
 export default [
     {
         input,
-        output: {
-            format: 'esm',
-            file: 'dist/hyper-ui.core.js'
-        }
-    },
-    {
-        input,
         plugins: [
             rollupPluginBabel()
         ],
@@ -19,6 +12,13 @@ export default [
             format: 'umd',
             name: 'HUI',
             file: 'dist/hyper-ui.core.umd.js'
+        }
+    },
+    {
+        input,
+        output: {
+            format: 'esm',
+            file: 'dist/hyper-ui.core.js'
         }
     }
 ];
