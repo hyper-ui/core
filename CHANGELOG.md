@@ -1,3 +1,8 @@
+## 0.18.0 - 2019-02-10
+
+- Improve type declarations
+- Fix some bugs
+
 ### 0.17.1 - 2019-02-01
 
 - Fix error passing
