@@ -27,7 +27,10 @@ const Dialog = HUI.define<{}, HUI.Store<DialogStore, DialogStoreHandlers>, HUI.E
                 {store.get('on') && [
                     <p>(Dialog window is shown.)</p>,
                     <HUI.Portal>
+                        {undefined}
                         <p attr={{ style: 'color: blue;' }}>[Dialog window]</p>
+                        {null}
+                        {Object}
                     </HUI.Portal>
                 ]}
             </HUI.Fragment>

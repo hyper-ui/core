@@ -9,12 +9,18 @@ type TestContext = HUI.Store<{
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+HUI.tick = cb => { setTimeout(cb, 500) };
+
 HUI.render<TestContext>(
     (
 
         <Inspector>
 
             <Greeting>world</Greeting>
+
+            <hr />
+
+            <Counter />
 
             <hr />
 
@@ -37,7 +43,9 @@ HUI.render<TestContext>(
 
             <p>SVG test:</p>
 
-            <svg xmlns={SVG_NS} attr={{ width: '100', height: '100' }} style={{ 'box-shadow': '0 0 10px #999' }}>
+            <svg xmlns={SVG_NS}
+                attr={{ width: '100', height: '100' }}
+                style={{ 'box-shadow': '0 0 10px #999' }}>
                 <path
                     xmlns={SVG_NS}
                     d="M 10 40 C 20 80 80 80 90 40"
