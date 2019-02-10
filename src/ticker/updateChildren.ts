@@ -94,7 +94,7 @@ export const updateChildren = function updChd(
                     element.removeChild(node);
                 });
                 oldChild.nodes!.length = 0;
-            } else if (childNodes.length) {
+            } else if (childNodes.length > nodeOffset) {
                 element.removeChild(childNodes[nodeOffset++]);
             }
 

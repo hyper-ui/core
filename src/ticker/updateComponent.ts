@@ -43,6 +43,8 @@ export const updateComponent = function updCom(hNode: HNode<any>) {
 
                     oldNodesLength = (oldNodes = old.nodes!).length;
 
+                    clear(old);
+
                     if (isHNode(cur) && old.type === cur.type) {
 
                         if (old.desc) {
@@ -51,9 +53,7 @@ export const updateComponent = function updCom(hNode: HNode<any>) {
 
                             mark(cur);
 
-                            nodeOffset += cur.nodes!.length;
-
-                            return;
+                            return nodeOffset += oldNodesLength;
 
                         } else {
 
@@ -79,10 +79,8 @@ export const updateComponent = function updCom(hNode: HNode<any>) {
 
                     }
 
-                    clear(old);
-
                 } else if (!isHNode(cur) && HUI.cmp(old, cur)) {
-                    return;
+                    return nodeOffset++;
                 }
 
                 curNodes = toNodeArr(cur, ctx!, ownNode!, hNode);

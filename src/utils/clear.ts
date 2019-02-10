@@ -5,7 +5,7 @@ import { isHNode } from "./helpers";
 
 export const clear = function clr(hNode: HNode<any>) {
 
-    const { desc, out: output, props } = hNode;
+    const { desc, props } = hNode;
 
     hNode.active = false;
 
@@ -42,8 +42,8 @@ export const clear = function clr(hNode: HNode<any>) {
         expired.splice(index, 1);
     }
 
-    if (output) {
-        output.forEach((child: unknown) => {
+    if (hNode.out) {
+        hNode.out.forEach((child: unknown) => {
             if (isHNode(child)) {
                 clear(child);
             }

@@ -12,46 +12,47 @@ export interface PortalProps {
     children?: unknown;
 }
 
-export interface PortalStore {
+export type PortalStore = Store<{
     p: Node;
     f: HNode<FragmentProps, EmptyStore, EmptyStore>;
-}
+}, {
+    c: (frag: HNode<FragmentProps, EmptyStore, EmptyStore>) => void
+}>
 
-export const Portal = define<PortalProps, Store<PortalStore>, EmptyStore>('HUI.Portal', {
+export const Portal = define<PortalProps, PortalStore, EmptyStore>('HUI.Portal', {
 
-    effects: [
-        function ptl_eff(props, store) {
-
-            const { parent = _document.body } = props,
-                fragment = HUI(Fragment, _null, props.children);
-
-            store.set('p', parent);
-            store.set('f', fragment);
-
-            return function ptl_clr() {
-
-                const { ownNode, nodes } = fragment;
-
+    storeHandlers: {
+        c: function ptl_c(fragment) {
+            const { ownNode, nodes } = fragment;
+            if (nodes) {
                 clear(fragment);
-
-                nodes!.forEach(node => {
+                nodes.forEach(node => {
                     ownNode!.removeChild(node);
                 });
-
-                nodes!.length = 0;
-
-            };
-
+                nodes.length = 0;
+            }
         }
-    ],
+    },
 
+    init: function ptl_init(props, store) {
+        const { parent = _document.body } = props,
+            fragment = HUI(Fragment, _null, props.children);
+        store.set('p', parent);
+        store.set('f', fragment);
+    },
 
     render: function ptl_render(props, store, context) {
-        renderToDOM(store.get('f'), {
+        const fragment = store.get('f')!;
+        store.trigger('c', fragment);
+        renderToDOM(fragment, {
             parent: store.get('p'),
             owner: this,
             context
         });
+    },
+
+    clear: function ptl_clr(props, store) {
+        store.trigger('c', store.get('f')!);
     }
 
 });
