@@ -1,8 +1,8 @@
-interface CounterStore {
+type CounterStore = HUI.Store<{
     value: number;
-}
+}, {}>;
 
-const Counter = HUI.define<{}, HUI.Store<CounterStore, {}>, HUI.EmptyStore>('Counter', {
+const Counter = HUI.define<{}, CounterStore, HUI.EmptyStore>('Counter', {
 
     state: ['value'],
 

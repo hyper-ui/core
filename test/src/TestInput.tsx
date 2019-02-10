@@ -2,12 +2,12 @@ interface TestInputProps {
     children: string;
 }
 
-interface TestInputStore {
+type TestInputStore = HUI.Store<{
     input?: HTMLInputElement;
     value: string;
-}
+}, {}>;
 
-const TestInput = HUI.define<TestInputProps, HUI.Store<TestInputStore>, HUI.EmptyStore>('TestInput', {
+const TestInput = HUI.define<TestInputProps, TestInputStore, HUI.EmptyStore>('TestInput', {
 
     state: ['value'],
 

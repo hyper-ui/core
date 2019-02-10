@@ -1,12 +1,10 @@
-interface DialogStore {
+type DialogStore = HUI.Store<{
     on: boolean;
-}
-
-interface DialogStoreHandlers {
+}, {
     toggle: () => void;
-}
+}>;
 
-const Dialog = HUI.define<{}, HUI.Store<DialogStore, DialogStoreHandlers>, HUI.EmptyStore>('Dialog', {
+const Dialog = HUI.define<{}, DialogStore, HUI.EmptyStore>('Dialog', {
 
     state: ['on'],
 

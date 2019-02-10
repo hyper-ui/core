@@ -1,8 +1,8 @@
-interface ThrowTestStore {
+type ThrowTestStore = HUI.Store<{
     msg: string;
-}
+}, {}>;
 
-const ThrowTest = HUI.define<{}, HUI.Store<ThrowTestStore>, HUI.EmptyStore>('ThrowTest', {
+const ThrowTest = HUI.define<{}, ThrowTestStore, HUI.EmptyStore>('ThrowTest', {
 
     state: ['msg'],
 
