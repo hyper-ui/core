@@ -6,7 +6,7 @@
     "module": "dist/hyper-ui.core.min.js",
     "types": "index.d.ts",
     "scripts": {
-        "prebuild": "rm -rf dist typings raw",
+        "prebuild": "rm -rf dist typings raw & exit 0",
         "build": "tsc && rollup -c",
         "postbuild": "terser dist/hyper-ui.core.js --config-file terser.json --module -o dist/hyper-ui.core.min.js && terser dist/hyper-ui.core.umd.js --config-file terser.json -o dist/hyper-ui.core.umd.min.js && node stat",
         "test": "cd test && tsc && echo Please open test/test.html to test it."
